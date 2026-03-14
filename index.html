@@ -1,0 +1,3264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'none';"
+    />
+    <title>BTC Paper Wallet Generator</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-logo">
+        <div class="logo-icon">₿</div>
+        <div>
+          <div class="logo-text">PAPER WALLET</div>
+          <div class="logo-sub">OFFLINE GENERATOR // BIP39 · BIP32 · BIP44</div>
+        </div>
+      </div>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-dot" id="net-dot"></span>
+          <span id="net-label">CHECKING...</span>
+        </div>
+        <div class="status-item text-dim">
+          <span id="entropy-status">⚡ ENTROPY: READY</span>
+        </div>
+        <div class="status-item text-dim small">v1.0.1</div>
+      </div>
+    </header>
+
+    <main>
+      <div class="alert danger hidden" id="online-alert">
+        <span class="alert-icon">⚠</span>
+        <div class="alert-text">
+          <strong>SECURITY RISK: You are currently ONLINE</strong>
+          Disconnect from the internet before generating wallets. generated keys
+          could be intercepted, for maximum security, use an air-gapped machine
+          with no network adapter
+        </div>
+      </div>
+
+      <div class="alert warn" id="offline-ok-alert" style="display: none">
+        <div class="alert-text">
+          <strong>OFFLINE MODE - Safe to generate</strong>
+          No internet connection detected, keys are generated locally and never
+          transmitted
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="generate">⊕ Generate</button>
+        <button class="tab" data-tab="import">Derive From Seed</button>
+        <button class="tab" data-tab="verify">Verify</button>
+        <button class="tab" data-tab="tools">⚙ Tools</button>
+      </div>
+
+      <div id="tab-generate" class="tab-content">
+        <div class="section">
+          <div class="section-header">
+            <span class="dot"></span>Configuration
+          </div>
+          <div class="section-body">
+            <div class="controls-grid">
+              <div class="control-group">
+                <label>Wallet Type</label>
+                <select id="wallet-type">
+                  <option value="LEGACY">Legacy (P2PKH) - 1...</option>
+                  <option value="SEGWIT">SegWit (P2SH) - 3...</option>
+                  <option value="NATIVE_SEGWIT" selected>
+                    Native SegWit - bc1q...
+                  </option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Mnemonic Length</label>
+                <select id="word-count">
+                  <option value="12" selected>12 words (128-bit)</option>
+                  <option value="24">24 words (256-bit)</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Quantity</label>
+                <select id="quantity">
+                  <option value="1" selected>1 wallet</option>
+                  <option value="3">3 wallets</option>
+                  <option value="5">5 wallets</option>
+                  <option value="10">10 wallets</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>BIP39 Passphrase (optional)</label>
+                <input
+                  type="password"
+                  id="passphrase"
+                  placeholder="25th word - leave blank for standard"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div id="entropy-section">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 10px;
+                "
+              >
+                <label>Entropy Source</label>
+                <div
+                  style="
+                    display: flex;
+                    gap: 0;
+                    border: 1px solid var(--border2);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                  "
+                >
+                  <button
+                    class="entropy-mode-btn active"
+                    id="mode-mouse"
+                    data-mode="mouse"
+                    style="
+                      padding: 6px 14px;
+                      font-family: var(--font-mono);
+                      font-size: 11px;
+                      background: rgba(0, 255, 65, 0.1);
+                      border: none;
+                      color: var(--green);
+                      cursor: pointer;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    🖱 MOUSE
+                  </button>
+                  <button
+                    class="entropy-mode-btn"
+                    id="mode-dice"
+                    data-mode="dice"
+                    style="
+                      padding: 6px 14px;
+                      font-family: var(--font-mono);
+                      font-size: 11px;
+                      background: transparent;
+                      border: none;
+                      color: var(--text-dim);
+                      cursor: pointer;
+                      letter-spacing: 1px;
+                      border-left: 1px solid var(--border2);
+                    "
+                  >
+                    🎲 DICE
+                  </button>
+                </div>
+              </div>
+
+              <div id="panel-mouse">
+                <div class="entropy-bar-wrap">
+                  <div class="entropy-bar" id="entropy-bar"></div>
+                </div>
+                <div class="entropy-label mt8" id="entropy-label">
+                  Move your mouse around to add extra entropy...
+                </div>
+                <div
+                  class="alert info mt16"
+                  style="padding: 10px 14px; font-size: 12px"
+                >
+                  <div class="alert-text">
+                    Mouse entropy is mixed with
+                    <strong>crypto.getRandomValues()</strong> via SHA-256, the
+                    CSPRNG alone is already secure - mouse adds extra insurance
+                  </div>
+                </div>
+              </div>
+
+              <div id="panel-dice" class="hidden">
+                <div
+                  class="alert warn"
+                  style="
+                    padding: 10px 14px;
+                    font-size: 12px;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <span class="alert-icon" style="font-size: 13px">⚠</span>
+                  <div class="alert-text">
+                    <strong>Use physical dice only.</strong> Roll 99–150 times.
+                    Enter each result (1–6) separated by spaces or commas. Rolls
+                    are SHA-256 mixed with CSPRNG - weak dice cannot reduce
+                    security below CSPRNG level.
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      margin-bottom: 6px;
+                    "
+                  >
+                    <label style="margin: 0"
+                      >Dice Rolls - type one digit at a time (1–6 only, space
+                      added automatically)</label
+                    >
+                    <button
+                      id="btn-roll-for-me"
+                      style="
+                        padding: 5px 12px;
+                        font-family: var(--font-mono);
+                        font-size: 10px;
+                        letter-spacing: 1px;
+                        background: rgba(255, 200, 0, 0.08);
+                        border: 1px solid var(--yellow);
+                        color: var(--yellow);
+                        border-radius: var(--radius);
+                        cursor: pointer;
+                      "
+                      title="Generate simulated dice rolls using crypto.getRandomValues() - still mixed with CSPRNG"
+                    >
+                      🎲 ROLL FOR ME
+                    </button>
+                  </div>
+                  <div
+                    id="roll-for-me-warn"
+                    class="hidden"
+                    style="
+                      background: rgba(255, 180, 0, 0.07);
+                      border: 1px solid var(--yellow);
+                      border-radius: var(--radius);
+                      padding: 8px 12px;
+                      font-size: 11px;
+                      color: var(--yellow);
+                      margin-bottom: 8px;
+                      line-height: 1.5;
+                    "
+                  >
+                    ⚠ <strong>Simulated rolls used,</strong> these were
+                    generated by <code>crypto.getRandomValues()</code> not
+                    physical dice
+                  </div>
+                  <textarea
+                    id="dice-input"
+                    placeholder="Just type digits: 3 1 4 1 5 9 2 6 5 3... (only 1–6 accepted, auto-spaced)"
+                    style="
+                      min-height: 90px;
+                      font-size: 13px;
+                      letter-spacing: 2px;
+                    "
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                  ></textarea>
+                </div>
+                <div
+                  id="dice-stats"
+                  class="mt8"
+                  style="
+                    display: flex;
+                    gap: 16px;
+                    flex-wrap: wrap;
+                    font-size: 11px;
+                    color: var(--text-muted);
+                  "
+                >
+                  <span id="dice-count">Rolls: 0</span>
+                  <span id="dice-entropy-bits">Entropy: ~0 bits</span>
+                  <span id="dice-status" style="color: var(--red)"
+                    >✗ Need at least 99 rolls</span
+                  >
+                </div>
+                <div
+                  id="dice-distribution"
+                  class="mt8"
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(6, 1fr);
+                    gap: 6px;
+                  "
+                ></div>
+                <div
+                  class="alert info mt16"
+                  style="padding: 10px 14px; font-size: 12px"
+                >
+                  <span class="alert-icon">🔢</span>
+                  <div class="alert-text">
+                    <strong>Unbiased base-6 conversion:</strong> naive 3-bit
+                    mapping biases faces 1–2 (2× more likely). We treat the full
+                    roll sequence as a base-6 number → bytes. 99 rolls =
+                    log₂(6⁹⁹) ≈ 256 bits.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row mt24">
+              <button class="btn btn-primary" id="generate-btn">
+                <span id="gen-btn-text">⊕ Generate Wallet</span>
+                <span class="spinner hidden" id="gen-spinner"></span>
+              </button>
+              <button
+                class="btn btn-danger hidden"
+                id="wipe-btn"
+                title="Removes keys from the DOM and clears string references. Note: JavaScript cannot guarantee immediate memory zeroing for string values - for full security, reboot after use."
+              >
+                ✕ Clear from screen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="results-area"></div>
+
+        <div class="btn-row hidden" id="action-row">
+          <button class="btn btn-orange" id="print-btn">⎙ Print Wallets</button>
+          <button class="btn btn-secondary" id="export-txt-btn">
+            ↓ Export TXT
+          </button>
+        </div>
+      </div>
+
+      <div id="tab-import" class="tab-content hidden">
+        <div class="section">
+          <div class="section-header">
+            <span class="dot"></span>Derive From Existing Seed
+          </div>
+          <div class="section-body">
+            <div class="alert info">
+              <span class="alert-icon">ℹ</span>
+              <div class="alert-text">
+                Enter your BIP39 seed phrase to derive addresses and private
+                keys. Nothing leaves this page - all processing is in memory
+                only.
+              </div>
+            </div>
+
+            <div class="control-group mt16">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 8px;
+                "
+              >
+                <label style="margin: 0">Seed Phrase</label>
+                <div style="display: flex; gap: 6px; align-items: center">
+                  <button
+                    id="import-word-count-toggle"
+                    style="
+                      font-family: var(--font-mono);
+                      font-size: 11px;
+                      padding: 4px 12px;
+                      background: var(--bg2);
+                      border: 1px solid var(--border2);
+                      color: var(--text-dim);
+                      border-radius: var(--radius);
+                      cursor: pointer;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    12 WORDS
+                  </button>
+                  <button
+                    id="import-paste-btn"
+                    style="
+                      font-family: var(--font-mono);
+                      font-size: 11px;
+                      padding: 4px 12px;
+                      background: var(--bg2);
+                      border: 1px solid var(--border2);
+                      color: var(--text-dim);
+                      border-radius: var(--radius);
+                      cursor: pointer;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    ⎗ PASTE
+                  </button>
+                </div>
+              </div>
+              <div id="word-grid-12" class="word-input-grid"></div>
+              <div id="word-grid-24" class="word-input-grid hidden"></div>
+              <div
+                class="validation-msg hidden"
+                id="mnemonic-valid-msg"
+                style="margin-top: 8px"
+              ></div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                gap: 0;
+                border: 1px solid var(--border2);
+                border-radius: var(--radius);
+                overflow: hidden;
+                width: fit-content;
+                margin: 16px 0 12px;
+              "
+            >
+              <button
+                id="derive-mode-single"
+                class="derive-mode-btn active"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: rgba(0, 255, 65, 0.1);
+                  border: none;
+                  color: var(--green);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                "
+              >
+                SINGLE WALLET
+              </button>
+              <button
+                id="derive-mode-range"
+                class="derive-mode-btn"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: transparent;
+                  border: none;
+                  color: var(--text-dim);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                  border-left: 1px solid var(--border2);
+                "
+              >
+                ADDRESS RANGE
+              </button>
+            </div>
+
+            <div id="derive-single-opts" class="controls-grid">
+              <div class="control-group">
+                <label>Wallet Type</label>
+                <select id="import-wallet-type">
+                  <option value="LEGACY">Legacy (P2PKH) - 1...</option>
+                  <option value="SEGWIT">SegWit (P2SH) - 3...</option>
+                  <option value="NATIVE_SEGWIT" selected>
+                    Native SegWit - bc1q...
+                  </option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Address Index</label>
+                <select id="import-addr-index">
+                  <option value="0">Index 0 (default)</option>
+                  <option value="1">Index 1</option>
+                  <option value="2">Index 2</option>
+                  <option value="3">Index 3</option>
+                  <option value="4">Index 4</option>
+                  <option value="5">Index 5</option>
+                  <option value="6">Index 6</option>
+                  <option value="7">Index 7</option>
+                  <option value="8">Index 8</option>
+                  <option value="9">Index 9</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>BIP39 Passphrase (optional)</label>
+                <input
+                  type="password"
+                  id="import-passphrase"
+                  placeholder="leave blank if none"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div id="derive-range-opts" class="controls-grid hidden">
+              <div class="control-group">
+                <label>Wallet Type</label>
+                <select id="hd-wallet-type">
+                  <option value="LEGACY">Legacy (P2PKH)</option>
+                  <option value="SEGWIT">SegWit (P2SH)</option>
+                  <option value="NATIVE_SEGWIT" selected>Native SegWit</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label>Account Index</label>
+                <select id="hd-account">
+                  <option value="0" selected>0 (default)</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Branch</label>
+                <select id="hd-branch">
+                  <option value="0" selected>0 - Receive</option>
+                  <option value="1">1 - Change</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Number of Addresses</label>
+                <select id="hd-count">
+                  <option value="5" selected>5 addresses</option>
+                  <option value="10">10 addresses</option>
+                  <option value="20">20 addresses</option>
+                  <option value="50">50 addresses</option>
+                  <option value="100">100 addresses</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>BIP39 Passphrase (optional)</label>
+                <input
+                  type="password"
+                  id="hd-passphrase"
+                  placeholder="leave blank if none"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="control-group" style="grid-column: 1 / -1">
+                <label style="display: flex; align-items: center; gap: 8px">
+                  Custom Path Override
+                  <span
+                    style="
+                      font-size: 10px;
+                      color: var(--text-muted);
+                      font-weight: normal;
+                    "
+                  >
+                    - overrides wallet type, branch &amp; account above
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  id="hd-custom-path"
+                  placeholder="e.g. m/84'/0'/0'/1/0 - leave blank to use settings above"
+                  autocomplete="off"
+                  spellcheck="false"
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                />
+                <div
+                  id="hd-custom-path-preview"
+                  style="
+                    font-size: 11px;
+                    color: var(--text-muted);
+                    margin-top: 4px;
+                    font-family: var(--font-mono);
+                  "
+                ></div>
+                <div
+                  class="alert info"
+                  style="
+                    margin-top: 8px;
+                    padding: 8px 12px;
+                    font-size: 11px;
+                    grid-column: 1/-1;
+                  "
+                >
+                  <span class="alert-icon" style="font-size: 12px">ℹ</span>
+                  <div class="alert-text">
+                    <strong>Common paths by wallet:</strong>
+                    Sparrow · Electrum · most modern wallets →
+                    <code
+                      style="cursor: pointer"
+                      onclick="
+                        document.getElementById('hd-custom-path').value =
+                          'm/84&#39;/0&#39;/0&#39;/0/0';
+                        updatePathPreview();
+                      "
+                    >
+                      m/84'/0'/0'/0/0
+                    </code>
+                    &nbsp;|&nbsp; Exodus / Trust Wallet →
+                    <code
+                      style="cursor: pointer"
+                      onclick="
+                        document.getElementById('hd-custom-path').value =
+                          'm/84&#39;/0&#39;/0&#39;/0/0';
+                        updatePathPreview();
+                      "
+                    >
+                      m/84'/0'/0'/0/0
+                    </code>
+                    &nbsp;|&nbsp; Old Coinbase / Mycelium →
+                    <code
+                      style="cursor: pointer"
+                      onclick="
+                        document.getElementById('hd-custom-path').value =
+                          'm/44&#39;/0&#39;/0&#39;/0/0';
+                        updatePathPreview();
+                      "
+                    >
+                      m/44'/0'/0'/0/0
+                    </code>
+                    &nbsp;|&nbsp; BlueWallet →
+                    <code
+                      style="cursor: pointer"
+                      onclick="
+                        document.getElementById('hd-custom-path').value =
+                          'm/84&#39;/0&#39;/0&#39;/0/0';
+                        updatePathPreview();
+                      "
+                    >
+                      m/84'/0'/0'/0/0
+                    </code>
+                    <br />Click any path to use it. If addresses don't match
+                    your wallet, try a different path.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row mt16">
+              <button class="btn btn-primary" id="import-btn" disabled>
+                ↓ Derive
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="import-results"></div>
+      </div>
+
+      <div id="tab-verify" class="tab-content hidden">
+        <div class="section">
+          <div class="section-header">
+            <span class="dot"></span>Verify Mnemonic Checksum
+          </div>
+          <div class="section-body">
+            <p class="text-dim small mb8">
+              Paste your seed phrase to verify it has a valid BIP39 checksum.
+              Does NOT derive any keys
+            </p>
+            <div class="control-group mt16">
+              <label>Seed Phrase to Verify</label>
+              <textarea
+                id="verify-mnemonic"
+                placeholder="Type or paste your seed phrase here..."
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+              ></textarea>
+            </div>
+            <div id="verify-result" class="mt16"></div>
+          </div>
+        </div>
+
+        <div class="section mt24">
+          <div class="section-header">
+            <span class="dot"></span>Security Checklist
+          </div>
+          <div class="section-body">
+            <div id="checklist">
+              <div class="check-item" id="chk-offline">
+                <span class="chk-icon">○</span> Disconnected from internet
+              </div>
+              <div class="check-item" id="chk-browser">
+                using modern browser with Web Crypto API
+              </div>
+              <div class="check-item" id="chk-csp">
+                content Security Policy active (no external requests possible)
+              </div>
+              <div class="check-item">
+                <span class="chk-icon text-yellow">△</span> Printer is local
+                (not network/cloud)
+              </div>
+              <div class="check-item">
+                <span class="chk-icon text-yellow">△</span> Screen not visible
+                to cameras or other people
+              </div>
+              <div class="check-item">
+                <span class="chk-icon text-yellow">△</span> Will verify
+                receiving address before sending funds
+              </div>
+              <div class="check-item">
+                <span class="chk-icon text-yellow">△</span> Will store printed
+                wallet in secure physical location
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-tools" class="tab-content hidden">
+        <div class="section">
+          <div class="section-header">
+            <span class="dot"></span>BIP39 Word Lookup
+          </div>
+          <div class="section-body">
+            <p class="text-dim small mb8">
+              Search the 2048-word BIP39 wordlist by prefix or by index
+              (0–2047). Useful when you wrote down partial words or need to find
+              a word by number.
+            </p>
+            <div class="controls-grid" style="grid-template-columns: 1fr 1fr">
+              <div class="control-group">
+                <label>Search by prefix</label>
+                <input
+                  type="text"
+                  id="wl-prefix"
+                  placeholder="e.g.  ab   zoo   cra..."
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  style="font-family: var(--font-mono)"
+                />
+              </div>
+              <div class="control-group">
+                <label>search by index (1 – 2048)</label>
+                <input
+                  type="number"
+                  id="wl-index"
+                  placeholder="e.g. 0  847  2047"
+                  min="1"
+                  max="2048"
+                  style="font-family: var(--font-mono)"
+                />
+              </div>
+            </div>
+            <div id="wl-results" style="margin-top: 12px"></div>
+          </div>
+        </div>
+
+        <div class="section mt24">
+          <div class="section-header">
+            <span class="dot"></span>BIP39 Inspector - step-by-step entropy ↔
+            mnemonic
+          </div>
+          <div class="section-body">
+            <p class="text-dim small mb8">
+              See every single step Bitcoin uses to turn raw bytes into seed
+              words - and reverse it. Entropy hex → bits → SHA-256 checksum →
+              11-bit chunks → word indices → words, fully visible.
+            </p>
+
+            <div
+              style="
+                display: flex;
+                gap: 0;
+                border: 1px solid var(--border2);
+                border-radius: var(--radius);
+                overflow: hidden;
+                width: fit-content;
+                margin-bottom: 16px;
+              "
+            >
+              <button
+                id="insp-tab-hex"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: rgba(0, 255, 65, 0.1);
+                  border: none;
+                  color: var(--green);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                "
+              >
+                HEX → WORDS
+              </button>
+              <button
+                id="insp-tab-words"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: transparent;
+                  border: none;
+                  color: var(--text-dim);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                  border-left: 1px solid var(--border2);
+                "
+              >
+                WORDS → HEX
+              </button>
+            </div>
+
+            <div id="insp-panel-hex">
+              <div class="control-group">
+                <label
+                  >Entropy hex - 32 chars = 16 bytes = 12 words &nbsp;|&nbsp; 64
+                  chars = 32 bytes = 24 words</label
+                >
+                <input
+                  type="text"
+                  id="insp-hex"
+                  placeholder="e.g. 0c1e24e5917779d297e14f45a84e8d61"
+                  autocomplete="off"
+                  spellcheck="false"
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                  "
+                />
+              </div>
+              <div class="btn-row mt8" style="gap: 8px">
+                <button
+                  class="btn btn-primary"
+                  id="insp-hex-run"
+                  style="padding: 8px 20px; font-size: 12px"
+                >
+                  ▶ Inspect
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  id="insp-hex-rand"
+                  style="padding: 8px 20px; font-size: 12px"
+                >
+                  ↺ Random 128-bit
+                </button>
+              </div>
+              <div id="insp-hex-out" style="margin-top: 16px"></div>
+            </div>
+
+            <div id="insp-panel-words" class="hidden">
+              <div class="control-group">
+                <label>Mnemonic - 12 or 24 BIP39 words, space-separated</label>
+                <textarea
+                  id="insp-words"
+                  placeholder="abandon ability able about above absent absorb abstract absurd abuse access accident"
+                  style="
+                    min-height: 70px;
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                  "
+                  spellcheck="false"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                ></textarea>
+              </div>
+              <div class="btn-row mt8">
+                <button
+                  class="btn btn-primary"
+                  id="insp-words-run"
+                  style="padding: 8px 20px; font-size: 12px"
+                >
+                  ▶ Decode
+                </button>
+              </div>
+              <div id="insp-words-out" style="margin-top: 16px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section mt24">
+          <div class="section-header">
+            <span class="dot"></span>Key Converter &amp; Address Inspector
+          </div>
+          <div class="section-body">
+            <p class="text-dim small mb8">
+              Convert between raw private key formats and derive all three
+              address types. Useful for importing keys from other tools, or
+              verifying a key you have on paper.
+            </p>
+
+            <div
+              style="
+                display: flex;
+                gap: 0;
+                border: 1px solid var(--border2);
+                border-radius: var(--radius);
+                overflow: hidden;
+                width: fit-content;
+                margin-bottom: 16px;
+              "
+            >
+              <button
+                id="kc-tab-hex"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: rgba(0, 255, 65, 0.1);
+                  border: none;
+                  color: var(--green);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                "
+              >
+                HEX → WIF + ADDR
+              </button>
+              <button
+                id="kc-tab-wif"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: transparent;
+                  border: none;
+                  color: var(--text-dim);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                  border-left: 1px solid var(--border2);
+                "
+              >
+                WIF → ADDR
+              </button>
+              <button
+                id="kc-tab-addr"
+                style="
+                  padding: 7px 18px;
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  background: transparent;
+                  border: none;
+                  color: var(--text-dim);
+                  cursor: pointer;
+                  letter-spacing: 1px;
+                  border-left: 1px solid var(--border2);
+                "
+              >
+                VALIDATE ADDR
+              </button>
+            </div>
+
+            <div id="kc-panel-hex">
+              <div class="control-group">
+                <label
+                  >Private key hex - exactly 64 hex characters (32 bytes)</label
+                >
+                <input
+                  type="text"
+                  id="kc-hex-in"
+                  placeholder="e.g. 0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d"
+                  autocomplete="off"
+                  spellcheck="false"
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                />
+              </div>
+              <div class="btn-row mt8">
+                <button
+                  class="btn btn-primary"
+                  id="kc-hex-run"
+                  style="padding: 8px 20px; font-size: 12px"
+                >
+                  ▶ Convert
+                </button>
+              </div>
+              <div id="kc-hex-out" style="margin-top: 16px"></div>
+            </div>
+
+            <div id="kc-panel-wif" class="hidden">
+              <div class="control-group">
+                <label>WIF private key</label>
+                <input
+                  type="text"
+                  id="kc-wif-in"
+                  placeholder="e.g. 5HueCGU8rMjxECyDialwujzZkLY5RCExk4ZS7kLP1aiR6kqkRR6"
+                  autocomplete="off"
+                  spellcheck="false"
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                />
+              </div>
+              <div class="btn-row mt8">
+                <button
+                  class="btn btn-primary"
+                  id="kc-wif-run"
+                  style="padding: 8px 20px; font-size: 12px"
+                >
+                  ▶ Derive Addresses
+                </button>
+              </div>
+              <div id="kc-wif-out" style="margin-top: 16px"></div>
+            </div>
+
+            <div id="kc-panel-addr" class="hidden">
+              <div class="control-group">
+                <label>Bitcoin address to validate</label>
+                <input
+                  type="text"
+                  id="kc-addr-in"
+                  placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7Divf3  or  3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy  or  bc1q..."
+                  autocomplete="off"
+                  spellcheck="false"
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                />
+              </div>
+              <div id="kc-addr-out" style="margin-top: 12px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section mt24">
+          <div class="section-header">
+            <span class="dot"></span>private Key Visualizer - 256-bit number
+            explorer
+          </div>
+          <div class="section-body">
+            <p class="text-dim small mb8">
+              Bitcoin private key is just a random 256-bit number between 1 and
+              the secp256k1 curve order N, click any bit to toggle it. see the
+              same number in binary, decimal, and hex simultaneously, paste a
+              hex key to visualise it, or generate a fresh random one
+            </p>
+
+            <div class="btn-row mt8" style="gap: 8px; margin-bottom: 16px">
+              <button
+                class="btn btn-primary"
+                id="pkv-random"
+                style="padding: 8px 20px; font-size: 12px"
+              >
+                ↺ Generate Random
+              </button>
+              <button
+                class="btn btn-secondary"
+                id="pkv-reset"
+                style="padding: 8px 20px; font-size: 12px"
+              >
+                ✕ Reset to Zero
+              </button>
+            </div>
+
+            <div style="margin-bottom: 12px">
+              <div
+                style="
+                  font-size: 10px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                  letter-spacing: 1px;
+                  text-transform: uppercase;
+                  margin-bottom: 6px;
+                "
+              >
+                Bits - click to toggle &nbsp;
+                <span id="pkv-bit-count" style="color: var(--green)"></span>
+              </div>
+              <div
+                id="pkv-grid"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(32, 1fr);
+                  gap: 2px;
+                  font-family: var(--font-mono);
+                  font-size: 10px;
+                  user-select: none;
+                "
+              ></div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 10px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                  margin-top: 4px;
+                "
+              >
+                <span>bit 255 (MSB)</span><span>bit 0 (LSB)</span>
+              </div>
+            </div>
+
+            <div
+              id="pkv-range-status"
+              style="
+                margin-bottom: 12px;
+                font-size: 11px;
+                font-family: var(--font-mono);
+              "
+            ></div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 10px">
+              <div>
+                <div
+                  style="
+                    font-size: 10px;
+                    color: var(--text-muted);
+                    font-family: var(--font-mono);
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  Binary (256 bits)
+                </div>
+                <div style="position: relative">
+                  <div
+                    id="pkv-binary"
+                    style="
+                      font-family: var(--font-mono);
+                      font-size: 11px;
+                      color: var(--green);
+                      background: var(--bg3);
+                      border: 1px solid var(--border);
+                      border-radius: var(--radius);
+                      padding: 8px 10px;
+                      word-break: break-all;
+                      line-height: 1.7;
+                      max-height: 80px;
+                      overflow-y: auto;
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px"
+              >
+                <div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text-muted);
+                      font-family: var(--font-mono);
+                      letter-spacing: 1px;
+                      text-transform: uppercase;
+                      margin-bottom: 4px;
+                    "
+                  >
+                    Hexadecimal (32 bytes)
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <input
+                      type="text"
+                      id="pkv-hex"
+                      placeholder="paste or edit hex..."
+                      autocomplete="off"
+                      spellcheck="false"
+                      style="
+                        font-family: var(--font-mono);
+                        font-size: 12px;
+                        letter-spacing: 0.5px;
+                        flex: 1;
+                      "
+                    />
+                    <button
+                      class="copy-btn"
+                      id="pkv-hex-copy"
+                      style="flex-shrink: 0"
+                    >
+                      copy
+                    </button>
+                  </div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text-muted);
+                      margin-top: 3px;
+                    "
+                  >
+                    64 hex chars = 32 bytes
+                  </div>
+                </div>
+
+                <div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text-muted);
+                      font-family: var(--font-mono);
+                      letter-spacing: 1px;
+                      text-transform: uppercase;
+                      margin-bottom: 4px;
+                    "
+                  >
+                    Decimal (integer)
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <input
+                      type="text"
+                      id="pkv-decimal"
+                      placeholder="paste or type decimal..."
+                      autocomplete="off"
+                      spellcheck="false"
+                      style="
+                        font-family: var(--font-mono);
+                        font-size: 11px;
+                        flex: 1;
+                      "
+                    />
+                    <button
+                      class="copy-btn"
+                      id="pkv-dec-copy"
+                      style="flex-shrink: 0"
+                    >
+                      copy
+                    </button>
+                  </div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text-muted);
+                      margin-top: 3px;
+                    "
+                  >
+                    up to 78 digits
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: var(--bg3);
+                  border: 1px solid var(--border);
+                  border-radius: var(--radius);
+                  padding: 10px 12px;
+                "
+              >
+                <div
+                  style="
+                    font-size: 10px;
+                    color: var(--text-muted);
+                    font-family: var(--font-mono);
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                    margin-bottom: 6px;
+                  "
+                >
+                  secp256k1 curve order N (upper bound for valid private keys)
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-muted);
+                    word-break: break-all;
+                    line-height: 1.6;
+                  "
+                >
+                  <span style="color: var(--text-dim)">0x</span>
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-muted);
+                    margin-top: 4px;
+                  "
+                >
+                  Valid range: 0x0000...0001 &nbsp;≤&nbsp; key &nbsp;&lt;&nbsp;
+                  N &nbsp;(any 256-bit number in this range works)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="print-area" id="print-area"></div>
+    <div id="toast-container"></div>
+
+    <script>
+      window.QRCode = (function () {
+        const GF_EXP = new Uint8Array(512);
+        const GF_LOG = new Uint8Array(256);
+        (function () {
+          let x = 1;
+          for (let i = 0; i < 255; i++) {
+            GF_EXP[i] = x;
+            GF_LOG[x] = i;
+            x = x << 1;
+            if (x & 256) x ^= 285;
+            x &= 255;
+          }
+          for (let i = 255; i < 512; i++) GF_EXP[i] = GF_EXP[i - 255];
+        })();
+        function gfMul(x, y) {
+          if (!x || !y) return 0;
+          return GF_EXP[(GF_LOG[x] + GF_LOG[y]) % 255];
+        }
+        function gfPow(x, p) {
+          return GF_EXP[(GF_LOG[x] * p) % 255];
+        }
+        function gfPolyMul(p, q) {
+          const r = new Uint8Array(p.length + q.length - 1);
+          for (let i = 0; i < p.length; i++)
+            for (let j = 0; j < q.length; j++) r[i + j] ^= gfMul(p[i], q[j]);
+          return r;
+        }
+        function gfPolyDiv(msg, gen) {
+          let out = new Uint8Array(msg);
+          for (let i = 0; i < msg.length - (gen.length - 1); i++) {
+            const c = out[i];
+            if (c)
+              for (let j = 1; j < gen.length; j++)
+                out[i + j] ^= gfMul(gen[j], c);
+          }
+          return out.slice(msg.length - (gen.length - 1));
+        }
+        function genPoly(n) {
+          let p = new Uint8Array([1]);
+          for (let i = 0; i < n; i++)
+            p = gfPolyMul(p, new Uint8Array([1, gfPow(2, i)]));
+          return p;
+        }
+        function encode(data) {
+          return new TextEncoder().encode(data);
+        }
+        const CAPS = [0, 16, 28, 44, 64, 86, 108, 124, 154, 182, 216, 254];
+        function getVersion(len) {
+          for (let v = 1; v <= 11; v++) if (CAPS[v] >= len) return v;
+          return 11;
+        }
+        const EC_WORDS = [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30];
+        const BLOCK_INFO = [
+          null,
+          { b1: [1, 19], b2: null },
+          { b1: [1, 34], b2: null },
+          { b1: [2, 17], b2: null },
+          { b1: [2, 25], b2: null },
+          { b1: [2, 19], b2: [2, 20] },
+          { b1: [4, 14], b2: null },
+          { b1: [4, 14], b2: [1, 15] },
+          { b1: [2, 22], b2: [2, 23] },
+          { b1: [3, 20], b2: [2, 21] },
+          { b1: [4, 19], b2: [3, 20] },
+          { b1: [1, 16], b2: [4, 17] },
+        ];
+        function makeMatrix(ver) {
+          const size = ver * 4 + 17;
+          const m = Array.from({ length: size }, () =>
+            new Array(size).fill(-1),
+          );
+          return { m, size };
+        }
+        function setFinder(m, r, c) {
+          const pat = [
+            [1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1],
+          ];
+          for (let i = 0; i < 7; i++)
+            for (let j = 0; j < 7; j++) m[r + i][c + j] = pat[i][j];
+        }
+        function setAlign(m, r, c) {
+          const pat = [
+            [1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1],
+          ];
+          for (let i = 0; i < 5; i++)
+            for (let j = 0; j < 5; j++) {
+              const nr = r - 2 + i,
+                nc = c - 2 + j;
+              if (m[nr][nc] === -1) m[nr][nc] = pat[i][j];
+            }
+        }
+        const ALIGN_POS = [
+          null,
+          [],
+          [],
+          [6, 18],
+          [6, 22],
+          [6, 26],
+          [6, 34],
+          [6, 22, 38],
+          [6, 24, 42],
+          [6, 28, 46],
+          [6, 26, 44],
+          [6, 30, 48],
+        ];
+        function buildMatrix(ver, data, mask) {
+          const { m, size } = makeMatrix(ver);
+          setFinder(m, 0, 0);
+          setFinder(m, 0, size - 7);
+          setFinder(m, size - 7, 0);
+          for (let i = 0; i < 8; i++) {
+            m[7][i] = 0;
+            m[i][7] = 0;
+            m[7][size - 8 + i] = 0;
+            m[i][size - 8] = 0;
+            m[size - 8][i] = 0;
+            m[size - 8 + i][7] = 0;
+          }
+          for (let i = 8; i < size - 8; i++) {
+            m[6][i] = (i + 1) % 2;
+            m[i][6] = (i + 1) % 2;
+          }
+          m[4 * ver + 9][8] = 1;
+          const ap = ALIGN_POS[ver];
+          for (let i = 0; i < ap.length; i++)
+            for (let j = 0; j < ap.length; j++) setAlign(m, ap[i], ap[j]);
+          const FMT = [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8,
+            size - 8,
+            size - 7,
+            size - 6,
+            size - 5,
+            size - 4,
+            size - 3,
+            size - 2,
+            size - 1,
+          ];
+          for (let i = 0; i < 6; i++) {
+            m[8][FMT[i]] = 0;
+            m[FMT[i]][8] = 0;
+          }
+          m[8][7] = 0;
+          m[8][8] = 0;
+          m[7][8] = 0;
+          for (let i = 0; i < 8; i++) {
+            m[size - 8 + i][8] = 0;
+            m[8][size - 7 + i] = 0;
+          }
+          let idx = 0,
+            dir = -1,
+            row = size - 1;
+          for (let col = size - 1; col > 0; col -= 2) {
+            if (col === 6) col--;
+            for (let cnt = 0; cnt < size; cnt++) {
+              const r = dir === -1 ? row - cnt : cnt;
+              for (let dc = 0; dc < 2; dc++) {
+                const c = col - dc;
+                if (m[r][c] === -1) {
+                  let bit =
+                    idx < data.length * 8
+                      ? (data[Math.floor(idx / 8)] >> (7 - (idx % 8))) & 1
+                      : 0;
+                  const maskBit =
+                    mask === 0
+                      ? (r + c) % 2 === 0
+                      : mask === 1
+                        ? r % 2 === 0
+                        : mask === 2
+                          ? c % 3 === 0
+                          : mask === 3
+                            ? (r + c) % 3 === 0
+                            : mask === 4
+                              ? (Math.floor(r / 2) + Math.floor(c / 3)) % 2 ===
+                                0
+                              : mask === 5
+                                ? ((r * c) % 2) + ((r * c) % 3) === 0
+                                : mask === 6
+                                  ? (((r * c) % 2) + ((r * c) % 3)) % 2 === 0
+                                  : (((r + c) % 2) + ((r * c) % 3)) % 2 === 0;
+                  m[r][c] = bit ^ (maskBit ? 1 : 0);
+                  idx++;
+                }
+              }
+            }
+            dir = -dir;
+            row += dir * (size - 1);
+          }
+          const ecLevelBits = 0;
+          let formatBits = (ecLevelBits << 3) | mask;
+          let g = 0x537,
+            b = formatBits << 10;
+          for (let i = 14; i >= 10; i--) if ((b >> i) & 1) b ^= g << (i - 10);
+          formatBits = ((formatBits << 10) | b) ^ 0x5412;
+          const fmtBits = [];
+          for (let i = 14; i >= 0; i--) fmtBits.push((formatBits >> i) & 1);
+          const fmtPos = [
+            [8, 0],
+            [8, 1],
+            [8, 2],
+            [8, 3],
+            [8, 4],
+            [8, 5],
+            [8, 7],
+            [8, 8],
+            [7, 8],
+            [5, 8],
+            [4, 8],
+            [3, 8],
+            [2, 8],
+            [1, 8],
+            [0, 8],
+          ];
+          const fmtPos2 = [
+            [size - 1, 8],
+            [size - 2, 8],
+            [size - 3, 8],
+            [size - 4, 8],
+            [size - 5, 8],
+            [size - 6, 8],
+            [size - 7, 8],
+            [size - 8, 8],
+            [8, size - 8],
+            [8, size - 7],
+            [8, size - 6],
+            [8, size - 5],
+            [8, size - 4],
+            [8, size - 3],
+            [8, size - 2],
+            [8, size - 1],
+          ];
+          for (let i = 0; i < 15; i++)
+            m[fmtPos[i][0]][fmtPos[i][1]] = fmtBits[i];
+          for (let i = 0; i < 8; i++)
+            m[fmtPos2[i][0]][fmtPos2[i][1]] = fmtBits[i];
+          for (let i = 8; i < 15; i++)
+            m[fmtPos2[i][0]][fmtPos2[i][1]] = fmtBits[i - 8];
+          return m;
+        }
+        function scoreMatrix(m) {
+          const s = m.length;
+          let score = 0;
+          for (let r = 0; r < s; r++) {
+            let run = 1;
+            for (let c = 1; c < s; c++) {
+              if (m[r][c] === m[r][c - 1]) run++;
+              else {
+                if (run >= 5) score += run - 2;
+                run = 1;
+              }
+            }
+            if (run >= 5) score += run - 2;
+          }
+          for (let c = 0; c < s; c++) {
+            let run = 1;
+            for (let r = 1; r < s; r++) {
+              if (m[r][c] === m[r - 1][c]) run++;
+              else {
+                if (run >= 5) score += run - 2;
+                run = 1;
+              }
+            }
+            if (run >= 5) score += run - 2;
+          }
+          return score;
+        }
+        function encodeData(data, ver) {
+          const bytes = encode(data);
+          const totalBytes = CAPS[ver];
+          const ecw = EC_WORDS[ver];
+          const bi = BLOCK_INFO[ver];
+          let bits = "";
+          bits += "0100";
+          bits += bytes.length.toString(2).padStart(8, "0");
+          for (const b of bytes) bits += b.toString(2).padStart(8, "0");
+          const dataCapBits = (totalBytes - ecw) * 8;
+          for (let i = 0; i < 4 && bits.length < dataCapBits; i++) bits += "0";
+          while (bits.length % 8) bits += "0";
+          let pad = 0;
+          while (bits.length < dataCapBits) {
+            bits += pad % 2 === 0 ? "11101100" : "00010001";
+            pad++;
+          }
+          const dataBytes = [];
+          for (let i = 0; i < bits.length; i += 8)
+            dataBytes.push(parseInt(bits.slice(i, i + 8), 2));
+          const blocks = [];
+          let pos = 0;
+          const addBlocks = (count, k) => {
+            for (let i = 0; i < count; i++) {
+              const block = dataBytes.slice(pos, pos + k);
+              pos += k;
+              const ec = gfPolyDiv(
+                [...block, ...new Array(ecw).fill(0)],
+                genPoly(ecw),
+              );
+              blocks.push({ data: block, ec: Array.from(ec) });
+            }
+          };
+          if (bi.b2) {
+            addBlocks(bi.b1[0], bi.b1[1]);
+            addBlocks(bi.b2[0], bi.b2[1]);
+          } else {
+            addBlocks(bi.b1[0], bi.b1[1]);
+          }
+          const result = [];
+          const maxDataLen = Math.max(...blocks.map((b) => b.data.length));
+          for (let i = 0; i < maxDataLen; i++)
+            for (const b of blocks)
+              if (i < b.data.length) result.push(b.data[i]);
+          for (let i = 0; i < ecw; i++)
+            for (const b of blocks) result.push(b.ec[i]);
+          while (result.length < totalBytes) result.push(0);
+          return result;
+        }
+        return {
+          generate(text, canvas, size = 200) {
+            const ver = Math.min(
+              11,
+              getVersion(new TextEncoder().encode(text).length + 3),
+            );
+            const codewords = encodeData(text, ver);
+            let bestScore = Infinity,
+              bestMask = 0,
+              bestMatrix = null;
+            for (let mask = 0; mask < 8; mask++) {
+              const matrix = buildMatrix(ver, codewords, mask);
+              const score = scoreMatrix(matrix);
+              if (score < bestScore) {
+                bestScore = score;
+                bestMask = mask;
+                bestMatrix = matrix;
+              }
+            }
+            const qrSize = bestMatrix.length;
+            const scale = Math.floor(size / (qrSize + 8));
+            const offset = Math.floor((size - qrSize * scale) / 2);
+            canvas.width = canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = "#000000";
+            for (let r = 0; r < qrSize; r++)
+              for (let c = 0; c < qrSize; c++)
+                if (bestMatrix[r][c])
+                  ctx.fillRect(
+                    offset + c * scale,
+                    offset + r * scale,
+                    scale,
+                    scale,
+                  );
+          },
+        };
+      })();
+    </script>
+
+    <script type="module">
+      import {
+        generateRandomWallet,
+        generateMnemonic,
+        generateMnemonicWithDice,
+        generateWalletFromMnemonic,
+        deriveMultipleAddresses,
+        validateMnemonic,
+        validateRoundTrip,
+        mnemonicToSeed,
+        WALLET_TYPES,
+        isOnline,
+        secureWipe,
+        secureWipeAll,
+        diceToEntropy,
+        validateDiceInput,
+        mixEntropy,
+        entropyToMnemonic,
+        WORDLIST,
+        sha256,
+        hexToBytes,
+        bytesToHex,
+        bytesToBigInt,
+        bigIntToBytes32,
+        privateKeyToPublicKey,
+        privateKeyToWIF,
+        pubKeyToLegacy,
+        pubKeyToSegwit,
+        pubKeyToNativeSegwit,
+        base58Encode,
+        sha256d,
+      } from "./js/wallet.js";
+
+      let generatedWallets = [];
+      let entropyReady = false;
+
+      function updateNetworkStatus() {
+        const dot = document.getElementById("net-dot");
+        const label = document.getElementById("net-label");
+        const onlineAlert = document.getElementById("online-alert");
+        const offlineAlert = document.getElementById("offline-ok-alert");
+        if (navigator.onLine) {
+          dot.className = "status-dot online";
+          label.textContent = "ONLINE - UNSAFE";
+          label.style.color = "var(--red)";
+          onlineAlert.classList.remove("hidden");
+          offlineAlert.style.display = "none";
+        } else {
+          dot.className = "status-dot offline";
+          label.textContent = "OFFLINE - SAFE";
+          label.style.color = "var(--green)";
+          onlineAlert.classList.add("hidden");
+          offlineAlert.style.display = "flex";
+        }
+        const chkOffline = document.getElementById("chk-offline");
+        if (chkOffline) {
+          const ok = !navigator.onLine;
+          chkOffline.innerHTML = `<span class="chk-icon ${ok ? "text-green" : "text-red"}">${ok ? "✓" : "✗"}</span> Disconnected from internet`;
+        }
+      }
+      window.addEventListener("online", updateNetworkStatus);
+      window.addEventListener("offline", updateNetworkStatus);
+      updateNetworkStatus();
+
+      let entropyMode = "mouse";
+      let diceValid = false;
+
+      document.getElementById("mode-mouse").addEventListener("click", () => {
+        entropyMode = "mouse";
+        document.getElementById("panel-mouse").classList.remove("hidden");
+        document.getElementById("panel-dice").classList.add("hidden");
+        document.getElementById("mode-mouse").style.background =
+          "rgba(0,255,65,0.1)";
+        document.getElementById("mode-mouse").style.color = "var(--green)";
+        document.getElementById("mode-dice").style.background = "transparent";
+        document.getElementById("mode-dice").style.color = "var(--text-dim)";
+      });
+      document.getElementById("mode-dice").addEventListener("click", () => {
+        entropyMode = "dice";
+        document.getElementById("panel-mouse").classList.add("hidden");
+        document.getElementById("panel-dice").classList.remove("hidden");
+        document.getElementById("mode-dice").style.background =
+          "rgba(0,255,65,0.1)";
+        document.getElementById("mode-dice").style.color = "var(--green)";
+        document.getElementById("mode-mouse").style.background = "transparent";
+        document.getElementById("mode-mouse").style.color = "var(--text-dim)";
+      });
+
+      const bar = document.getElementById("entropy-bar");
+      const entropyLabel = document.getElementById("entropy-label");
+      let entropyCount = 0;
+      const ENTROPY_TARGET = 100;
+      let mouseEntropySamples = [];
+
+      function onMouseMove(e) {
+        if (entropyCount >= ENTROPY_TARGET) return;
+        entropyCount++;
+
+        mouseEntropySamples.push(
+          ((e.clientX & 0xffff) << 16) | (e.clientY & 0xffff),
+          Date.now() ^ Math.round(performance.now() * 1000),
+        );
+
+        const pct = Math.min(100, (entropyCount / ENTROPY_TARGET) * 100);
+        bar.style.width = pct + "%";
+        if (entropyCount >= ENTROPY_TARGET) {
+          entropyLabel.textContent = " Entropy collected - ready to generate";
+          entropyLabel.style.color = "var(--green)";
+          document.getElementById("entropy-status").textContent =
+            "⚡ ENTROPY: COLLECTED";
+          document.removeEventListener("mousemove", onMouseMove);
+          entropyReady = true;
+        } else {
+          entropyLabel.textContent = `Collecting... ${Math.round(pct)}% (move your mouse)`;
+        }
+      }
+      document.addEventListener("mousemove", onMouseMove, { passive: true });
+
+      setTimeout(() => {
+        if (!entropyReady) {
+          entropyReady = true;
+          bar.style.width = "100%";
+          if (entropyCount === 0) {
+            entropyLabel.textContent =
+              "No mouse movement detected - using CSPRNG only (still secure)";
+            entropyLabel.style.color = "var(--yellow)";
+          } else {
+            entropyLabel.textContent = "Entropy ready";
+            entropyLabel.style.color = "var(--green)";
+          }
+        }
+      }, 3000);
+
+      const diceInput = document.getElementById("dice-input");
+
+      function updateDiceStats() {
+        const val = diceInput.value;
+        const info = validateDiceInput(val);
+        document.getElementById("dice-count").textContent =
+          `Rolls: ${info.count}`;
+        document.getElementById("dice-entropy-bits").textContent =
+          `Entropy: ~${info.entropyBits} bits`;
+        const statusEl = document.getElementById("dice-status");
+        if (info.valid) {
+          statusEl.textContent = "Sufficient entropy";
+          statusEl.style.color = "var(--green)";
+          diceValid = true;
+          document.getElementById("entropy-status").textContent =
+            "🎲 DICE: READY";
+        } else {
+          statusEl.textContent = `✗ Need ${99 - info.count} more rolls`;
+          statusEl.style.color = "var(--red)";
+          diceValid = false;
+        }
+        const rolls = val
+          .trim()
+          .split(/[\s,;.|\-]+/)
+          .map(Number)
+          .filter((n) => n >= 1 && n <= 6);
+        const dist = document.getElementById("dice-distribution");
+        const counts = [0, 0, 0, 0, 0, 0];
+        rolls.forEach((r) => counts[r - 1]++);
+        const maxCount = Math.max(...counts, 1);
+        dist.innerHTML = [1, 2, 3, 4, 5, 6]
+          .map((face, i) => {
+            const pct = Math.round((counts[i] / maxCount) * 100);
+            const expected =
+              rolls.length > 0 ? Math.round(rolls.length / 6) : 0;
+            const bias =
+              expected > 0 ? Math.abs(counts[i] - expected) / expected : 0;
+            const barColor = bias > 0.3 ? "var(--yellow)" : "var(--green-dim)";
+            return `<div style="text-align:center;">
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">&#x2685;${face}</div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:2px;height:40px;position:relative;overflow:hidden;">
+              <div style="position:absolute;bottom:0;width:100%;height:${pct}%;background:${barColor};transition:height 0.2s;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${counts[i]}</div>
+          </div>`;
+          })
+          .join("");
+      }
+
+      diceInput.addEventListener("keydown", (e) => {
+        if (
+          e.ctrlKey ||
+          e.metaKey ||
+          [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Enter",
+            "Home",
+            "End",
+          ].includes(e.key)
+        )
+          return;
+        if (!/^[1-6]$/.test(e.key)) {
+          e.preventDefault();
+          return;
+        }
+        e.preventDefault();
+        const start = diceInput.selectionStart,
+          end = diceInput.selectionEnd;
+        const val = diceInput.value,
+          insert = e.key + " ";
+        diceInput.value = val.slice(0, start) + insert + val.slice(end);
+        diceInput.selectionStart = diceInput.selectionEnd =
+          start + insert.length;
+        document.getElementById("roll-for-me-warn").classList.add("hidden");
+        updateDiceStats();
+      });
+      diceInput.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData("text");
+        const digits = text.split("").filter((c) => /[1-6]/.test(c));
+        const lines = [];
+        for (let i = 0; i < digits.length; i += 10)
+          lines.push(digits.slice(i, i + 10).join(" "));
+        const start = diceInput.selectionStart;
+        diceInput.value =
+          diceInput.value.slice(0, start) +
+          lines.join("\n") +
+          diceInput.value.slice(diceInput.selectionEnd);
+        document.getElementById("roll-for-me-warn").classList.add("hidden");
+        updateDiceStats();
+      });
+      diceInput.addEventListener("input", () => {
+        const raw = diceInput.value;
+        if (/[^1-6 \n]/.test(raw)) {
+          const digits = raw.split("").filter((c) => /[1-6]/.test(c));
+          const lines = [];
+          for (let i = 0; i < digits.length; i += 10)
+            lines.push(digits.slice(i, i + 10).join(" "));
+          diceInput.value = lines.join("\n");
+        }
+        document.getElementById("roll-for-me-warn").classList.add("hidden");
+        updateDiceStats();
+      });
+      updateDiceStats();
+
+      document
+        .getElementById("btn-roll-for-me")
+        .addEventListener("click", () => {
+          const count =
+            100 +
+            Math.floor(
+              (crypto.getRandomValues(new Uint8Array(1))[0] / 255) * 200,
+            );
+          const rolls = [];
+          while (rolls.length < count) {
+            const buf = crypto.getRandomValues(
+              new Uint8Array(Math.ceil((count - rolls.length) * 1.5)),
+            );
+            for (const b of buf) {
+              if (b < 252) {
+                rolls.push((b % 6) + 1);
+                if (rolls.length >= count) break;
+              }
+            }
+          }
+          const lines = [];
+          for (let i = 0; i < rolls.length; i += 10)
+            lines.push(rolls.slice(i, i + 10).join(" "));
+          diceInput.value = lines.join("\n");
+          document
+            .getElementById("roll-for-me-warn")
+            .classList.remove("hidden");
+          updateDiceStats();
+        });
+
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((c) => c.classList.add("hidden"));
+          tab.classList.add("active");
+          document
+            .getElementById("tab-" + tab.dataset.tab)
+            .classList.remove("hidden");
+        });
+      });
+
+      function toast(msg, type = "success") {
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        const icon = type === "success" ? "✓" : type === "error" ? "✗" : "⚠";
+        el.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+        document.getElementById("toast-container").appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      }
+
+      async function copyText(text, btn) {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.cssText =
+              "position:fixed;top:0;left:0;opacity:0;pointer-events:none;";
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+          }
+          btn.textContent = "copied";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = "copy";
+            btn.classList.remove("copied");
+          }, 1500);
+        } catch {
+          toast("copy failed - select text manually", "error");
+        }
+      }
+
+      function renderQR(text, canvas, size = 160) {
+        try {
+          window.QRCode.generate(text, canvas, size);
+        } catch (e) {
+          console.warn("QR error:", e);
+        }
+      }
+
+      function walletTypeClass(type) {
+        return type === "LEGACY"
+          ? "legacy"
+          : type === "SEGWIT"
+            ? "segwit"
+            : "native";
+      }
+
+      function renderWalletCard(w, index) {
+        const cls = walletTypeClass(w.walletType);
+        const addrCanvas = document.createElement("canvas");
+        addrCanvas.className = "qr";
+        const privCanvas = document.createElement("canvas");
+        privCanvas.className = "qr";
+        const div = document.createElement("div");
+        div.className = "wallet-card";
+        div.innerHTML = `
+          <div class="wallet-type-badge badge-${cls}">${w.typeName} - #${index + 1}</div>
+          <div class="wallet-grid">
+            <div class="wallet-fields">
+              <div class="field-group">
+                <div class="field-label">Receiving Address (PUBLIC - safe to share)</div>
+                <div class="field-value address">
+                  <span>${w.address}</span>
+                  <button class="copy-btn" data-copy="${w.address}">copy</button>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">⚠ Private Key WIF (KEEP SECRET - never share)</div>
+                <div class="field-value wif">
+                  <span>${w.privateKeyWIF}</span>
+                  <button class="copy-btn" data-copy="${w.privateKeyWIF}">copy</button>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label" style="display:flex;align-items:center;justify-content:space-between;">
+                  <span>Seed Phrase - BIP39 Mnemonic (${w.mnemonic.split(" ").length} words)</span>
+                  <button class="copy-btn copy-mnemonic-btn" data-mnemonic="${w.mnemonic}" style="font-size:10px;padding:3px 10px;">⎘ copy words</button>
+                </div>
+                <div class="field-value mnemonic${w.mnemonic.split(" ").length === 24 ? " words-24" : ""}">
+                  ${w.mnemonic
+                    .split(" ")
+                    .map(
+                      (word, i) =>
+                        `<span class="word-chip"><span class="word-num">${i + 1}</span><span class="word-text">${word}</span></span>`,
+                    )
+                    .join("")}
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Derivation Path</div>
+                <div class="field-value text-dim small" style="font-size:11px;color:var(--text-dim)">${w.path}</div>
+              </div>
+            </div>
+            <div class="qr-pair">
+              <div class="qr-box">
+                <div class="qr-label">Address (Public)</div>
+                <div class="qr-canvas-wrap" data-qr="addr"></div>
+              </div>
+              <div class="qr-box">
+                <div class="qr-label">WIF Key (Private)</div>
+                <div class="qr-canvas-wrap" data-qr="priv"></div>
+              </div>
+            </div>
+          </div>`;
+        div.querySelector('[data-qr="addr"]').appendChild(addrCanvas);
+        div.querySelector('[data-qr="priv"]').appendChild(privCanvas);
+        renderQR(w.address, addrCanvas, 160);
+        renderQR(w.privateKeyWIF, privCanvas, 160);
+        div
+          .querySelectorAll(".copy-btn[data-copy]")
+          .forEach((btn) =>
+            btn.addEventListener("click", () =>
+              copyText(btn.dataset.copy, btn),
+            ),
+          );
+        div
+          .querySelectorAll(".copy-mnemonic-btn")
+          .forEach((btn) =>
+            btn.addEventListener("click", () =>
+              copyText(btn.dataset.mnemonic, btn),
+            ),
+          );
+        return div;
+      }
+
+      async function generate() {
+        const btn = document.getElementById("generate-btn");
+        const spinner = document.getElementById("gen-spinner");
+        const btnText = document.getElementById("gen-btn-text");
+        const area = document.getElementById("results-area");
+        const actionRow = document.getElementById("action-row");
+        const wipeBtn = document.getElementById("wipe-btn");
+
+        const walletType = document.getElementById("wallet-type").value;
+        const wordCount = parseInt(document.getElementById("word-count").value);
+        const quantity = parseInt(document.getElementById("quantity").value);
+        const passphrase = document.getElementById("passphrase").value;
+
+        btn.disabled = true;
+        spinner.classList.remove("hidden");
+        btnText.textContent = "Generating";
+        area.innerHTML = `<div class="loading-state"><div class="spinner"></div><div class="text-dim">Generating wallet<span class="loading-dots"></span></div></div>`;
+
+        try {
+          if (entropyMode === "dice" && !diceValid)
+            throw new Error(
+              "dice entropy not ready, enter at least 99 rolls (1–6)",
+            );
+          generatedWallets = [];
+          for (let i = 0; i < quantity; i++) {
+            let mnemonic;
+            if (entropyMode === "dice") {
+              mnemonic = await generateMnemonicWithDice(
+                diceInput.value,
+                wordCount,
+                i,
+              );
+            } else {
+              const extraBytes = new Uint8Array(mouseEntropySamples.length * 4);
+              mouseEntropySamples.forEach((s, i) => {
+                new DataView(extraBytes.buffer).setUint32(
+                  i * 4,
+                  s >>> 0,
+                  false,
+                );
+              });
+              mnemonic = await generateMnemonic(
+                wordCount === 24 ? 256 : 128,
+                extraBytes,
+              );
+            }
+            const w = await generateWalletFromMnemonic(
+              mnemonic,
+              passphrase,
+              walletType,
+            );
+            generatedWallets.push(w);
+          }
+          area.innerHTML = "";
+          for (let i = 0; i < generatedWallets.length; i++)
+            area.appendChild(renderWalletCard(generatedWallets[i], i));
+
+          const validationResults = await Promise.all(
+            generatedWallets.map((w) => validateRoundTrip(w)),
+          );
+          const failed = validationResults.filter((r) => !r.valid);
+          if (failed.length > 0) {
+            secureWipeAll(generatedWallets);
+            generatedWallets = [];
+            area.innerHTML = "";
+            throw new Error(
+              "CRITICAL: Round-trip validation failed!\n" +
+                failed.flatMap((r) => r.errors).join("\n"),
+            );
+          }
+          validationResults.forEach((r, i) => {
+            const card = area.children[i];
+            if (!card) return;
+            const badge = document.createElement("div");
+            badge.style.cssText =
+              "font-size:11px;color:var(--green);font-family:var(--font-mono);margin-bottom:8px;letter-spacing:1px;";
+            badge.textContent =
+              "ROUND-TRIP VALIDATED - address re-derived from WIF key matches";
+            card.insertBefore(badge, card.firstChild);
+          });
+          actionRow.classList.remove("hidden");
+          wipeBtn.classList.remove("hidden");
+          toast(
+            `${quantity} wallet${quantity > 1 ? "s" : ""} generated & validated`,
+            "success",
+          );
+          buildPrintArea();
+        } catch (e) {
+          console.error(e);
+          area.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>Generation failed</strong> ${e.message}</div></div>`;
+          toast("generation failed: " + e.message, "error");
+        }
+        btn.disabled = false;
+        spinner.classList.add("hidden");
+        btnText.textContent = "⊕ Generate Wallet";
+      }
+
+      document
+        .getElementById("generate-btn")
+        .addEventListener("click", generate);
+
+      document.getElementById("wipe-btn").addEventListener("click", () => {
+        secureWipeAll(generatedWallets);
+        generatedWallets = [];
+        document.getElementById("action-row").classList.add("hidden");
+        document.getElementById("wipe-btn").classList.add("hidden");
+        document.getElementById("results-area").innerHTML = "";
+        toast("cleared from screen", "success");
+      });
+
+      function buildPrintArea() {
+        const area = document.getElementById("print-area");
+        area.innerHTML =
+          '<h2 style="font-size:18px;margin-bottom:16px;font-family:monospace">BITCOIN PAPER WALLETS - GENERATED OFFLINE</h2>';
+        generatedWallets.forEach((w, i) => {
+          const passphraseNote = w.passphrase
+            ? '<div class="print-label" style="margin-top:8px;color:#c8a000;">BIP39 PASSPHRASE WAS USED - back up your passphrase separately or funds will be unrecoverable</div>'
+            : "";
+          const addrCanvas = document.createElement("canvas");
+          const privCanvas = document.createElement("canvas");
+          const div = document.createElement("div");
+          div.className = "print-wallet";
+          div.innerHTML = `
+            <div style="font-size:14px;font-weight:bold;margin-bottom:8px;font-family:monospace">WALLET #${i + 1} - ${w.typeName}</div>
+            <div class="print-section">
+              <div class="print-label">⬤ PUBLIC - Receiving Address (safe to share)</div>
+              <div class="print-value">${w.address}</div>
+              <div class="print-qr" data-pqr="addr"></div>
+            </div>
+            <div class="print-fold-line">▼ FOLD HERE - KEEP PRIVATE ▼</div>
+            <div class="print-section">
+              <div class="print-label">⚠ PRIVATE KEY WIF - NEVER SHARE</div>
+              <div class="print-value">${w.privateKeyWIF}</div>
+              <div class="print-qr" data-pqr="priv"></div>
+              <div class="print-label" style="margin-top:12px">BIP39 SEED PHRASE (${w.mnemonic.split(" ").length} words)</div>
+              <div class="print-value">${w.mnemonic}</div>
+              <div class="print-label" style="margin-top:8px">DERIVATION PATH: ${w.path}</div>
+              ${passphraseNote}
+            </div>
+            <div class="print-warning">⚠ NEVER enter your private key or seed phrase on any website or device connected to the internet.</div>`;
+          div.querySelector('[data-pqr="addr"]').appendChild(addrCanvas);
+          div.querySelector('[data-pqr="priv"]').appendChild(privCanvas);
+          area.appendChild(div);
+          renderQR(w.address, addrCanvas, 120);
+          renderQR(w.privateKeyWIF, privCanvas, 120);
+        });
+      }
+
+      document
+        .getElementById("print-btn")
+        .addEventListener("click", () => window.print());
+      document
+        .getElementById("export-txt-btn")
+        .addEventListener("click", () => {
+          if (!generatedWallets.length) return;
+          const lines = [
+            "BITCOIN PAPER WALLETS - GENERATED OFFLINE",
+            "=".repeat(60),
+            "",
+          ];
+          generatedWallets.forEach((w, i) => {
+            lines.push(`WALLET #${i + 1} - ${w.typeName}`);
+            lines.push(`Address:     ${w.address}`);
+            lines.push(`WIF Key:     ${w.privateKeyWIF}`);
+            lines.push(`Mnemonic:    ${w.mnemonic}`);
+            lines.push(`Path:        ${w.path}`);
+            if (w.passphrase)
+              lines.push(
+                `Passphrase:  (custom passphrase was set - store it separately)`,
+              );
+            lines.push("");
+            lines.push(
+              "! SECURITY: Store private key in a secure physical location.",
+            );
+            lines.push("! Never enter your seed phrase on any online device.");
+            lines.push("-".repeat(60));
+            lines.push("");
+          });
+          const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `btc-wallets-${Date.now()}.txt`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+          toast("TXT exported - store securely!", "warn");
+        });
+
+      const importBtn = document.getElementById("import-btn");
+      const mnemonicValidMsg = document.getElementById("mnemonic-valid-msg");
+      let importWordCount = 12;
+
+      function buildWordGrid(gridId, count) {
+        const grid = document.getElementById(gridId);
+        grid.innerHTML = "";
+        for (let i = 1; i <= count; i++) {
+          const wrap = document.createElement("div");
+          wrap.className = "word-input-wrap";
+          wrap.innerHTML = `<span class="word-input-num">${i}</span>
+            <input class="word-input-field" type="text" id="word-${gridId}-${i}"
+              placeholder="word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-index="${i}">`;
+          grid.appendChild(wrap);
+        }
+        grid.querySelectorAll(".word-input-field").forEach((inp, idx, all) => {
+          inp.addEventListener("input", () => {
+            inp.value = inp.value.toLowerCase().replace(/[^a-z]/g, "");
+            validateImportWords();
+          });
+          inp.addEventListener("keydown", (e) => {
+            if (e.key === " " || e.key === "Tab" || e.key === "Enter") {
+              e.preventDefault();
+              if (idx + 1 < all.length) all[idx + 1].focus();
+            }
+          });
+          inp.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData(
+              "text",
+            );
+            const words = text
+              .trim()
+              .toLowerCase()
+              .split(/\s+/)
+              .filter((w) => w.length > 0);
+            if (words.length > 1) {
+              words.forEach((word, wi) => {
+                if (idx + wi < all.length)
+                  all[idx + wi].value = word.replace(/[^a-z]/g, "");
+              });
+              all[Math.min(idx + words.length, all.length - 1)].focus();
+            } else {
+              inp.value = (words[0] || "").replace(/[^a-z]/g, "");
+            }
+            validateImportWords();
+          });
+        });
+      }
+
+      function getImportMnemonic() {
+        const gridId = importWordCount === 12 ? "word-grid-12" : "word-grid-24";
+        return Array.from(
+          document.getElementById(gridId).querySelectorAll(".word-input-field"),
+        )
+          .map((inp) => inp.value.trim())
+          .filter((w) => w.length > 0)
+          .join(" ");
+      }
+
+      let importValidTimeout;
+      async function validateImportWords() {
+        clearTimeout(importValidTimeout);
+        importValidTimeout = setTimeout(async () => {
+          const mnemonic = getImportMnemonic();
+          const words = mnemonic.split(" ").filter((w) => w);
+          const gridId =
+            importWordCount === 12 ? "word-grid-12" : "word-grid-24";
+          const allInputs = document
+            .getElementById(gridId)
+            .querySelectorAll(".word-input-field");
+          if (words.length < importWordCount) {
+            mnemonicValidMsg.classList.add("hidden");
+            importBtn.disabled = true;
+            allInputs.forEach(
+              (inp) =>
+                (inp.closest(".word-input-wrap").className = "word-input-wrap"),
+            );
+            return;
+          }
+          const valid = await validateMnemonic(mnemonic);
+          mnemonicValidMsg.classList.remove("hidden");
+          if (valid) {
+            mnemonicValidMsg.className = "validation-msg valid";
+            mnemonicValidMsg.innerHTML =
+              "Valid BIP39 mnemonic - checksum correct";
+            importBtn.disabled = false;
+            allInputs.forEach((inp) => {
+              inp.closest(".word-input-wrap").className =
+                "word-input-wrap valid";
+            });
+          } else {
+            mnemonicValidMsg.className = "validation-msg invalid";
+            mnemonicValidMsg.innerHTML =
+              "✗ Invalid mnemonic - check spelling or word order";
+            importBtn.disabled = true;
+            allInputs.forEach((inp) => {
+              inp.closest(".word-input-wrap").className =
+                "word-input-wrap invalid";
+            });
+          }
+        }, 400);
+      }
+
+      document
+        .getElementById("import-word-count-toggle")
+        .addEventListener("click", () => {
+          importWordCount = importWordCount === 12 ? 24 : 12;
+          document.getElementById("import-word-count-toggle").textContent =
+            importWordCount === 12 ? "12 WORDS" : "24 WORDS";
+          document
+            .getElementById("word-grid-12")
+            .classList.toggle("hidden", importWordCount !== 12);
+          document
+            .getElementById("word-grid-24")
+            .classList.toggle("hidden", importWordCount !== 24);
+          mnemonicValidMsg.classList.add("hidden");
+          importBtn.disabled = true;
+        });
+
+      document
+        .getElementById("import-paste-btn")
+        .addEventListener("click", async () => {
+          try {
+            let text;
+            if (navigator.clipboard && navigator.clipboard.readText) {
+              text = await navigator.clipboard.readText();
+            } else {
+              toast("clipboard access denied, type words manually", "warn");
+              return;
+            }
+            const words = text
+              .trim()
+              .toLowerCase()
+              .split(/\s+/)
+              .filter((w) => w.length > 0);
+            const count = words.length === 24 ? 24 : 12;
+            if (count !== importWordCount) {
+              importWordCount = count;
+              document.getElementById("import-word-count-toggle").textContent =
+                count + " WORDS";
+              document
+                .getElementById("word-grid-12")
+                .classList.toggle("hidden", count !== 12);
+              document
+                .getElementById("word-grid-24")
+                .classList.toggle("hidden", count !== 24);
+            }
+            const inputs = document
+              .getElementById(count === 12 ? "word-grid-12" : "word-grid-24")
+              .querySelectorAll(".word-input-field");
+            inputs.forEach((inp, i) => {
+              inp.value = (words[i] || "").replace(/[^a-z]/g, "");
+            });
+            validateImportWords();
+            toast("mnemonic pasted", "success");
+          } catch (e) {
+            toast("clipboard access denied - type words manually", "warn");
+          }
+        });
+
+      buildWordGrid("word-grid-12", 12);
+      buildWordGrid("word-grid-24", 24);
+
+      let deriveMode = "single";
+      document
+        .getElementById("derive-mode-single")
+        .addEventListener("click", () => {
+          deriveMode = "single";
+          document.getElementById("derive-mode-single").style.background =
+            "rgba(0,255,65,0.1)";
+          document.getElementById("derive-mode-single").style.color =
+            "var(--green)";
+          document.getElementById("derive-mode-range").style.background =
+            "transparent";
+          document.getElementById("derive-mode-range").style.color =
+            "var(--text-dim)";
+          document
+            .getElementById("derive-single-opts")
+            .classList.remove("hidden");
+          document.getElementById("derive-range-opts").classList.add("hidden");
+          document.getElementById("import-btn").textContent = "↓ Derive Wallet";
+        });
+      document
+        .getElementById("derive-mode-range")
+        .addEventListener("click", () => {
+          deriveMode = "range";
+          document.getElementById("derive-mode-range").style.background =
+            "rgba(0,255,65,0.1)";
+          document.getElementById("derive-mode-range").style.color =
+            "var(--green)";
+          document.getElementById("derive-mode-single").style.background =
+            "transparent";
+          document.getElementById("derive-mode-single").style.color =
+            "var(--text-dim)";
+          document
+            .getElementById("derive-range-opts")
+            .classList.remove("hidden");
+          document.getElementById("derive-single-opts").classList.add("hidden");
+          document.getElementById("import-btn").textContent =
+            "⋮ Derive Addresses";
+        });
+
+      importBtn.addEventListener("click", async () => {
+        const mnemonic = getImportMnemonic();
+        const resultsDiv = document.getElementById("import-results");
+        importBtn.disabled = true;
+
+        if (deriveMode === "single") {
+          const walletType =
+            document.getElementById("import-wallet-type").value;
+          const passphrase = document.getElementById("import-passphrase").value;
+          const addrIndex =
+            parseInt(document.getElementById("import-addr-index").value) || 0;
+          resultsDiv.innerHTML = `<div class="loading-state"><div class="spinner"></div><div class="text-dim">Deriving wallet<span class="loading-dots"></span></div></div>`;
+          try {
+            const w = await generateWalletFromMnemonic(
+              mnemonic,
+              passphrase,
+              walletType,
+              0,
+              addrIndex,
+            );
+            const vr = await validateRoundTrip(w);
+            if (!vr.valid)
+              throw new Error(
+                "round-trip validation failed: " + vr.errors.join(", "),
+              );
+            resultsDiv.innerHTML = "";
+            resultsDiv.appendChild(renderWalletCard(w, 0));
+            toast("wallet derived", "success");
+          } catch (e) {
+            resultsDiv.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>error</strong> ${e.message}</div></div>`;
+          }
+        } else {
+          const walletType = document.getElementById("hd-wallet-type").value;
+          const passphrase = document.getElementById("hd-passphrase").value;
+          const count = parseInt(document.getElementById("hd-count").value);
+          const branch = parseInt(document.getElementById("hd-branch").value);
+          const accountIndex = parseInt(
+            document.getElementById("hd-account").value,
+          );
+          const customPath = document
+            .getElementById("hd-custom-path")
+            .value.trim();
+          resultsDiv.innerHTML = `<div class="loading-state"><div class="spinner"></div><div class="text-dim">Deriving ${count} addresses<span class="loading-dots"></span></div></div>`;
+          try {
+            const addresses = await deriveMultipleAddresses(
+              mnemonic,
+              passphrase,
+              walletType,
+              count,
+              branch,
+              accountIndex,
+              customPath || null,
+            );
+            resultsDiv.innerHTML = `
+              <div class="section">
+                <div class="section-header"><span class="dot"></span>Derived Addresses - ${walletType.replace("_", " ")} · ${count} addresses</div>
+                <div class="section-body" style="padding:0;overflow-x:auto">
+                  <table class="addr-table">
+                    <thead><tr><th>#</th><th>Path</th><th>Address</th><th>WIF Private Key</th></tr></thead>
+                    <tbody>
+                      ${addresses
+                        .map(
+                          (a) => `
+                        <tr>
+                          <td class="td-index">${a.index}</td>
+                          <td class="td-path">${a.path}</td>
+                          <td class="td-addr">
+                            <span style="word-break:break-all">${a.address}</span>
+                            <button class="copy-btn" data-copy="${a.address}" style="margin-top:4px;display:block">copy addr</button>
+                          </td>
+                          <td class="td-wif">
+                            <span style="word-break:break-all;color:var(--red-dim)">${a.privateKeyWIF}</span>
+                            <button class="copy-btn" data-copy="${a.privateKeyWIF}" style="margin-top:4px;display:block">copy WIF</button>
+                          </td>
+                        </tr>`,
+                        )
+                        .join("")}
+                    </tbody>
+                  </table>
+                </div>
+              </div>`;
+            resultsDiv
+              .querySelectorAll(".copy-btn")
+              .forEach((btn) =>
+                btn.addEventListener("click", () =>
+                  copyText(btn.dataset.copy, btn),
+                ),
+              );
+            toast(`${count} addresses derived`, "success");
+          } catch (e) {
+            resultsDiv.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>error</strong> ${e.message}</div></div>`;
+          }
+        }
+        importBtn.disabled = false;
+      });
+
+      document
+        .getElementById("verify-mnemonic")
+        .addEventListener("input", async (e) => {
+          const val = e.target.value.trim();
+          const result = document.getElementById("verify-result");
+          if (!val) {
+            result.innerHTML = "";
+            return;
+          }
+          const words = val.split(/\s+/);
+          if (words.length < 12) {
+            result.innerHTML = `<div class="text-dim small">Enter at least 12 words (${words.length}/12+)</div>`;
+            return;
+          }
+          const valid = await validateMnemonic(val);
+          if (valid) {
+            result.innerHTML = `<div class="alert success"><div class="alert-text"><strong>Valid BIP39 mnemonic</strong> ${words.length} words - checksum is correct.</div></div>`;
+          } else {
+            result.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>Invalid mnemonic</strong> Checksum failed. Possible causes: typo in a word, wrong word order, or not a valid BIP39 phrase.</div></div>`;
+          }
+        });
+
+      function updatePathPreview() {
+        const walletType = document.getElementById("hd-wallet-type").value;
+        const branch = document.getElementById("hd-branch").value;
+        const account = document.getElementById("hd-account").value;
+        const custom = document.getElementById("hd-custom-path").value.trim();
+        const preview = document.getElementById("hd-custom-path-preview");
+        const purpose =
+          walletType === "LEGACY"
+            ? "44'"
+            : walletType === "SEGWIT"
+              ? "49'"
+              : "84'";
+        if (custom) {
+          const base = custom.replace(/\/\d+$/, "");
+          preview.textContent = `-> Will derive: ${base}/0, ${base}/1, ${base}/2...`;
+          preview.style.color = "var(--yellow)";
+        } else {
+          preview.textContent = `-> Will derive: m/${purpose}/0'/${account}'/${branch}/0, .../1, .../2...`;
+          preview.style.color = "var(--text-muted)";
+        }
+      }
+      ["hd-wallet-type", "hd-branch", "hd-account"].forEach((id) =>
+        document
+          .getElementById(id)
+          .addEventListener("change", updatePathPreview),
+      );
+      document
+        .getElementById("hd-custom-path")
+        .addEventListener("input", updatePathPreview);
+      updatePathPreview();
+
+      const PALETTE = [
+        "#00ff41",
+        "#00d4aa",
+        "#f7931a",
+        "#7c3aed",
+        "#e8d44d",
+        "#ff6b6b",
+        "#4ecdc4",
+        "#45b7d1",
+        "#96ceb4",
+        "#ffeaa7",
+        "#dda0dd",
+        "#98d8c8",
+      ];
+
+      function renderWordChips(matches) {
+        const div = document.getElementById("wl-results");
+        if (!matches.length) {
+          div.innerHTML = `<div class="text-dim small">No matches.</div>`;
+          return;
+        }
+        div.innerHTML = `
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-family:var(--font-mono);">
+            ${matches.length} result${matches.length !== 1 ? "s" : ""}
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${matches
+              .map(({ word, index }) => {
+                const bin = index.toString(2).padStart(11, "0");
+                return `<div style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:5px 10px;cursor:default;" title="index ${index} = ${bin}">
+                <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);min-width:30px;text-align:right;">#${index + 1}</span>
+                <span style="font-family:var(--font-mono);color:var(--green);font-size:13px;font-weight:600;">${word}</span>
+                <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">${bin}</span>
+              </div>`;
+              })
+              .join("")}
+          </div>`;
+      }
+
+      document.getElementById("wl-prefix").addEventListener("input", (e) => {
+        document.getElementById("wl-index").value = "";
+        const q = e.target.value.trim().toLowerCase();
+        if (!q) {
+          document.getElementById("wl-results").innerHTML = "";
+          return;
+        }
+        renderWordChips(
+          WORDLIST.map((word, index) => ({ word, index })).filter(({ word }) =>
+            word.startsWith(q),
+          ),
+        );
+      });
+
+      document.getElementById("wl-index").addEventListener("input", (e) => {
+        document.getElementById("wl-prefix").value = "";
+        const val = e.target.value.trim();
+        if (val === "") {
+          document.getElementById("wl-results").innerHTML = "";
+          return;
+        }
+        const idx = parseInt(val) - 1;
+        if (isNaN(idx) || idx < 0 || idx > 2047) {
+          document.getElementById("wl-results").innerHTML =
+            `<div class="text-dim small" style="color:var(--red)">Index must be 1–2048</div>`;
+          return;
+        }
+        renderWordChips([{ word: WORDLIST[idx], index: idx }]);
+      });
+
+      function setInspTab(mode) {
+        const isHex = mode === "hex";
+        document.getElementById("insp-tab-hex").style.background = isHex
+          ? "rgba(0,255,65,0.1)"
+          : "transparent";
+        document.getElementById("insp-tab-hex").style.color = isHex
+          ? "var(--green)"
+          : "var(--text-dim)";
+        document.getElementById("insp-tab-words").style.background = !isHex
+          ? "rgba(0,255,65,0.1)"
+          : "transparent";
+        document.getElementById("insp-tab-words").style.color = !isHex
+          ? "var(--green)"
+          : "var(--text-dim)";
+        document
+          .getElementById("insp-panel-hex")
+          .classList.toggle("hidden", !isHex);
+        document
+          .getElementById("insp-panel-words")
+          .classList.toggle("hidden", isHex);
+      }
+      document
+        .getElementById("insp-tab-hex")
+        .addEventListener("click", () => setInspTab("hex"));
+      document
+        .getElementById("insp-tab-words")
+        .addEventListener("click", () => setInspTab("words"));
+
+      function colouredBits(bits) {
+        let html = `<div style="font-family:var(--font-mono);font-size:11px;line-height:2;word-break:break-all;">`;
+        for (let i = 0; i < bits.length; i += 11) {
+          const chunk = bits.slice(i, i + 11);
+          const col = PALETTE[Math.floor(i / 11) % PALETTE.length];
+          html += `<span style="color:${col};">${chunk}</span>`;
+        }
+        return html + `</div>`;
+      }
+
+      function iRow(label, content) {
+        return `<div style="margin-bottom:14px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">${label}</div>
+          ${content}
+        </div>`;
+      }
+
+      async function runHexInspect() {
+        const raw = document
+          .getElementById("insp-hex")
+          .value.trim()
+          .replace(/\s/g, "")
+          .toLowerCase();
+        const out = document.getElementById("insp-hex-out");
+        if (!raw) {
+          out.innerHTML = "";
+          return;
+        }
+        if (!/^[0-9a-f]+$/.test(raw)) {
+          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Invalid hex - only 0–9 and a-f</div></div>`;
+          return;
+        }
+        if (raw.length !== 32 && raw.length !== 64) {
+          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Need 32 hex chars (128-bit / 12 words) or 64 hex chars (256-bit / 24 words). Got ${raw.length}.</div></div>`;
+          return;
+        }
+        const entBytes = hexToBytes(raw);
+        const csFull = await sha256(entBytes);
+        const entBits = Array.from(entBytes)
+          .map((b) => b.toString(2).padStart(8, "0"))
+          .join("");
+        const csLen = entBytes.length / 4;
+        const csBits = csFull[0].toString(2).padStart(8, "0").slice(0, csLen);
+        const allBits = entBits + csBits;
+        const wordCount = allBits.length / 11;
+        const indices = [];
+        for (let i = 0; i < allBits.length; i += 11)
+          indices.push(parseInt(allBits.slice(i, i + 11), 2));
+        const words = indices.map((i) => WORDLIST[i]);
+
+        let html = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;">`;
+        html += iRow(
+          `Step 1 - Entropy (${entBytes.length} bytes = ${entBytes.length * 8} bits)`,
+          `<div style="font-family:var(--font-mono);font-size:12px;color:var(--green);word-break:break-all;">${raw.toUpperCase()}</div>`,
+        );
+        html += iRow(
+          `Step 2 - Entropy bits (${entBits.length} bits) coloured in 11-bit groups`,
+          colouredBits(entBits),
+        );
+        html += iRow(
+          `Step 3 - SHA-256(entropy) - first ${csLen} bits used as checksum`,
+          `<div style="font-family:var(--font-mono);font-size:11px;line-height:1.8;">
+             <span style="color:var(--text-muted)">Full hash:  </span><span style="color:var(--text-dim)">${bytesToHex(csFull).toUpperCase()}</span><br>
+             <span style="color:var(--text-muted)">Used bits:  </span><span style="color:var(--yellow)">${csBits}</span>
+           </div>`,
+        );
+        html += iRow(
+          `Step 4 - All bits = entropy ‖ checksum (${allBits.length} bits = ${wordCount} × 11)`,
+          colouredBits(allBits),
+        );
+        html += iRow(
+          `Step 5 - 11-bit chunks → index → BIP39 word`,
+          `<div style="overflow-x:auto;"><table style="border-collapse:collapse;width:100%;">
+             <thead><tr>
+               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">#</th>
+               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">11 bits</th>
+               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">decimal</th>
+               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">word</th>
+             </tr></thead>
+             <tbody>
+               ${indices
+                 .map((idx, i) => {
+                   const chunk = allBits.slice(i * 11, (i + 1) * 11);
+                   const col = PALETTE[i % PALETTE.length];
+                   return `<tr>
+                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">${i + 1}</td>
+                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:${col};">${chunk}</td>
+                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);">${idx + 1}</td>
+                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:13px;color:${col};font-weight:600;">${WORDLIST[idx]}</td>
+                 </tr>`;
+                 })
+                 .join("")}
+             </tbody>
+           </table></div>`,
+        );
+        html += iRow(
+          `Result - ${wordCount}-word BIP39 mnemonic`,
+          `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+     <button class="copy-btn insp-copy-all" data-copy="${words.join(" ")}" style="font-size:11px;padding:4px 12px;">⎘ copy all ${wordCount} words</button>
+   </div>
+   <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
+     ${words
+       .map(
+         (
+           w,
+           i,
+         ) => `<span style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:4px 10px;font-family:var(--font-mono);font-size:13px;color:${PALETTE[i % PALETTE.length]};font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;" class="insp-word-chip" data-copy="${w}" title="click to copy '${w}'">
+           <span style="color:var(--text-muted);font-size:10px;">${i + 1}</span>${w}
+         </span>`,
+       )
+       .join("")}
+   </div>`,
+        );
+        html += `</div>`;
+        out.innerHTML = html;
+
+        out
+          .querySelectorAll(".insp-copy-all, .insp-word-chip")
+          .forEach((el) => {
+            el.addEventListener("click", () => copyText(el.dataset.copy, el));
+          });
+        return;
+      }
+
+      document
+        .getElementById("insp-hex-run")
+        .addEventListener("click", runHexInspect);
+      document.getElementById("insp-hex").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") runHexInspect();
+      });
+      document.getElementById("insp-hex-rand").addEventListener("click", () => {
+        const b = crypto.getRandomValues(new Uint8Array(16));
+        document.getElementById("insp-hex").value = bytesToHex(b);
+        runHexInspect();
+      });
+
+      async function runWordsInspect() {
+        const raw = document
+          .getElementById("insp-words")
+          .value.trim()
+          .toLowerCase();
+        const out = document.getElementById("insp-words-out");
+        if (!raw) {
+          out.innerHTML = "";
+          return;
+        }
+        const words = raw.split(/\s+/).filter((w) => w);
+        if (words.length !== 12 && words.length !== 24) {
+          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Need exactly 12 or 24 words. Got ${words.length}.</div></div>`;
+          return;
+        }
+        const unknown = words.filter((w) => !WORDLIST.includes(w));
+        if (unknown.length) {
+          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Unknown words: <strong>${unknown.join(", ")}</strong> - check spelling.</div></div>`;
+          return;
+        }
+        const allBits = words
+          .map((w) => WORDLIST.indexOf(w).toString(2).padStart(11, "0"))
+          .join("");
+        const entBitLen = Math.floor(allBits.length / 33) * 32;
+        const entBits = allBits.slice(0, entBitLen);
+        const storedCS = allBits.slice(entBitLen);
+        const entBytes = new Uint8Array(
+          entBits.match(/.{8}/g).map((b) => parseInt(b, 2)),
+        );
+        const entHex = bytesToHex(entBytes);
+        const csFull = await sha256(entBytes);
+        const csLen = entBytes.length / 4;
+        const computedCS = csFull[0]
+          .toString(2)
+          .padStart(8, "0")
+          .slice(0, csLen);
+        const valid = computedCS === storedCS;
+
+        let html = `<div style="background:var(--bg2);border:1px solid var(--border${valid ? "2" : ""});${valid ? "" : "border-color:var(--red)"};border-radius:var(--radius);padding:16px;">`;
+        html += iRow(
+          "Step 1 - Word indices",
+          `<div style="display:flex;flex-wrap:wrap;gap:4px;">
+             ${words
+               .map((w, i) => {
+                 const idx = WORDLIST.indexOf(w);
+                 const col = PALETTE[i % PALETTE.length];
+                 return `<span style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:3px 8px;font-family:var(--font-mono);font-size:11px;">
+                 <span style="color:var(--text-muted);">${i + 1} </span>
+                 <span style="color:${col};font-weight:600;">${w}</span>
+                 <span style="color:var(--text-muted);"> #${idx + 1}</span>
+               </span>`;
+               })
+               .join("")}
+           </div>`,
+        );
+        html += iRow(
+          "Step 2 - All bits (11 bits per word, coloured by word)",
+          colouredBits(allBits),
+        );
+        html += iRow(
+          `Step 3 - Split: ${entBitLen} entropy bits + ${storedCS.length} checksum bits`,
+          `<div style="font-family:var(--font-mono);font-size:11px;line-height:2;word-break:break-all;">
+             <span style="color:var(--green);">${entBits}</span><span style="color:var(--yellow);border:1px solid var(--yellow);border-radius:2px;padding:0 3px;margin-left:4px;">${storedCS}</span>
+           </div>`,
+        );
+        html += iRow(
+          "Step 4 - Entropy as hex",
+          `<div style="font-family:var(--font-mono);font-size:12px;color:var(--green);word-break:break-all;">${entHex.toUpperCase()}</div>`,
+        );
+        html += iRow(
+          "Step 5 - Checksum verification",
+          `<div style="font-family:var(--font-mono);font-size:11px;line-height:2;">
+             <div>Stored checksum:   <span style="color:var(--yellow);">${storedCS}</span></div>
+             <div>SHA-256 computed:  <span style="color:var(--yellow);">${computedCS}</span></div>
+             <div style="margin-top:4px;font-size:13px;color:${valid ? "var(--green)" : "var(--red)"};">
+               ${valid ? "✓ VALID - checksums match" : "✗ INVALID - checksums differ (word typo or wrong order)"}
+             </div>
+           </div>`,
+        );
+        html += `</div>`;
+        out.innerHTML = html;
+      }
+      document
+        .getElementById("insp-words-run")
+        .addEventListener("click", runWordsInspect);
+
+      function setKcTab(mode) {
+        ["hex", "wif", "addr"].forEach((m) => {
+          const on = m === mode;
+          document.getElementById(`kc-tab-${m}`).style.background = on
+            ? "rgba(0,255,65,0.1)"
+            : "transparent";
+          document.getElementById(`kc-tab-${m}`).style.color = on
+            ? "var(--green)"
+            : "var(--text-dim)";
+          document
+            .getElementById(`kc-panel-${m}`)
+            .classList.toggle("hidden", !on);
+        });
+      }
+      document
+        .getElementById("kc-tab-hex")
+        .addEventListener("click", () => setKcTab("hex"));
+      document
+        .getElementById("kc-tab-wif")
+        .addEventListener("click", () => setKcTab("wif"));
+      document
+        .getElementById("kc-tab-addr")
+        .addEventListener("click", () => setKcTab("addr"));
+
+      function kcRow(label, value, col = "var(--green)") {
+        const safe = value.replace(/</g, "&lt;");
+        return `<div style="margin-bottom:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">${label}</div>
+          <div style="display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+            <span style="font-family:var(--font-mono);font-size:12px;color:${col};word-break:break-all;flex:1;">${safe}</span>
+            <button class="copy-btn" data-copy="${value}" style="flex-shrink:0;">copy</button>
+          </div>
+        </div>`;
+      }
+
+      document
+        .getElementById("kc-hex-run")
+        .addEventListener("click", async () => {
+          const raw = document
+            .getElementById("kc-hex-in")
+            .value.trim()
+            .replace(/\s/g, "");
+          const out = document.getElementById("kc-hex-out");
+          if (!raw) {
+            out.innerHTML = "";
+            return;
+          }
+          if (!/^[0-9a-fA-F]{64}$/.test(raw)) {
+            out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">need exactly 64 hex characters (32 bytes), Got ${raw.length}</div></div>`;
+            return;
+          }
+          try {
+            const N_MAX =
+              0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
+            const privBI = bytesToBigInt(hexToBytes(raw));
+            if (privBI === 0n || privBI >= N_MAX) {
+              out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">key is outside valid secp256k1 range (1 to N-1)</div></div>`;
+              return;
+            }
+            const wifC = await privateKeyToWIF(privBI, true);
+            const wifU = await privateKeyToWIF(privBI, false);
+            const pubC = privateKeyToPublicKey(privBI, true);
+            const pubU = privateKeyToPublicKey(privBI, false);
+            const addrNsw = await pubKeyToNativeSegwit(pubC);
+            const addrSw = await pubKeyToSegwit(pubC);
+            const addrLgC = await pubKeyToLegacy(pubC);
+            const addrLgU = await pubKeyToLegacy(pubU);
+
+            out.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;">
+            ${kcRow("WIF - compressed (most wallets use this)", wifC, "var(--green)")}
+            ${kcRow("WIF - uncompressed (legacy only)", wifU, "var(--text-dim)")}
+            ${kcRow("Public key - compressed 33 bytes", bytesToHex(pubC).toUpperCase(), "var(--green-dim)")}
+            ${kcRow("Public key - uncompressed 65 bytes", bytesToHex(pubU).toUpperCase(), "var(--text-muted)")}
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+              <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Derived addresses (from compressed pubkey)</div>
+              ${kcRow("Native SegWit  bc1q...  (lowest fees, modern)", addrNsw, "var(--green)")}
+              ${kcRow("SegWit P2SH    3...     (compatible)", addrSw, "var(--green-dim)")}
+              ${kcRow("Legacy         1...     (compressed pubkey)", addrLgC, "var(--text-dim)")}
+              ${kcRow("Legacy         1...     (uncompressed pubkey)", addrLgU, "var(--text-muted)")}
+            </div>
+          </div>`;
+            out
+              .querySelectorAll(".copy-btn")
+              .forEach((btn) =>
+                btn.addEventListener("click", () =>
+                  copyText(btn.dataset.copy, btn),
+                ),
+              );
+          } catch (e) {
+            out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">${e.message}</div></div>`;
+          }
+        });
+
+      document
+        .getElementById("kc-wif-run")
+        .addEventListener("click", async () => {
+          const wif = document.getElementById("kc-wif-in").value.trim();
+          const out = document.getElementById("kc-wif-out");
+          if (!wif) {
+            out.innerHTML = "";
+            return;
+          }
+          try {
+            const B58 =
+              "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+            let num = 0n;
+            for (const ch of wif) {
+              const i = B58.indexOf(ch);
+              if (i < 0) throw new Error(`invalid WIF character: '${ch}'`);
+              num = num * 58n + BigInt(i);
+            }
+            const hexStr = num.toString(16).padStart(76, "0");
+            const decoded = hexToBytes(
+              hexStr.length % 2 ? "0" + hexStr : hexStr,
+            );
+            const buf38 = new Uint8Array(38);
+            buf38.set(decoded.slice(Math.max(0, decoded.length - 38)));
+            if (buf38[0] !== 0x80)
+              throw new Error(
+                "not a Bitcoin mainnet WIF key (expected version byte 0x80)",
+              );
+            const isCompressed = decoded.length === 38;
+            const payloadLen = isCompressed ? 34 : 33;
+            const payload = decoded.slice(0, decoded.length - 4);
+            const storedCS = decoded.slice(-4);
+            const computedCS = (await sha256d(payload)).slice(0, 4);
+            for (let i = 0; i < 4; i++)
+              if (storedCS[i] !== computedCS[i])
+                throw new Error(
+                  "WIF checksum invalid - key may be corrupted or mistyped",
+                );
+            const keyBytes = decoded.slice(1, 33);
+            const privBI = bytesToBigInt(keyBytes);
+            const pubC = privateKeyToPublicKey(privBI, true);
+            const hexKey = bytesToHex(keyBytes).toUpperCase();
+            const addrNsw = await pubKeyToNativeSegwit(pubC);
+            const addrSw = await pubKeyToSegwit(pubC);
+            const addrLg = await pubKeyToLegacy(pubC);
+
+            out.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;">
+            ${kcRow("Private key hex", hexKey, "var(--green)")}
+            ${kcRow("Public key (compressed)", bytesToHex(pubC).toUpperCase(), "var(--green-dim)")}
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+              <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Addresses</div>
+              ${kcRow("Native SegWit  bc1q...", addrNsw, "var(--green)")}
+              ${kcRow("SegWit P2SH    3...", addrSw, "var(--green-dim)")}
+              ${kcRow("Legacy         1...", addrLg, "var(--text-dim)")}
+            </div>
+          </div>`;
+            out
+              .querySelectorAll(".copy-btn")
+              .forEach((btn) =>
+                btn.addEventListener("click", () =>
+                  copyText(btn.dataset.copy, btn),
+                ),
+              );
+          } catch (e) {
+            out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">${e.message}</div></div>`;
+          }
+        });
+
+      document.getElementById("kc-addr-in").addEventListener("input", (e) => {
+        const addr = e.target.value.trim();
+        const out = document.getElementById("kc-addr-out");
+        if (!addr) {
+          out.innerHTML = "";
+          return;
+        }
+
+        let type = null,
+          valid = false,
+          note = "";
+
+        if (/^1[1-9A-HJ-NP-Za-km-z]{24,33}$/.test(addr)) {
+          type = "Legacy P2PKH";
+          valid = true;
+          note = "Starts with 1 - original Bitcoin address format";
+        } else if (/^3[1-9A-HJ-NP-Za-km-z]{24,33}$/.test(addr)) {
+          type = "SegWit P2SH";
+          valid = true;
+          note = "Starts with 3 - SegWit wrapped in P2SH, backward-compatible";
+        } else if (/^bc1q[0-9a-z]{38,59}$/.test(addr)) {
+          type = "Native SegWit P2WPKH";
+          valid = true;
+          note = "Starts with bc1q - Bech32, lowest fees, modern standard";
+        } else if (/^bc1p[0-9a-z]{58}$/.test(addr)) {
+          type = "Taproot P2TR";
+          valid = true;
+          note = "Starts with bc1p - Bech32m Taproot address";
+        } else if (/^[13bc1]/.test(addr)) {
+          note = "Format not recognised or length invalid.";
+        } else {
+          note = "Does not look like a Bitcoin mainnet address";
+        }
+
+        if (valid) {
+          out.innerHTML = `<div class="alert success">
+            
+            <div class="alert-text">
+              <strong>Valid Bitcoin address format - ${type}</strong><br>
+              <span style="font-family:var(--font-mono);font-size:11px;word-break:break-all;">${addr}</span><br>
+              <span style="font-size:11px;color:var(--text-dim);">${note}</span>
+            </div>
+          </div>`;
+        } else {
+          out.innerHTML = `<div class="alert danger">
+            <span class="alert-icon">✗</span>
+            <div class="alert-text">
+              <strong>Invalid or unrecognised address</strong><br>
+              <span style="font-size:11px;">${note}</span>
+            </div>
+          </div>`;
+        }
+      });
+
+      const SECP256K1_N =
+        0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
+
+      let pkvBits = new Array(256).fill(false);
+
+      function pkvBitsToHex() {
+        const bytes = new Uint8Array(32);
+        for (let i = 0; i < 256; i++) {
+          if (pkvBits[i]) bytes[Math.floor(i / 8)] |= 1 << (7 - (i % 8));
+        }
+        return bytesToHex(bytes);
+      }
+
+      function pkvHexToBits(hex) {
+        const bytes = hexToBytes(hex.padStart(64, "0").slice(0, 64));
+        for (let i = 0; i < 256; i++) {
+          pkvBits[i] = !!((bytes[Math.floor(i / 8)] >> (7 - (i % 8))) & 1);
+        }
+      }
+
+      function pkvRender() {
+        const hex = pkvBitsToHex();
+        const bigint = bytesToBigInt(hexToBytes(hex));
+        const binaryStr = pkvBits.map((b) => (b ? "1" : "0")).join("");
+
+        const cells = document.getElementById("pkv-grid").children;
+        for (let i = 0; i < 256; i++) {
+          const cell = cells[i];
+          const isOne = pkvBits[i];
+          cell.textContent = isOne ? "1" : "0";
+          cell.style.background = isOne ? "rgba(0,255,65,0.25)" : "var(--bg3)";
+          cell.style.color = isOne ? "var(--green)" : "var(--text-muted)";
+          cell.style.borderColor = isOne
+            ? "rgba(0,255,65,0.4)"
+            : "var(--border)";
+        }
+
+        const oneCount = pkvBits.filter(Boolean).length;
+        document.getElementById("pkv-bit-count").textContent =
+          `${oneCount} of 256 bits set`;
+
+        const binEl = document.getElementById("pkv-binary");
+        binEl.innerHTML = Array.from({ length: 32 }, (_, byteIdx) => {
+          const chunk = binaryStr.slice(byteIdx * 8, byteIdx * 8 + 8);
+          const col = byteIdx % 2 === 0 ? "var(--green)" : "rgba(0,255,65,0.5)";
+          return `<span style="color:${col};margin-right:3px;">${chunk}</span>`;
+        }).join("");
+
+        const hexEl = document.getElementById("pkv-hex");
+        if (document.activeElement !== hexEl) {
+          hexEl.value = hex;
+        }
+
+        const decEl = document.getElementById("pkv-decimal");
+
+        if (document.activeElement !== decEl) {
+          decEl.value = bigint.toString();
+        }
+        const statusEl = document.getElementById("pkv-range-status");
+        if (bigint === 0n) {
+          statusEl.innerHTML = `<span style="color:var(--red);">✗ ZERO - not a valid private key (must be ≥ 1)</span>`;
+        } else if (bigint >= SECP256K1_N) {
+          statusEl.innerHTML = `<span style="color:var(--red);">✗ TOO LARGE - exceeds curve order N, not a valid private key</span>`;
+        } else {
+          const pct = Number((bigint * 10000n) / SECP256K1_N) / 100;
+          statusEl.innerHTML = `<span style="color:var(--green);">✓ VALID private key &nbsp;-&nbsp; at ${pct.toFixed(4)}% of the valid range</span>`;
+        }
+      }
+
+      function pkvBuildGrid() {
+        const grid = document.getElementById("pkv-grid");
+        grid.innerHTML = "";
+        for (let i = 0; i < 256; i++) {
+          const cell = document.createElement("div");
+          cell.style.cssText = `
+      aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+      border:1px solid var(--border);border-radius:2px;cursor:pointer;
+      font-family:var(--font-mono);font-size:9px;font-weight:600;
+      transition:background 0.08s,color 0.08s;
+    `;
+          cell.dataset.bit = i;
+          cell.addEventListener("click", () => {
+            pkvBits[i] = !pkvBits[i];
+            pkvRender();
+          });
+          grid.appendChild(cell);
+        }
+      }
+
+      document.getElementById("pkv-random").addEventListener("click", () => {
+        const bytes = crypto.getRandomValues(new Uint8Array(32));
+        pkvHexToBits(bytesToHex(bytes));
+        pkvRender();
+      });
+
+      document.getElementById("pkv-reset").addEventListener("click", () => {
+        pkvBits.fill(false);
+        pkvRender();
+      });
+
+      document.getElementById("pkv-hex").addEventListener("input", (e) => {
+        const raw = e.target.value.trim().replace(/\s/g, "").toLowerCase();
+        if (/^[0-9a-f]{1,64}$/.test(raw)) {
+          pkvHexToBits(raw);
+          pkvRender();
+        }
+      });
+
+      document.getElementById("pkv-hex-copy").addEventListener("click", () => {
+        copyText(pkvBitsToHex(), document.getElementById("pkv-hex-copy"));
+      });
+
+      document.getElementById("pkv-dec-copy").addEventListener("click", () => {
+        const bigint = bytesToBigInt(hexToBytes(pkvBitsToHex()));
+        copyText(bigint.toString(), document.getElementById("pkv-dec-copy"));
+      });
+
+      document.getElementById("pkv-decimal").addEventListener("input", (e) => {
+        const raw = e.target.value.trim();
+        if (!raw) return;
+        if (!/^\d+$/.test(raw)) return;
+        try {
+          const n = BigInt(raw);
+          if (n < 0n) return;
+          const hex = n.toString(16).padStart(64, "0").slice(-64);
+          pkvHexToBits(hex);
+          pkvRender();
+        } catch (_) {}
+      });
+
+      pkvBuildGrid();
+      pkvRender();
+    </script>
+  </body>
+</html>
