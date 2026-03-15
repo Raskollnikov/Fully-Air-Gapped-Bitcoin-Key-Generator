@@ -686,8 +686,10 @@ export function secureWipeAll(walletsArray) {
     "dice-input",
     "passphrase",
     "import-passphrase",
+    "string-input",
   ];
   sensitive.forEach((id) => {
+    if (typeof document === "undefined") return;
     const el = document.getElementById(id);
     if (!el) return;
     if (el.tagName === "TEXTAREA" || el.tagName === "INPUT") el.value = "";
@@ -695,14 +697,14 @@ export function secureWipeAll(walletsArray) {
   });
 }
 
-export function diceToEntropy(diceString) {
+export function diceToEntropy(diceString, minRolls = 99) {
   const rolls = diceString
     .trim()
     .split(/[\s,;.|-]+/)
     .map(Number)
     .filter((n) => Number.isInteger(n) && n >= 1 && n <= 6);
 
-  if (rolls.length < 99) {
+  if (rolls.length < minRolls) {
     throw new Error(
       `you need at least 99 dice rolls for 128-bit security. Got ${rolls.length}.`,
     );
@@ -754,17 +756,43 @@ export async function mixEntropy(csrngBytes, userBytes) {
   return new Uint8Array(await crypto.subtle.digest("SHA-256", combined));
 }
 
+export async function generateMnemonicFromString(inputString, wordCount = 24) {
+  if (!inputString || inputString.length === 0) {
+    throw new Error("input string cannot be empty");
+  }
+
+  const strength = wordCount === 24 ? 32 : 16;
+  const encoded = new TextEncoder().encode(inputString);
+  const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", encoded));
+  const entropy = hash.slice(0, strength);
+
+  return entropyToMnemonic(entropy);
+}
 export async function generateMnemonicWithDice(
   diceString,
   wordCount = 12,
   walletIndex = 0,
+  deterministic = false,
 ) {
   const strength = wordCount === 24 ? 32 : 16;
 
   const csrng = crypto.getRandomValues(new Uint8Array(strength));
 
-  const dice = diceToEntropy(diceString);
+  const dice = diceToEntropy(diceString, deterministic ? 50 : 99);
 
+  if (deterministic) {
+    const indexBuf = new Uint8Array(4);
+    new DataView(indexBuf.buffer).setUint32(0, walletIndex, false);
+    const base = dice.slice(0, strength);
+    const combined = new Uint8Array(strength + 1 + 4);
+    combined.set(base, 0);
+    combined[strength] = 0x00;
+    combined.set(indexBuf, strength + 1);
+    const mixed = new Uint8Array(
+      await crypto.subtle.digest("SHA-256", combined),
+    );
+    return entropyToMnemonic(mixed.slice(0, strength));
+  }
   const indexBuf = new Uint8Array(4);
   new DataView(indexBuf.buffer).setUint32(0, walletIndex, false);
 

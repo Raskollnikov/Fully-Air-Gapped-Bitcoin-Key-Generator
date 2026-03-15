@@ -155,6 +155,25 @@
                   >
                     🎲 DICE
                   </button>
+
+                  <button
+                    class="entropy-mode-btn"
+                    id="mode-string"
+                    data-mode="string"
+                    style="
+                      padding: 6px 14px;
+                      font-family: var(--font-mono);
+                      font-size: 11px;
+                      background: transparent;
+                      border: none;
+                      color: var(--text-dim);
+                      cursor: pointer;
+                      letter-spacing: 1px;
+                      border-left: 1px solid var(--border2);
+                    "
+                  >
+                    🔑 STRING
+                  </button>
                 </div>
               </div>
 
@@ -194,6 +213,105 @@
                     security below CSPRNG level.
                   </div>
                 </div>
+
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                    padding: 10px 14px;
+                    background: var(--bg2);
+                    border: 1px solid var(--border2);
+                    border-radius: var(--radius);
+                  "
+                >
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: var(--text-dim);
+                        font-family: var(--font-mono);
+                        letter-spacing: 1px;
+                      "
+                    >
+                      GENERATION MODE
+                    </div>
+                    <div
+                      id="dice-mode-desc"
+                      style="
+                        font-size: 11px;
+                        color: var(--text-muted);
+                        margin-top: 3px;
+                      "
+                    >
+                      Mixed: dice + CSPRNG — different wallet every run
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 0;
+                      border: 1px solid var(--border2);
+                      border-radius: var(--radius);
+                      overflow: hidden;
+                    "
+                  >
+                    <button
+                      id="dice-mode-mixed"
+                      style="
+                        padding: 5px 12px;
+                        font-family: var(--font-mono);
+                        font-size: 10px;
+                        background: rgba(0, 255, 65, 0.1);
+                        border: none;
+                        color: var(--green);
+                        cursor: pointer;
+                        letter-spacing: 1px;
+                      "
+                    >
+                      🎲 MIXED
+                    </button>
+                    <button
+                      id="dice-mode-det"
+                      style="
+                        padding: 5px 12px;
+                        font-family: var(--font-mono);
+                        font-size: 10px;
+                        background: transparent;
+                        border: none;
+                        color: var(--text-dim);
+                        cursor: pointer;
+                        letter-spacing: 1px;
+                        border-left: 1px solid var(--border2);
+                      "
+                    >
+                      🔒 DETERMINISTIC
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  id="dice-det-warning"
+                  class="hidden"
+                  style="
+                    background: rgba(162, 45, 45, 0.08);
+                    border: 1px solid rgba(200, 50, 50, 0.35);
+                    border-radius: var(--radius);
+                    padding: 8px 12px;
+                    font-size: 11px;
+                    color: rgba(220, 100, 100, 0.9);
+                    margin-bottom: 10px;
+                    font-family: var(--font-mono);
+                    line-height: 1.6;
+                  "
+                >
+                  🔒 <strong>DETERMINISTIC MODE:</strong> same dice rolls → same
+                  wallet always. No CSPRNG involved — fully reproducible.
+                  Minimum <strong>50 rolls</strong>
+                  accepted, 99+ recommended for full 128-bit security.
+                </div>
+
                 <div class="control-group">
                   <div
                     style="
@@ -257,6 +375,7 @@
                     autocapitalize="off"
                   ></textarea>
                 </div>
+
                 <div
                   id="dice-stats"
                   class="mt8"
@@ -291,8 +410,179 @@
                   <div class="alert-text">
                     <strong>Unbiased base-6 conversion:</strong> naive 3-bit
                     mapping biases faces 1–2 (2× more likely). We treat the full
-                    roll sequence as a base-6 number → bytes. 99 rolls =
+                    roll sequence as a base-6 number → bytes. 100 rolls =
                     log₂(6⁹⁹) ≈ 256 bits.
+                  </div>
+                </div>
+              </div>
+
+              <div id="panel-string" class="hidden">
+                <div
+                  style="
+                    background: rgba(162, 45, 45, 0.1);
+                    border: 1px solid rgba(200, 50, 50, 0.45);
+                    border-radius: var(--radius);
+                    padding: 12px 14px;
+                    margin-bottom: 12px;
+                    font-size: 12px;
+                    line-height: 1.7;
+                  "
+                >
+                  <div
+                    style="
+                      color: var(--red);
+                      font-weight: 600;
+                      margin-bottom: 4px;
+                    "
+                  >
+                    ⚠ DETERMINISTIC MODE — same string always produces same
+                    wallet
+                  </div>
+                  <div style="color: rgba(220, 100, 100, 0.85)">
+                    Short or common strings are
+                    <strong>catastrophically insecure</strong>. "password",
+                    "bitcoin", "i love my dog" → attacker tries every phrase in
+                    seconds.<br />
+                    <strong
+                      >Safe only if your string is 50+ random characters no one
+                      could guess.</strong
+                    ><br />
+                    For a memorable passphrase, use the BIP39 passphrase field
+                    instead — that adds your phrase <em>on top of</em> random
+                    entropy, not instead of it.
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      margin-bottom: 6px;
+                    "
+                  >
+                    <label style="margin: 0"
+                      >Input string — becomes your wallet
+                      deterministically</label
+                    >
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <span
+                        id="string-char-count"
+                        style="
+                          font-size: 11px;
+                          color: var(--text-muted);
+                          font-family: var(--font-mono);
+                        "
+                        >0 chars</span
+                      >
+                      <span
+                        id="string-entropy-estimate"
+                        style="
+                          font-size: 11px;
+                          color: var(--text-muted);
+                          font-family: var(--font-mono);
+                        "
+                      ></span>
+                      <button
+                        id="string-visibility-toggle"
+                        style="
+                          padding: 3px 8px;
+                          font-family: var(--font-mono);
+                          font-size: 10px;
+                          background: var(--bg2);
+                          border: 1px solid var(--border2);
+                          color: var(--text-dim);
+                          border-radius: var(--radius);
+                          cursor: pointer;
+                          letter-spacing: 1px;
+                        "
+                        title="Toggle visibility"
+                      >
+                        👁 SHOW
+                      </button>
+                    </div>
+                  </div>
+                  <textarea
+                    id="string-input"
+                    rows="2"
+                    placeholder="min. 50 characters recommended — same input = same wallet forever"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    style="
+                      font-family: var(--font-mono);
+                      font-size: 13px;
+                      letter-spacing: 0.5px;
+                      resize: vertical;
+                      min-height: 52px;
+                      max-height: 200px;
+                      -webkit-text-security: disc;
+                    "
+                  ></textarea>
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      font-size: 10px;
+                      color: var(--text-muted);
+                      font-family: var(--font-mono);
+                      margin-top: 3px;
+                    "
+                  >
+                    <span
+                      >drag corner to resize · string taken literally, no
+                      trimming</span
+                    >
+                    <span
+                      id="string-byte-count"
+                      style="color: var(--yellow)"
+                    ></span>
+                  </div>
+                  <div style="margin-top: 8px">
+                    <div
+                      style="
+                        height: 4px;
+                        background: var(--bg3);
+                        border-radius: 2px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        id="string-strength-bar"
+                        style="
+                          height: 100%;
+                          width: 0%;
+                          background: var(--red);
+                          transition:
+                            width 0.2s,
+                            background 0.2s;
+                        "
+                      ></div>
+                    </div>
+                    <div
+                      id="string-strength-label"
+                      style="
+                        font-size: 11px;
+                        color: var(--text-muted);
+                        margin-top: 4px;
+                        font-family: var(--font-mono);
+                      "
+                    >
+                      type your string above
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="alert info mt16"
+                  style="padding: 10px 14px; font-size: 12px"
+                >
+                  <div class="alert-text">
+                    Pipeline: <strong>SHA-256(UTF-8(string))</strong> → 32 bytes
+                    → BIP39 entropy → checksum → 11-bit chunks → words. No
+                    CSPRNG involved — fully reproducible on any offline device.
                   </div>
                 </div>
               </div>
@@ -314,6 +604,19 @@
           </div>
         </div>
 
+        <div
+          id="entropy-mode-change-note"
+          style="
+            display: none;
+            font-size: 11px;
+            color: var(--yellow);
+            font-family: var(--font-mono);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+          "
+        >
+          entropy mode changed, output above was generated with previous mode
+        </div>
         <div id="results-area"></div>
 
         <div class="btn-row hidden" id="action-row">
@@ -1320,17 +1623,17 @@
         const EC_WORDS = [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30];
         const BLOCK_INFO = [
           null,
-          { b1: [1, 19], b2: null },
-          { b1: [1, 34], b2: null },
-          { b1: [2, 17], b2: null },
-          { b1: [2, 25], b2: null },
-          { b1: [2, 19], b2: [2, 20] },
-          { b1: [4, 14], b2: null },
-          { b1: [4, 14], b2: [1, 15] },
-          { b1: [2, 22], b2: [2, 23] },
-          { b1: [3, 20], b2: [2, 21] },
-          { b1: [4, 19], b2: [3, 20] },
-          { b1: [1, 16], b2: [4, 17] },
+          { b1: [1, 16], b2: null },
+          { b1: [1, 28], b2: null },
+          { b1: [1, 44], b2: null },
+          { b1: [2, 32], b2: null },
+          { b1: [2, 43], b2: null },
+          { b1: [4, 27], b2: null },
+          { b1: [4, 31], b2: null },
+          { b1: [2, 38], b2: [2, 39] },
+          { b1: [3, 36], b2: [2, 37] },
+          { b1: [4, 43], b2: [1, 44] },
+          { b1: [1, 50], b2: [4, 51] },
         ];
         function makeMatrix(ver) {
           const size = ver * 4 + 17;
@@ -1669,6 +1972,7 @@
         pubKeyToNativeSegwit,
         base58Encode,
         sha256d,
+        generateMnemonicFromString,
       } from "./js/wallet.js";
 
       let generatedWallets = [];
@@ -1705,25 +2009,151 @@
       let entropyMode = "mouse";
       let diceValid = false;
 
-      document.getElementById("mode-mouse").addEventListener("click", () => {
-        entropyMode = "mouse";
-        document.getElementById("panel-mouse").classList.remove("hidden");
+      function setEntropyMode(mode) {
+        entropyMode = mode;
+
+        document.getElementById("panel-mouse").classList.add("hidden");
         document.getElementById("panel-dice").classList.add("hidden");
-        document.getElementById("mode-mouse").style.background =
+        document.getElementById("panel-string").classList.add("hidden");
+
+        ["mode-mouse", "mode-dice", "mode-string"].forEach((id) => {
+          document.getElementById(id).style.background = "transparent";
+          document.getElementById(id).style.color = "var(--text-dim)";
+        });
+
+        document.getElementById("panel-" + mode).classList.remove("hidden");
+        document.getElementById("mode-" + mode).style.background =
           "rgba(0,255,65,0.1)";
-        document.getElementById("mode-mouse").style.color = "var(--green)";
-        document.getElementById("mode-dice").style.background = "transparent";
-        document.getElementById("mode-dice").style.color = "var(--text-dim)";
+        document.getElementById("mode-" + mode).style.color = "var(--green)";
+      }
+
+      document.getElementById("mode-mouse").addEventListener("click", () => {
+        setEntropyMode("mouse");
+        if (generatedWallets.length > 0) {
+          const note = document.getElementById("entropy-mode-change-note");
+          if (note) note.style.display = "block";
+        }
       });
       document.getElementById("mode-dice").addEventListener("click", () => {
-        entropyMode = "dice";
-        document.getElementById("panel-mouse").classList.add("hidden");
-        document.getElementById("panel-dice").classList.remove("hidden");
-        document.getElementById("mode-dice").style.background =
+        setEntropyMode("dice");
+        if (generatedWallets.length > 0) {
+          const note = document.getElementById("entropy-mode-change-note");
+          if (note) note.style.display = "block";
+        }
+      });
+      document.getElementById("mode-string").addEventListener("click", () => {
+        setEntropyMode("string");
+        if (generatedWallets.length > 0) {
+          const note = document.getElementById("entropy-mode-change-note");
+          if (note) note.style.display = "block";
+        }
+      });
+      let diceDeterministic = false;
+
+      document
+        .getElementById("dice-mode-mixed")
+        .addEventListener("click", () => {
+          diceDeterministic = false;
+          document.getElementById("dice-mode-mixed").style.background =
+            "rgba(0,255,65,0.1)";
+          document.getElementById("dice-mode-mixed").style.color =
+            "var(--green)";
+          document.getElementById("dice-mode-det").style.background =
+            "transparent";
+          document.getElementById("dice-mode-det").style.color =
+            "var(--text-dim)";
+          document.getElementById("dice-det-warning").classList.add("hidden");
+          document.getElementById("dice-mode-desc").textContent =
+            "Mixed: dice + CSPRNG — different wallet every run";
+          updateDiceStats();
+        });
+
+      document.getElementById("dice-mode-det").addEventListener("click", () => {
+        diceDeterministic = true;
+        document.getElementById("dice-mode-det").style.background =
           "rgba(0,255,65,0.1)";
-        document.getElementById("mode-dice").style.color = "var(--green)";
-        document.getElementById("mode-mouse").style.background = "transparent";
-        document.getElementById("mode-mouse").style.color = "var(--text-dim)";
+        document.getElementById("dice-mode-det").style.color = "var(--green)";
+        document.getElementById("dice-mode-mixed").style.background =
+          "transparent";
+        document.getElementById("dice-mode-mixed").style.color =
+          "var(--text-dim)";
+        document.getElementById("dice-det-warning").classList.remove("hidden");
+        document.getElementById("dice-mode-desc").textContent =
+          "Deterministic: dice only — same rolls = same wallet always";
+        document.getElementById("entropy-status").textContent =
+          "🔒 DICE: DETERMINISTIC";
+        updateDiceStats();
+      });
+
+      let stringVisible = false;
+      document
+        .getElementById("string-visibility-toggle")
+        .addEventListener("click", () => {
+          stringVisible = !stringVisible;
+          document.getElementById("string-input").style.webkitTextSecurity =
+            stringVisible ? "none" : "disc";
+          document.getElementById("string-visibility-toggle").textContent =
+            stringVisible ? "🙈 HIDE" : "👁 SHOW";
+        });
+      document.getElementById("string-input").addEventListener("input", (e) => {
+        const val = e.target.value;
+        const len = val.length;
+        const byteLen = new TextEncoder().encode(val).length;
+        const countEl = document.getElementById("string-char-count");
+        if (countEl)
+          countEl.textContent =
+            byteLen === len
+              ? `${len} chars`
+              : `${len} chars · ${byteLen} bytes`;
+        const byteCountEl = document.getElementById("string-byte-count");
+        if (byteCountEl)
+          byteCountEl.textContent =
+            byteLen !== len
+              ? `⚠ multi-byte chars (${byteLen} UTF-8 bytes hashed)`
+              : "";
+        const bar = document.getElementById("string-strength-bar");
+        const lbl = document.getElementById("string-strength-label");
+        const est = document.getElementById("string-entropy-estimate");
+
+        const uniqueChars = new Set(val).size;
+        const charsetSize = /[A-Z]/.test(val)
+          ? /[0-9]/.test(val)
+            ? /[^a-zA-Z0-9]/.test(val)
+              ? 95
+              : 62
+            : 52
+          : /[0-9]/.test(val)
+            ? 36
+            : 26;
+        const estimatedBits = Math.floor(len * Math.log2(charsetSize));
+        est.textContent = `~${estimatedBits} bits`;
+
+        if (len === 0) {
+          bar.style.width = "0%";
+          bar.style.background = "var(--red)";
+          lbl.textContent = "type your string above";
+          lbl.style.color = "var(--text-muted)";
+        } else if (len < 20) {
+          bar.style.width = `${(len / 50) * 30}%`;
+          bar.style.background = "var(--red)";
+          lbl.textContent = `✗ too short - dangerously weak (${len} chars)`;
+          lbl.style.color = "var(--red)";
+        } else if (len < 40) {
+          bar.style.width = `${(len / 50) * 60}%`;
+          bar.style.background = "var(--yellow)";
+          lbl.textContent = `△ marginal - longer is safer (${len} chars)`;
+          lbl.style.color = "var(--yellow)";
+        } else if (len < 50) {
+          bar.style.width = "80%";
+          bar.style.background = "var(--yellow)";
+          lbl.textContent = `△ getting better - aim for 50+ chars (${len} chars)`;
+          lbl.style.color = "var(--yellow)";
+        } else {
+          bar.style.width = "100%";
+          bar.style.background = "var(--green)";
+          lbl.textContent = `✓ length acceptable - security depends entirely on unpredictability (${len} chars)`;
+          lbl.style.color = "var(--green)";
+        }
       });
 
       const bar = document.getElementById("entropy-bar");
@@ -1776,19 +2206,28 @@
       function updateDiceStats() {
         const val = diceInput.value;
         const info = validateDiceInput(val);
+        const minRolls =
+          typeof diceDeterministic !== "undefined" && diceDeterministic
+            ? 50
+            : 99;
         document.getElementById("dice-count").textContent =
           `Rolls: ${info.count}`;
         document.getElementById("dice-entropy-bits").textContent =
           `Entropy: ~${info.entropyBits} bits`;
         const statusEl = document.getElementById("dice-status");
-        if (info.valid) {
-          statusEl.textContent = "Sufficient entropy";
+        if (info.count >= minRolls) {
+          statusEl.textContent =
+            typeof diceDeterministic !== "undefined" && diceDeterministic
+              ? `✓ ${info.count} rolls — deterministic entropy ready`
+              : "✓ Sufficient entropy";
           statusEl.style.color = "var(--green)";
           diceValid = true;
           document.getElementById("entropy-status").textContent =
-            "🎲 DICE: READY";
+            typeof diceDeterministic !== "undefined" && diceDeterministic
+              ? "🔒 DICE: DETERMINISTIC"
+              : "🎲 DICE: READY";
         } else {
-          statusEl.textContent = `✗ Need ${99 - info.count} more rolls`;
+          statusEl.textContent = `✗ Need ${minRolls - info.count} more rolls`;
           statusEl.style.color = "var(--red)";
           diceValid = false;
         }
@@ -2075,9 +2514,22 @@
         try {
           if (entropyMode === "dice" && !diceValid)
             throw new Error(
-              "dice entropy not ready, enter at least 99 rolls (1–6)",
+              diceDeterministic
+                ? "dice entropy not ready, enter at least 20 rolls (1–6)"
+                : "dice entropy not ready, enter at least 99 rolls (1–6)",
             );
+          if (entropyMode === "string") {
+            const str = document.getElementById("string-input").value;
+            if (!str || str.length < 1)
+              throw new Error("enter a string to derive wallet from");
+            if (str.length < 20)
+              throw new Error(
+                "string too short - minimum 20 characters, 50+ strongly recommended",
+              );
+          }
           generatedWallets = [];
+          const note = document.getElementById("entropy-mode-change-note");
+          if (note) note.style.display = "none";
           for (let i = 0; i < quantity; i++) {
             let mnemonic;
             if (entropyMode === "dice") {
@@ -2085,6 +2537,15 @@
                 diceInput.value,
                 wordCount,
                 i,
+                diceDeterministic,
+              );
+            } else if (entropyMode === "string") {
+              const idxBuf = new Uint8Array(4);
+              new DataView(idxBuf.buffer).setUint32(0, i, false);
+              const idxStr = String.fromCharCode(...idxBuf);
+              mnemonic = await generateMnemonicFromString(
+                document.getElementById("string-input").value + "\x00" + idxStr,
+                wordCount,
               );
             } else {
               const extraBytes = new Uint8Array(mouseEntropySamples.length * 4);
@@ -2162,6 +2623,8 @@
         document.getElementById("wipe-btn").classList.add("hidden");
         document.getElementById("results-area").innerHTML = "";
         toast("cleared from screen", "success");
+        const note = document.getElementById("entropy-mode-change-note");
+        if (note) note.style.display = "none";
       });
 
       function buildPrintArea() {
