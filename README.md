@@ -84,10 +84,8 @@ Open the file locally:
 file://index.html
 Generate wallets
 
-![screenshot](images/image1.png)
-
-
 ```
+![screenshot](images/image1.png)
 
 ---
 
@@ -483,9 +481,9 @@ node index.js
   Results: 58 passed, 0 failed (58 total)
   ✓ All tests passing
 
-  ![Screenshot](images/image.png)
 
 ```
+![Screenshot](images/image.png)
 
 all BIP49 and BIP84 vectors were independently verified against Ian Coleman's BIP39 tool (`iancoleman.io/bip39`) running offline
 
