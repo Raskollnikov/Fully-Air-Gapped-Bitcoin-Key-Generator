@@ -62,7 +62,7 @@
 ![screenshot](images/verify_18.png)
 ![screenshot](images/verify_19.png)
 
-``
+```
 the generator is designed to be used in an offline environment only
 
 Recommended workflow:
@@ -128,7 +128,6 @@ Generate wallets
 ## File Structure
 
 ```
-
 btc-paper-wallet/ for overal testing
 ├── index.html <- Open this in your browser - entire UI lives here
 ├── css/
@@ -139,6 +138,7 @@ btc-paper-wallet/ for overal testing
 ├── testing/
 │ └── test.js <- Full test suite (Node.js, 58 tests)
 └── README.md
+
 
 ```
 
@@ -187,70 +187,61 @@ SHA-256(csrng ‖ diceBytes ‖ index) → entropy
 
 ```
 
+Naive 3-bit mapping biases faces 1–2 twice as likely. This implementation uses unbiased base-6 conversion: the full roll sequence is treated as one base-6 number, then converted to bytes. 99 rolls = log₂(6⁹⁹) ≈ 256 bits of entropy.
+
+The `walletIndex` nonce ensures that generating multiple wallets from the same dice string produces provably distinct mnemonics - even if the CSPRNG component somehow repeated.
+
 ### String entropy (deterministic)
-
 ```
-
 User-supplied string (UTF-8 encoded)
-│
-▼
-SHA-256(UTF-8(string)) <- 32-byte hash, all bytes used
-│
-▼
-First 16 bytes → 12-word mnemonic (128-bit entropy)
-First 32 bytes → 24-word mnemonic (256-bit entropy)
-│
-▼
+         │
+         ▼
+SHA-256(UTF-8(string))              <- 32-byte hash, all bytes used
+         │
+         ▼
+First 16 bytes → 12-word mnemonic  (128-bit entropy)
+First 32 bytes → 24-word mnemonic  (256-bit entropy)
+         │
+         ▼
 entropyToMnemonic() → BIP39 mnemonic
 
 For batch generation (quantity > 1):
 SHA-256(UTF-8(string ‖ \x00 ‖ uint32(walletIndex)))
-│
-▼
+         │
+         ▼
 Same pipeline - each wallet index produces a unique, reproducible mnemonic
-
-No CSPRNG involved. Same string always produces the same wallet.
-Security depends entirely on string unpredictability - short or common
-strings are catastrophically weak. 50+ random characters recommended.
 
 ```
 
 ## Dice entropy - deterministic mode
 
 ```
-
 Physical dice rolls [1–6] × 50–150
-│
-▼
-Base-6 bigint conversion <- unbiased: treats full sequence as
-n = (r₀-1)·6⁹⁸ + (r₁-1)·6⁹⁷ + … one large base-6 number, not 3-bit
-│ mapping (which would bias faces 1-2)
-▼
+         │
+         ▼
+Base-6 bigint conversion            <- unbiased: treats full sequence as
+n = (r₀-1)·6⁹⁸ + (r₁-1)·6⁹⁷ + …    one large base-6 number, not 3-bit
+         │                             mapping (which would bias faces 1-2)
+         ▼
 32-byte big-endian representation
-│
-▼
+         │
+         ▼
 First 16 bytes → 12-word mnemonic
-First 32 bytes → 24-word mnemonic +
+First 32 bytes → 24-word mnemonic
+         +
 Per-wallet nonce (walletIndex as 4-byte uint32)
-│
-▼
+         │
+         ▼
 SHA-256(diceBytes[:strength] ‖ \x00 ‖ uint32(walletIndex))
-│
-▼
+         │
+         ▼
 entropyToMnemonic() → BIP39 mnemonic
 
-99 rolls = log₂(6⁹⁹) ≈ ~256 bits (recommended for 12-word)
+50 rolls  = log₂(6⁵⁰) ≈ 129 bits  (minimum accepted)
+99 rolls  = log₂(6⁹⁹) ≈ 256 bits  (recommended for 12-word)
 150 rolls = log₂(6¹⁵⁰) ≈ 387 bits (overkill, but fine)
 
-No CSPRNG involved. same rolls + same index always produce the same wallet.
-The \x00 separator between dice bytes and index prevents prefix collision.
-Wallet #1 from a batch of 3 is identical to a single wallet from the same rolls.
-
 ```
-
-Naive 3-bit mapping biases faces 1–2 twice as likely. This implementation uses unbiased base-6 conversion: the full roll sequence is treated as one base-6 number, then converted to bytes. 99 rolls = log₂(6⁹⁹) ≈ 256 bits of entropy.
-
-The `walletIndex` nonce ensures that generating multiple wallets from the same dice string produces provably distinct mnemonics - even if the CSPRNG component somehow repeated.
 
 ### Content Security Policy
 
