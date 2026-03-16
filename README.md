@@ -28,6 +28,9 @@
 
 ## Quick Start
 
+[![Download](https://img.shields.io/badge/download-v1.0.1-blue)](https://github.com/Raskollnikov/Paper_Wallet/releases/tag/v1.0.1)
+
+
 ```
 the generator is designed to be used in an offline environment only
 
@@ -43,7 +46,8 @@ Latest Release
 
 Latest version: v1.0.1
 
-[![Download](https://img.shields.io/badge/download-v1.0.1-blue)](https://github.com/Raskollnikov/Paper_Wallet/releases/tag/v1.0.1)
+https://github.com/Raskollnikov/Paper_Wallet/releases/tag/v1.0.1
+
 
 SHA256 of index.html:
 
