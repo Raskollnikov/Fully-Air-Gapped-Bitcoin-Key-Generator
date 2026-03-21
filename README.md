@@ -431,7 +431,7 @@ node index.js
 ```
  $paper-wallet-generator/testing/node index.js
 
-═══ generateMnemonicFromString - determinism ═══
+═══ generateMnemonicFromString — determinism ═══
   ✓ same string → same 24-word mnemonic (run 1 = run 2)
   ✓ different string → different mnemonic
   ✓ case-sensitive: uppercase ≠ lowercase
@@ -443,17 +443,17 @@ node index.js
   ✓ 12-word passes BIP39 checksum
   ✓ uppercase variant passes BIP39 checksum
 
-═══ generateMnemonicFromString - unicode & edge cases ═══
+═══ generateMnemonicFromString — unicode & edge cases ═══
   ✓ emoji string deterministic
   ✓ emoji mnemonic BIP39 valid
   ✓ cyrillic string deterministic
   ✓ cyrillic mnemonic BIP39 valid
   ✓ leading/trailing space changes output
 
-═══ generateMnemonicFromString - error cases ═══
+═══ generateMnemonicFromString — error cases ═══
   ✓ empty string throws
 
-═══ generateMnemonicFromString - multi-wallet nonce (\x00 separator) ═══
+═══ generateMnemonicFromString — multi-wallet nonce (\x00 separator) ═══
   ✓ nonce 0 ≠ nonce 1
   ✓ nonce 1 ≠ nonce 2
   ✓ nonce 0 ≠ nonce 2
@@ -473,7 +473,7 @@ node index.js
   ✓ legacy address starts with 1
   ✓ segwit address starts with 3
 
-═══ generateMnemonicWithDice - deterministic mode ═══
+═══ generateMnemonicWithDice — deterministic mode ═══
   ✓ deterministic: same dice → same mnemonic
   ✓ deterministic: BIP39 checksum valid
   ✓ deterministic: 12-word count
@@ -483,28 +483,28 @@ node index.js
   ✓ deterministic: different dice → different mnemonic
   ✓ deterministic: walletIndex produces unique wallets in batch
 
-═══ generateMnemonicWithDice - mixed mode (existing behaviour) ═══
+═══ generateMnemonicWithDice — mixed mode (existing behaviour) ═══
   ✓ mixed: index 0 ≠ index 1
   ✓ mixed: index 1 ≠ index 2
   ✓ mixed: same dice+index → different mnemonic each run (CSPRNG)
   ✓ mixed 0 BIP39 valid
   ✓ mixed 1 BIP39 valid
 
-═══ generateMnemonicWithDice - deterministic → full wallet ═══
+═══ generateMnemonicWithDice — deterministic → full wallet ═══
   ✓ deterministic dice → wallet round-trip valid
   ✓ deterministic dice → same address on repeat
 
-═══ secureWipeAll - string-input coverage ═══
+═══ secureWipeAll — string-input coverage ═══
   ✓ wallet array emptied after secureWipeAll
   ✓ wallet object nulled after wipe
 
-═══ Pipeline integrity - SHA256(string) → BIP39 ═══
+═══ Pipeline integrity — SHA256(string) → BIP39 ═══
   ✓ SHA256('hello') → known 12-word mnemonic matches
   ✓ SHA256('hello') → known 24-word mnemonic matches
   ✓ 'hello' 12-word BIP39 valid
   ✓ 'hello' 24-word BIP39 valid
 
-═══ Entropy mode isolation - string ≠ dice ≠ mouse outputs ═══
+═══ Entropy mode isolation — string ≠ dice ≠ mouse outputs ═══
   ✓ dice mode ≠ string mode for same input characters
 
 ═══ Regression: existing tests still pass ═══
@@ -513,10 +513,83 @@ node index.js
   ✓ BIP39 seed vector first byte
   ✓ BIP39 seed vector length
 
-════════════════════════════════════════════════════════════
-  Results: 58 passed, 0 failed (58 total)
-  ✓ All tests passing
+═══ Taproot - address format validation ═══
+  ✓ Taproot address starts with bc1p
+  ✓ Taproot address length is 62 chars
+  ✓ Taproot address contains only valid bech32m charset
+  ✓ Taproot derivation path is m/86'
+  ✓ Taproot typeName correct
+  ✓ Taproot walletType field
 
+═══ Taproot - BIP86 known test vector ═══
+  ✓ BIP86 vector 0/0 address matches spec
+  ✓ BIP86 vector 0/1 address matches spec
+
+═══ Taproot - round-trip validation ═══
+  ✓ Taproot round-trip valid
+  ✓ Taproot round-trip zero errors
+  ✓ Taproot address starts bc1p after round-trip
+  ✓ Taproot+passphrase round-trip valid
+  ✓ Taproot address ≠ Taproot+passphrase address
+
+═══ Taproot - determinism ═══
+  ✓ Taproot: same seed → same address
+  ✓ Taproot: same seed → same WIF
+  ✓ Taproot: index 0 ≠ index 1
+  ✓ Taproot: account 0 ≠ account 1
+
+═══ Taproot - address type isolation ═══
+  ✓ Taproot address ≠ Native SegWit address
+  ✓ Taproot address ≠ SegWit address
+  ✓ Taproot address ≠ Legacy address
+  ✓ Taproot prefix bc1p
+  ✓ Native SegWit prefix bc1q
+  ✓ SegWit prefix 3
+  ✓ Legacy prefix 1
+  ✓ Taproot WIF ≠ Legacy WIF (different path)
+
+═══ Taproot - pubKeyToTaproot direct ═══
+  ✓ k=1 taproot address starts bc1p
+  ✓ k=1 taproot address length 62
+  ✓ k=1 taproot ≠ k=2 taproot
+  ✓ pubKeyToTaproot deterministic
+  ✓ taproot ≠ native segwit from same pubkey
+
+═══ Taproot - bech32m checksum isolation ═══
+  ✓ bc1p address does not match bc1q pattern
+  ✓ bc1q address does not match bc1p pattern
+  ✓ taproot address exactly 62 chars
+  ✓ native segwit address exactly 42 chars
+
+═══ Taproot - deriveMultipleAddresses ═══
+  ✓ deriveMultipleAddresses returns 5 taproot
+  ✓ index 0 starts bc1p
+  ✓ index 4 starts bc1p
+  ✓ all addresses unique
+  ✓ path uses 86'
+  ✓ index field matches
+  ✓ deriveMultipleAddresses[0] matches BIP86 vector
+  ✓ startIndex=3: first index is 3
+  ✓ startIndex=3: path ends in /3
+  ✓ startIndex=3: address[0] matches addresses[3] from full range
+
+═══ Taproot - WIF private key format unchanged ═══
+  ✓ Taproot WIF length in valid range (51-52)
+  ✓ Taproot WIF starts with K or L (compressed mainnet)
+
+═══ Taproot - odd-parity internal key coverage ═══
+  ✓ k=6 has odd y (0x03 prefix)
+  ✓ odd-parity key: address starts bc1p
+  ✓ odd-parity key: address length 62
+  ✓ odd-parity key: deterministic
+  ✓ k=1 has even y (0x02 prefix)
+  ✓ even-parity ≠ odd-parity taproot address
+  ✓ odd-parity full wallet round-trip valid
+  ✓ odd-parity full wallet address starts bc1p
+
+════════════════════════════════════════════════════════════
+  Results: 112 passed, 0 failed (112 total)
+  ✓ All tests passing
 
 ```
 ![Screenshot](images/image.png)
