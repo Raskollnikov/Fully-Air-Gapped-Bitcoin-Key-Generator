@@ -343,6 +343,66 @@ async function pubKeyToNativeSegwit(pubKey) {
   return bech32Encode("bc", words);
 }
 
+const BECH32M_CONST = 0x2bc830a3n;
+
+function bech32mEncode(hrp, data) {
+  const combined = [...bech32HrpExpand(hrp), ...data];
+  const checksum =
+    bech32Polymod([...combined, 0, 0, 0, 0, 0, 0]) ^ BECH32M_CONST;
+  let result = hrp + "1";
+  for (const d of data) result += BECH32_CHARSET[d];
+  for (let p = 0; p < 6; p++)
+    result += BECH32_CHARSET[Number((checksum >> BigInt(5 * (5 - p))) & 31n)];
+  return result;
+}
+
+function modPow(base, exp, mod) {
+  let result = 1n;
+  base = base % mod;
+  while (exp > 0n) {
+    if (exp & 1n) result = (result * base) % mod;
+    exp >>= 1n;
+    base = (base * base) % mod;
+  }
+  return result;
+}
+
+async function pubKeyToTaproot(pubKey) {
+  if (pubKey.length !== 33) throw new Error("pubkey must be 33 bytes");
+  if (pubKey[0] !== 0x02 && pubKey[0] !== 0x03) {
+    throw new Error("pubkey must be compressed (02/03 prefix)");
+  }
+
+  const xOnly = pubKey.slice(1);
+  const x = bytesToBigInt(xOnly);
+
+  const y_sq = (x * x * x + 7n) % P;
+  if (modPow(y_sq, (P - 1n) / 2n, P) !== 1n) {
+    throw new Error("x coordinate is not on secp256k1 - invalid public key");
+  }
+  let y = modPow(y_sq, (P + 1n) / 4n, P);
+  if (y % 2n !== 0n) y = P - y;
+
+  const tag = new TextEncoder().encode("TapTweak");
+  const tagHash = await sha256(tag);
+  const tweakInput = concatBytes(tagHash, tagHash, xOnly);
+  const tweak = await sha256(tweakInput);
+  const t = bytesToBigInt(tweak) % N;
+
+  const G = [Gx, Gy];
+  const internalPoint = [x, y];
+  const tweakPoint = pointMul(t, G);
+  const outputPoint = pointAdd(internalPoint, tweakPoint);
+
+  if (outputPoint === null) {
+    throw new Error("tweak produced point at infinity - astronomically rare");
+  }
+
+  const outputKey = bigIntToBytes32(outputPoint[0]);
+  const words = [1, ...convertbits(outputKey, 8, 5)];
+  return bech32mEncode("bc", words);
+}
+
 function privateKeyToWIF(privKey, compressed = true) {
   const keyBytes = bigIntToBytes32(privKey);
   const prefix = new Uint8Array([0x80]);
@@ -496,6 +556,13 @@ export const WALLET_TYPES = {
     description: "Lowest fees, modern format",
     color: "#7c3aed",
   },
+  TAPROOT: {
+    name: "Taproot (P2TR)",
+    prefix: "bc1p",
+    path: "m/86'/0'/0'/0/0",
+    description: "Taproot keypath, most private, lowest fees",
+    color: "#f97316",
+  },
 };
 
 export async function generateWalletFromMnemonic(
@@ -509,7 +576,13 @@ export async function generateWalletFromMnemonic(
   const typeConfig = WALLET_TYPES[walletType];
 
   const purpose =
-    walletType === "LEGACY" ? "44'" : walletType === "SEGWIT" ? "49'" : "84'";
+    walletType === "LEGACY"
+      ? "44'"
+      : walletType === "SEGWIT"
+        ? "49'"
+        : walletType === "TAPROOT"
+          ? "86'"
+          : "84'";
   const path = `m/${purpose}/0'/${accountIndex}'/0/${addressIndex}`;
 
   const { key } = await derivePath(seed, path);
@@ -519,6 +592,7 @@ export async function generateWalletFromMnemonic(
   let address;
   if (walletType === "LEGACY") address = await pubKeyToLegacy(pubKey);
   else if (walletType === "SEGWIT") address = await pubKeyToSegwit(pubKey);
+  else if (walletType === "TAPROOT") address = await pubKeyToTaproot(pubKey);
   else address = await pubKeyToNativeSegwit(pubKey);
 
   return {
@@ -553,18 +627,26 @@ export async function deriveMultipleAddresses(
   branch = 0,
   accountIndex = 0,
   customPath = null,
+  startIndex = 0,
 ) {
   const seed = await mnemonicToSeed(mnemonic, passphrase);
   const purpose =
-    walletType === "LEGACY" ? "44'" : walletType === "SEGWIT" ? "49'" : "84'";
+    walletType === "LEGACY"
+      ? "44'"
+      : walletType === "SEGWIT"
+        ? "49'"
+        : walletType === "TAPROOT"
+          ? "86'"
+          : "84'";
   const addresses = [];
 
   for (let i = 0; i < count; i++) {
+    const addrIndex = startIndex + i;
     let path;
     if (customPath && customPath.trim()) {
-      path = customPath.trim().replace(/\/\d+$/, "") + `/${i}`;
+      path = customPath.trim().replace(/\/\d+$/, "") + `/${addrIndex}`;
     } else {
-      path = `m/${purpose}/0'/${accountIndex}'/${branch}/${i}`;
+      path = `m/${purpose}/0'/${accountIndex}'/${branch}/${addrIndex}`;
     }
 
     const { key } = await derivePath(seed, path);
@@ -574,10 +656,11 @@ export async function deriveMultipleAddresses(
     let address;
     if (walletType === "LEGACY") address = await pubKeyToLegacy(pubKey);
     else if (walletType === "SEGWIT") address = await pubKeyToSegwit(pubKey);
+    else if (walletType === "TAPROOT") address = await pubKeyToTaproot(pubKey);
     else address = await pubKeyToNativeSegwit(pubKey);
 
     addresses.push({
-      index: i,
+      index: addrIndex,
       path,
       address: await address,
       privateKeyWIF: await privateKeyToWIF(privKeyBigInt, true),
@@ -622,6 +705,8 @@ export async function validateRoundTrip(wallet) {
       rederived = await pubKeyToLegacy(pubKey);
     else if (wallet.walletType === "SEGWIT")
       rederived = await pubKeyToSegwit(pubKey);
+    else if (wallet.walletType === "TAPROOT")
+      rederived = await pubKeyToTaproot(pubKey);
     else rederived = await pubKeyToNativeSegwit(pubKey);
 
     if (rederived !== wallet.address) {
@@ -637,7 +722,8 @@ export async function validateRoundTrip(wallet) {
     (wallet.walletType === "LEGACY" && wallet.address.startsWith("1")) ||
     (wallet.walletType === "SEGWIT" && wallet.address.startsWith("3")) ||
     (wallet.walletType === "NATIVE_SEGWIT" &&
-      wallet.address.startsWith("bc1q"));
+      wallet.address.startsWith("bc1q")) ||
+    (wallet.walletType === "TAPROOT" && wallet.address.startsWith("bc1p"));
   if (!prefixOk) errors.push("address prefix does not match wallet type");
 
   const mnemonicOk = await validateMnemonic(wallet.mnemonic);
@@ -706,7 +792,7 @@ export function diceToEntropy(diceString, minRolls = 99) {
 
   if (rolls.length < minRolls) {
     throw new Error(
-      `you need at least 99 dice rolls for 128-bit security. Got ${rolls.length}.`,
+      `you need at least ${minRolls} dice rolls for 128-bit security, got ${rolls.length}.`,
     );
   }
 
@@ -857,4 +943,6 @@ export {
   pubKeyToNativeSegwit,
   privateKeyToWIF,
   WORDLIST,
+  pubKeyToTaproot,
+  bech32mEncode,
 };

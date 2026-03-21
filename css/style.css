@@ -610,7 +610,9 @@ canvas.qr {
 }
 .addr-table .td-index {
   color: var(--text-muted);
-  width: 40px;
+  width: 45px;
+  padding: 3px;
+  text-align: center;
 }
 .addr-table .td-path {
   color: var(--text-muted);

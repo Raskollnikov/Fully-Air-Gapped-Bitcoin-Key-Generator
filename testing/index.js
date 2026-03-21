@@ -22,7 +22,7 @@ function assertBool(label, value) {
 function assertThrows(label, fn) {
   return fn().then(
     () => {
-      console.error(`  ✗ ${label} — expected throw, got success`);
+      console.error(`  ✗ ${label} - expected throw, got success`);
       failed++;
     },
     () => {
@@ -352,6 +352,345 @@ console.log("\n═══ Regression: existing tests still pass ═══");
   );
   assertBool("BIP39 seed vector first byte", seed[0] === 0x5e);
   assertBool("BIP39 seed vector length", seed.length === 64);
+}
+
+console.log("\n═══ Taproot - address format validation ═══");
+
+{
+  const seed = await wallet.mnemonicToSeed(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+    "",
+  );
+  const w = await wallet.generateWalletFromMnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+    "",
+    "TAPROOT",
+    0,
+    0,
+  );
+
+  assertBool("Taproot address starts with bc1p", w.address.startsWith("bc1p"));
+  assertBool("Taproot address length is 62 chars", w.address.length === 62);
+  assertBool(
+    "Taproot address contains only valid bech32m charset",
+    /^bc1p[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{58}$/.test(w.address),
+  );
+  assertBool("Taproot derivation path is m/86'", w.path.startsWith("m/86'"));
+  assertBool("Taproot typeName correct", w.typeName === "Taproot (P2TR)");
+  assertBool("Taproot walletType field", w.walletType === "TAPROOT");
+}
+
+console.log("\n═══ Taproot - BIP86 known test vector ═══");
+
+{
+  const knownAddress =
+    "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr";
+
+  const w = await wallet.generateWalletFromMnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+    "",
+    "TAPROOT",
+    0,
+    0,
+  );
+
+  assert("BIP86 vector 0/0 address matches spec", w.address, knownAddress);
+
+  const knownAddress1 =
+    "bc1p4qhjn9zdvkux4e44uhx8tc55attvtyu358kutcqkudyccelu0was9fqzwh";
+  const w1 = await wallet.generateWalletFromMnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+    "",
+    "TAPROOT",
+    0,
+    1,
+  );
+  assert("BIP86 vector 0/1 address matches spec", w1.address, knownAddress1);
+}
+
+console.log("\n═══ Taproot - round-trip validation ═══");
+
+{
+  const mnemonic = await wallet.generateMnemonicFromString(
+    "taproot-test-string-for-round-trip-validation-over-50-chars!!",
+    12,
+  );
+
+  const w = await wallet.generateWalletFromMnemonic(mnemonic, "", "TAPROOT");
+  const vr = await wallet.validateRoundTrip(w);
+
+  assertBool("Taproot round-trip valid", vr.valid);
+  assertBool("Taproot round-trip zero errors", vr.errors.length === 0);
+  assertBool(
+    "Taproot address starts bc1p after round-trip",
+    w.address.startsWith("bc1p"),
+  );
+
+  const wp = await wallet.generateWalletFromMnemonic(
+    mnemonic,
+    "hunter2",
+    "TAPROOT",
+  );
+  const vrp = await wallet.validateRoundTrip(wp);
+  assertBool("Taproot+passphrase round-trip valid", vrp.valid);
+  assertBool(
+    "Taproot address ≠ Taproot+passphrase address",
+    w.address !== wp.address,
+  );
+}
+
+console.log("\n═══ Taproot - determinism ═══");
+
+{
+  const mnemonic =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+
+  const w1 = await wallet.generateWalletFromMnemonic(
+    mnemonic,
+    "",
+    "TAPROOT",
+    0,
+    0,
+  );
+  const w2 = await wallet.generateWalletFromMnemonic(
+    mnemonic,
+    "",
+    "TAPROOT",
+    0,
+    0,
+  );
+  assertBool("Taproot: same seed → same address", w1.address === w2.address);
+  assertBool(
+    "Taproot: same seed → same WIF",
+    w1.privateKeyWIF === w2.privateKeyWIF,
+  );
+
+  const w3 = await wallet.generateWalletFromMnemonic(
+    mnemonic,
+    "",
+    "TAPROOT",
+    0,
+    1,
+  );
+  assertBool("Taproot: index 0 ≠ index 1", w1.address !== w3.address);
+
+  const w4 = await wallet.generateWalletFromMnemonic(
+    mnemonic,
+    "",
+    "TAPROOT",
+    1,
+    0,
+  );
+  assertBool("Taproot: account 0 ≠ account 1", w1.address !== w4.address);
+}
+
+console.log("\n═══ Taproot - address type isolation ═══");
+
+{
+  const mnemonic =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+
+  const wTap = await wallet.generateWalletFromMnemonic(mnemonic, "", "TAPROOT");
+  const wNsw = await wallet.generateWalletFromMnemonic(
+    mnemonic,
+    "",
+    "NATIVE_SEGWIT",
+  );
+  const wSeg = await wallet.generateWalletFromMnemonic(mnemonic, "", "SEGWIT");
+  const wLeg = await wallet.generateWalletFromMnemonic(mnemonic, "", "LEGACY");
+
+  assertBool(
+    "Taproot address ≠ Native SegWit address",
+    wTap.address !== wNsw.address,
+  );
+  assertBool("Taproot address ≠ SegWit address", wTap.address !== wSeg.address);
+  assertBool("Taproot address ≠ Legacy address", wTap.address !== wLeg.address);
+  assertBool("Taproot prefix bc1p", wTap.address.startsWith("bc1p"));
+  assertBool("Native SegWit prefix bc1q", wNsw.address.startsWith("bc1q"));
+  assertBool("SegWit prefix 3", wSeg.address.startsWith("3"));
+  assertBool("Legacy prefix 1", wLeg.address.startsWith("1"));
+
+  assertBool(
+    "Taproot WIF ≠ Legacy WIF (different path)",
+    wTap.privateKeyWIF !== wLeg.privateKeyWIF,
+  );
+}
+
+console.log("\n═══ Taproot - pubKeyToTaproot direct ═══");
+
+{
+  const pubKey1 = wallet.privateKeyToPublicKey(1n, true);
+  const taprootAddr1 = await wallet.pubKeyToTaproot(pubKey1);
+
+  assertBool(
+    "k=1 taproot address starts bc1p",
+    taprootAddr1.startsWith("bc1p"),
+  );
+  assertBool("k=1 taproot address length 62", taprootAddr1.length === 62);
+
+  const pubKey2 = wallet.privateKeyToPublicKey(2n, true);
+  const taprootAddr2 = await wallet.pubKeyToTaproot(pubKey2);
+  assertBool("k=1 taproot ≠ k=2 taproot", taprootAddr1 !== taprootAddr2);
+
+  const taprootAddr1b = await wallet.pubKeyToTaproot(pubKey1);
+  assertBool("pubKeyToTaproot deterministic", taprootAddr1 === taprootAddr1b);
+
+  const nswAddr1 = await wallet.pubKeyToNativeSegwit(pubKey1);
+  assertBool(
+    "taproot ≠ native segwit from same pubkey",
+    taprootAddr1 !== nswAddr1,
+  );
+}
+
+console.log("\n═══ Taproot - bech32m checksum isolation ═══");
+
+{
+  const pubKey = wallet.privateKeyToPublicKey(42n, true);
+  const taprootAddr = await wallet.pubKeyToTaproot(pubKey);
+  const nswAddr = await wallet.pubKeyToNativeSegwit(pubKey);
+
+  assertBool(
+    "bc1p address does not match bc1q pattern",
+    !/^bc1q/.test(taprootAddr),
+  );
+  assertBool(
+    "bc1q address does not match bc1p pattern",
+    !/^bc1p/.test(nswAddr),
+  );
+  assertBool("taproot address exactly 62 chars", taprootAddr.length === 62);
+  assertBool("native segwit address exactly 42 chars", nswAddr.length === 42);
+}
+
+console.log("\n═══ Taproot - deriveMultipleAddresses ═══");
+
+{
+  const mnemonic =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+
+  const addresses = await wallet.deriveMultipleAddresses(
+    mnemonic,
+    "",
+    "TAPROOT",
+    5,
+    0,
+    0,
+    null,
+    0,
+  );
+
+  assertBool(
+    "deriveMultipleAddresses returns 5 taproot",
+    addresses.length === 5,
+  );
+  assertBool("index 0 starts bc1p", addresses[0].address.startsWith("bc1p"));
+  assertBool("index 4 starts bc1p", addresses[4].address.startsWith("bc1p"));
+  assertBool(
+    "all addresses unique",
+    new Set(addresses.map((a) => a.address)).size === 5,
+  );
+  assertBool("path uses 86'", addresses[0].path.startsWith("m/86'"));
+  assertBool(
+    "index field matches",
+    addresses[0].index === 0 && addresses[4].index === 4,
+  );
+
+  assert(
+    "deriveMultipleAddresses[0] matches BIP86 vector",
+    addresses[0].address,
+    "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr",
+  );
+
+  const addressesFrom3 = await wallet.deriveMultipleAddresses(
+    mnemonic,
+    "",
+    "TAPROOT",
+    3,
+    0,
+    0,
+    null,
+    3,
+  );
+  assertBool("startIndex=3: first index is 3", addressesFrom3[0].index === 3);
+  assertBool(
+    "startIndex=3: path ends in /3",
+    addressesFrom3[0].path.endsWith("/3"),
+  );
+  assertBool(
+    "startIndex=3: address[0] matches addresses[3] from full range",
+    addressesFrom3[0].address === addresses[3].address,
+  );
+}
+
+console.log("\n═══ Taproot - WIF private key format unchanged ═══");
+
+{
+  const mnemonic =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+  const w = await wallet.generateWalletFromMnemonic(mnemonic, "", "TAPROOT");
+
+  assertBool(
+    "Taproot WIF length in valid range (51-52)",
+    w.privateKeyWIF.length >= 51 && w.privateKeyWIF.length <= 52,
+  );
+  assertBool(
+    "Taproot WIF starts with K or L (compressed mainnet)",
+    w.privateKeyWIF.startsWith("K") || w.privateKeyWIF.startsWith("L"),
+  );
+}
+
+console.log("\n═══ Taproot - odd-parity internal key coverage ═══");
+
+{
+  const pubKey6 = wallet.privateKeyToPublicKey(6n, true);
+  assertBool("k=6 has odd y (0x03 prefix)", pubKey6[0] === 0x03);
+
+  const taprootAddr6 = await wallet.pubKeyToTaproot(pubKey6);
+  assertBool(
+    "odd-parity key: address starts bc1p",
+    taprootAddr6.startsWith("bc1p"),
+  );
+  assertBool("odd-parity key: address length 62", taprootAddr6.length === 62);
+
+  const taprootAddr6b = await wallet.pubKeyToTaproot(pubKey6);
+  assertBool("odd-parity key: deterministic", taprootAddr6 === taprootAddr6b);
+
+  const pubKey1 = wallet.privateKeyToPublicKey(1n, true);
+  assertBool("k=1 has even y (0x02 prefix)", pubKey1[0] === 0x02);
+  const taprootAddr1 = await wallet.pubKeyToTaproot(pubKey1);
+  assertBool(
+    "even-parity ≠ odd-parity taproot address",
+    taprootAddr1 !== taprootAddr6,
+  );
+
+  let foundOdd = null;
+  for (let i = 0; i < 20; i++) {
+    const w = await wallet.generateWalletFromMnemonic(
+      "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+      "",
+      "TAPROOT",
+      0,
+      i,
+    );
+    const pub = wallet.privateKeyToPublicKey(
+      wallet.bytesToBigInt(wallet.hexToBytes(w.privateKeyHex)),
+      true,
+    );
+    if (pub[0] === 0x03) {
+      foundOdd = w;
+      break;
+    }
+  }
+
+  if (foundOdd) {
+    const vr = await wallet.validateRoundTrip(foundOdd);
+    assertBool("odd-parity full wallet round-trip valid", vr.valid);
+    assertBool(
+      "odd-parity full wallet address starts bc1p",
+      foundOdd.address.startsWith("bc1p"),
+    );
+  } else {
+    assertBool("found an odd-parity key in first 20 indices", false);
+  }
 }
 
 const total = passed + failed;
