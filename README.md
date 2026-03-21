@@ -27,7 +27,7 @@
 
 ## Quick Start
 
-[![Download](https://img.shields.io/badge/download-v1.0.1-blue)](https://github.com/Raskollnikov/Paper_Wallet/releases/tag/v1.0.1)
+[![Download](https://img.shields.io/badge/download-v1.0.1-blue)](https://github.com/Raskollnikov/Paper_Wallet/releases/tag/v1.1.0)
 
 [![VIDEO](https://img.shields.io/badge/video-guide-red)](https://www.youtube.com/watch?v=xs8KU_F5JaQ&t=869s)
 
