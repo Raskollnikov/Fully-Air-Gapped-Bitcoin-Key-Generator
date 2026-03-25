@@ -93,12 +93,77 @@
               </div>
               <div class="control-group">
                 <label>BIP39 Passphrase (optional)</label>
-                <input
-                  type="password"
-                  id="passphrase"
-                  placeholder="25th word - leave blank for standard"
-                  autocomplete="off"
-                />
+                <div style="position: relative">
+                  <input
+                    type="password"
+                    id="passphrase"
+                    placeholder="25th word - leave blank for standard"
+                    autocomplete="off"
+                    style="padding-right: 44px; width: 100%"
+                  />
+                  <button
+                    type="button"
+                    id="passphrase-toggle"
+                    tabindex="-1"
+                    style="
+                      position: absolute;
+                      right: 0;
+                      top: 0;
+                      bottom: 0;
+                      width: 40px;
+                      background: transparent;
+                      border: none;
+                      color: var(--text-dim);
+                      cursor: pointer;
+                      font-size: 13px;
+                    "
+                    title="show/hide"
+                  >
+                    👁
+                  </button>
+                </div>
+                <div
+                  id="passphrase-confirm-wrap"
+                  style="display: none; margin-top: 6px"
+                >
+                  <div style="position: relative">
+                    <input
+                      type="password"
+                      id="passphrase-confirm"
+                      placeholder="repeat passphrase to confirm"
+                      autocomplete="off"
+                      style="padding-right: 44px; width: 100%"
+                    />
+                    <button
+                      type="button"
+                      id="passphrase-confirm-toggle"
+                      tabindex="-1"
+                      style="
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 40px;
+                        background: transparent;
+                        border: none;
+                        color: var(--text-dim);
+                        cursor: pointer;
+                        font-size: 13px;
+                      "
+                      title="show/hide"
+                    >
+                      👁
+                    </button>
+                  </div>
+                  <div
+                    id="passphrase-match-msg"
+                    style="
+                      font-size: 11px;
+                      margin-top: 4px;
+                      font-family: var(--font-mono);
+                    "
+                  ></div>
+                </div>
               </div>
             </div>
 
@@ -208,8 +273,8 @@
                 >
                   <span class="alert-icon" style="font-size: 13px">⚠</span>
                   <div class="alert-text">
-                    <strong>Use physical dice only.</strong> Roll 99–150 times.
-                    Enter each result (1–6) separated by spaces or commas. Rolls
+                    <strong>Use physical dice only.</strong> Roll 99-150 times.
+                    Enter each result (1-6) separated by spaces or commas. Rolls
                     are SHA-256 mixed with CSPRNG - weak dice cannot reduce
                     security below CSPRNG level.
                   </div>
@@ -323,7 +388,7 @@
                     "
                   >
                     <label style="margin: 0"
-                      >Dice Rolls - type one digit at a time (1–6 only, space
+                      >Dice Rolls - type one digit at a time (1-6 only, space
                       added automatically)</label
                     >
                     <button
@@ -364,7 +429,7 @@
                   </div>
                   <textarea
                     id="dice-input"
-                    placeholder="Just type digits: 3 1 4 1 5 9 2 6 5 3... (only 1–6 accepted, auto-spaced)"
+                    placeholder="Just type digits: 3 1 4 1 5 9 2 6 5 3... (only 1-6 accepted, auto-spaced)"
                     style="
                       min-height: 90px;
                       font-size: 13px;
@@ -410,7 +475,7 @@
                   <span class="alert-icon">🔢</span>
                   <div class="alert-text">
                     <strong>Unbiased base-6 conversion:</strong> naive 3-bit
-                    mapping biases faces 1–2 (2× more likely). We treat the full
+                    mapping biases faces 1-2 (2× more likely). We treat the full
                     roll sequence as a base-6 number → bytes. 100 rolls =
                     log₂(6⁹⁹) ≈ 256 bits.
                   </div>
@@ -772,12 +837,35 @@
               </div>
               <div class="control-group">
                 <label>BIP39 Passphrase (optional)</label>
-                <input
-                  type="password"
-                  id="import-passphrase"
-                  placeholder="leave blank if none"
-                  autocomplete="off"
-                />
+                <div style="position: relative">
+                  <input
+                    type="password"
+                    id="import-passphrase"
+                    placeholder="leave blank if none"
+                    autocomplete="off"
+                    style="padding-right: 44px; width: 100%"
+                  />
+                  <button
+                    type="button"
+                    id="import-passphrase-toggle"
+                    tabindex="-1"
+                    style="
+                      position: absolute;
+                      right: 0;
+                      top: 0;
+                      bottom: 0;
+                      width: 40px;
+                      background: transparent;
+                      border: none;
+                      color: var(--text-dim);
+                      cursor: pointer;
+                      font-size: 13px;
+                    "
+                    title="show/hide"
+                  >
+                    👁
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -844,12 +932,35 @@
               </div>
               <div class="control-group">
                 <label>BIP39 Passphrase (optional)</label>
-                <input
-                  type="password"
-                  id="hd-passphrase"
-                  placeholder="leave blank if none"
-                  autocomplete="off"
-                />
+                <div style="position: relative">
+                  <input
+                    type="password"
+                    id="hd-passphrase"
+                    placeholder="leave blank if none"
+                    autocomplete="off"
+                    style="padding-right: 44px; width: 100%"
+                  />
+                  <button
+                    type="button"
+                    id="hd-passphrase-toggle"
+                    tabindex="-1"
+                    style="
+                      position: absolute;
+                      right: 0;
+                      top: 0;
+                      bottom: 0;
+                      width: 40px;
+                      background: transparent;
+                      border: none;
+                      color: var(--text-dim);
+                      cursor: pointer;
+                      font-size: 13px;
+                    "
+                    title="show/hide"
+                  >
+                    👁
+                  </button>
+                </div>
               </div>
               <div class="control-group" style="grid-column: 1 / -1">
                 <label style="display: flex; align-items: center; gap: 8px">
@@ -1042,7 +1153,7 @@
           <div class="section-body">
             <p class="text-dim small mb8">
               Search the 2048-word BIP39 wordlist by prefix or by index
-              (0–2047). Useful when you wrote down partial words or need to find
+              (1–2048). Useful when you wrote down partial words or need to find
               a word by number.
             </p>
             <div class="controls-grid" style="grid-template-columns: 1fr 1fr">
@@ -1060,11 +1171,11 @@
                 />
               </div>
               <div class="control-group">
-                <label>search by index (1 – 2048)</label>
+                <label>search by index (1 - 2048)</label>
                 <input
                   type="number"
                   id="wl-index"
-                  placeholder="e.g. 0  847  2047"
+                  placeholder="e.g. 1  848  2048"
                   min="1"
                   max="2048"
                   style="font-family: var(--font-mono)"
@@ -1611,376 +1722,806 @@
     <div id="toast-container"></div>
 
     <script>
-      window.QRCode = (function () {
-        const GF_EXP = new Uint8Array(512);
-        const GF_LOG = new Uint8Array(256);
-        (function () {
-          let x = 1;
-          for (let i = 0; i < 255; i++) {
-            GF_EXP[i] = x;
-            GF_LOG[x] = i;
-            x = x << 1;
-            if (x & 256) x ^= 285;
-            x &= 255;
-          }
-          for (let i = 255; i < 512; i++) GF_EXP[i] = GF_EXP[i - 255];
-        })();
-        function gfMul(x, y) {
-          if (!x || !y) return 0;
-          return GF_EXP[(GF_LOG[x] + GF_LOG[y]) % 255];
-        }
-        function gfPow(x, p) {
-          return GF_EXP[(GF_LOG[x] * p) % 255];
-        }
-        function gfPolyMul(p, q) {
-          const r = new Uint8Array(p.length + q.length - 1);
-          for (let i = 0; i < p.length; i++)
-            for (let j = 0; j < q.length; j++) r[i + j] ^= gfMul(p[i], q[j]);
-          return r;
-        }
-        function gfPolyDiv(msg, gen) {
-          let out = new Uint8Array(msg);
-          for (let i = 0; i < msg.length - (gen.length - 1); i++) {
-            const c = out[i];
-            if (c)
-              for (let j = 1; j < gen.length; j++)
-                out[i + j] ^= gfMul(gen[j], c);
-          }
-          return out.slice(msg.length - (gen.length - 1));
-        }
-        function genPoly(n) {
-          let p = new Uint8Array([1]);
-          for (let i = 0; i < n; i++)
-            p = gfPolyMul(p, new Uint8Array([1, gfPow(2, i)]));
-          return p;
-        }
-        function encode(data) {
-          return new TextEncoder().encode(data);
-        }
-        const CAPS = [0, 16, 28, 44, 64, 86, 108, 124, 154, 182, 216, 254];
-        function getVersion(len) {
-          for (let v = 1; v <= 11; v++) if (CAPS[v] >= len) return v;
-          return 11;
-        }
-        const EC_WORDS = [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30];
-        const BLOCK_INFO = [
-          null,
-          { b1: [1, 16], b2: null },
-          { b1: [1, 28], b2: null },
-          { b1: [1, 44], b2: null },
-          { b1: [2, 32], b2: null },
-          { b1: [2, 43], b2: null },
-          { b1: [4, 27], b2: null },
-          { b1: [4, 31], b2: null },
-          { b1: [2, 38], b2: [2, 39] },
-          { b1: [3, 36], b2: [2, 37] },
-          { b1: [4, 43], b2: [1, 44] },
-          { b1: [1, 50], b2: [4, 51] },
-        ];
-        function makeMatrix(ver) {
-          const size = ver * 4 + 17;
-          const m = Array.from({ length: size }, () =>
-            new Array(size).fill(-1),
-          );
-          return { m, size };
-        }
-        function setFinder(m, r, c) {
-          const pat = [
-            [1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1],
-          ];
-          for (let i = 0; i < 7; i++)
-            for (let j = 0; j < 7; j++) m[r + i][c + j] = pat[i][j];
-        }
-        function setAlign(m, r, c) {
-          const pat = [
-            [1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 1],
-            [1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1],
-          ];
-          for (let i = 0; i < 5; i++)
-            for (let j = 0; j < 5; j++) {
-              const nr = r - 2 + i,
-                nc = c - 2 + j;
-              if (m[nr][nc] === -1) m[nr][nc] = pat[i][j];
+      // QR code generator by Kazuhiko Arase
+      // MIT License - https://github.com/kazuhikoarase/qrcode-generator
+      //
+      // After going down to rabbit hol of QR implementations ( my old one had issues ), this one
+      // kept coming up as the most reliable, its' the same engine behind
+      // Ian Coleman's BIP39 tool ( my biggest inspiration ) and countless other crypto utilities,
+      // No dependencies, no network calls, works 100% offline/airgap
+      //
+      // Wrapped below into window.QRCode.generate( text, canvas, size )
+      // to match the rest of this app without touching anything else
+      var qrcode = (function () {
+        var PAD0 = 0xec;
+        var PAD1 = 0x11;
+        var qrcode = function (typeNumber, errorCorrectionLevel) {
+          var _typeNumber = typeNumber;
+          var _errorCorrectionLevel =
+            QRErrorCorrectionLevel[errorCorrectionLevel];
+          var _modules = null;
+          var _moduleCount = 0;
+          var _dataCache = null;
+          var _dataList = [];
+          var _this = {};
+          var makeImpl = function (test, maskPattern) {
+            _moduleCount = _typeNumber * 4 + 17;
+            _modules = (function (mc) {
+              var m = new Array(mc);
+              for (var r = 0; r < mc; r++) {
+                m[r] = new Array(mc);
+                for (var c = 0; c < mc; c++) m[r][c] = null;
+              }
+              return m;
+            })(_moduleCount);
+            setupPositionProbePattern(0, 0);
+            setupPositionProbePattern(_moduleCount - 7, 0);
+            setupPositionProbePattern(0, _moduleCount - 7);
+            setupPositionAdjustPattern();
+            setupTimingPattern();
+            setupTypeInfo(test, maskPattern);
+            if (_typeNumber >= 7) setupTypeNumber(test);
+            if (_dataCache == null)
+              _dataCache = createData(
+                _typeNumber,
+                _errorCorrectionLevel,
+                _dataList,
+              );
+            mapData(_dataCache, maskPattern);
+          };
+          var setupPositionProbePattern = function (row, col) {
+            for (var r = -1; r <= 7; r++) {
+              if (row + r <= -1 || _moduleCount <= row + r) continue;
+              for (var c = -1; c <= 7; c++) {
+                if (col + c <= -1 || _moduleCount <= col + c) continue;
+                _modules[row + r][col + c] =
+                  (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
+                  (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+                  (2 <= r && r <= 4 && 2 <= c && c <= 4);
+              }
             }
-        }
-        const ALIGN_POS = [
-          null,
-          [],
-          [],
-          [6, 18],
-          [6, 22],
-          [6, 26],
-          [6, 34],
-          [6, 22, 38],
-          [6, 24, 42],
-          [6, 28, 46],
-          [6, 26, 44],
-          [6, 30, 48],
-        ];
-        function buildMatrix(ver, data, mask) {
-          const { m, size } = makeMatrix(ver);
-          setFinder(m, 0, 0);
-          setFinder(m, 0, size - 7);
-          setFinder(m, size - 7, 0);
-          for (let i = 0; i < 8; i++) {
-            m[7][i] = 0;
-            m[i][7] = 0;
-            m[7][size - 8 + i] = 0;
-            m[i][size - 8] = 0;
-            m[size - 8][i] = 0;
-            m[size - 8 + i][7] = 0;
-          }
-          for (let i = 8; i < size - 8; i++) {
-            m[6][i] = (i + 1) % 2;
-            m[i][6] = (i + 1) % 2;
-          }
-          m[4 * ver + 9][8] = 1;
-          const ap = ALIGN_POS[ver];
-          for (let i = 0; i < ap.length; i++)
-            for (let j = 0; j < ap.length; j++) setAlign(m, ap[i], ap[j]);
-          const FMT = [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            7,
-            8,
-            size - 8,
-            size - 7,
-            size - 6,
-            size - 5,
-            size - 4,
-            size - 3,
-            size - 2,
-            size - 1,
-          ];
-          for (let i = 0; i < 6; i++) {
-            m[8][FMT[i]] = 0;
-            m[FMT[i]][8] = 0;
-          }
-          m[8][7] = 0;
-          m[8][8] = 0;
-          m[7][8] = 0;
-          for (let i = 0; i < 8; i++) {
-            m[size - 8 + i][8] = 0;
-            m[8][size - 7 + i] = 0;
-          }
-          let idx = 0,
-            dir = -1,
-            row = size - 1;
-          for (let col = size - 1; col > 0; col -= 2) {
-            if (col === 6) col--;
-            for (let cnt = 0; cnt < size; cnt++) {
-              const r = dir === -1 ? row - cnt : cnt;
-              for (let dc = 0; dc < 2; dc++) {
-                const c = col - dc;
-                if (m[r][c] === -1) {
-                  let bit =
-                    idx < data.length * 8
-                      ? (data[Math.floor(idx / 8)] >> (7 - (idx % 8))) & 1
-                      : 0;
-                  const maskBit =
-                    mask === 0
-                      ? (r + c) % 2 === 0
-                      : mask === 1
-                        ? r % 2 === 0
-                        : mask === 2
-                          ? c % 3 === 0
-                          : mask === 3
-                            ? (r + c) % 3 === 0
-                            : mask === 4
-                              ? (Math.floor(r / 2) + Math.floor(c / 3)) % 2 ===
-                                0
-                              : mask === 5
-                                ? ((r * c) % 2) + ((r * c) % 3) === 0
-                                : mask === 6
-                                  ? (((r * c) % 2) + ((r * c) % 3)) % 2 === 0
-                                  : (((r + c) % 2) + ((r * c) % 3)) % 2 === 0;
-                  m[r][c] = bit ^ (maskBit ? 1 : 0);
-                  idx++;
+          };
+          var getBestMaskPattern = function () {
+            var minLost = 0,
+              pattern = 0;
+            for (var i = 0; i < 8; i++) {
+              makeImpl(true, i);
+              var lp = QRUtil.getLostPoint(_this);
+              if (i == 0 || minLost > lp) {
+                minLost = lp;
+                pattern = i;
+              }
+            }
+            return pattern;
+          };
+          var setupTimingPattern = function () {
+            for (var r = 8; r < _moduleCount - 8; r++) {
+              if (_modules[r][6] != null) continue;
+              _modules[r][6] = r % 2 == 0;
+            }
+            for (var c = 8; c < _moduleCount - 8; c++) {
+              if (_modules[6][c] != null) continue;
+              _modules[6][c] = c % 2 == 0;
+            }
+          };
+          var setupPositionAdjustPattern = function () {
+            var pos = QRUtil.getPatternPosition(_typeNumber);
+            for (var i = 0; i < pos.length; i++)
+              for (var j = 0; j < pos.length; j++) {
+                var row = pos[i],
+                  col = pos[j];
+                if (_modules[row][col] != null) continue;
+                for (var r = -2; r <= 2; r++)
+                  for (var c = -2; c <= 2; c++)
+                    _modules[row + r][col + c] =
+                      r == -2 ||
+                      r == 2 ||
+                      c == -2 ||
+                      c == 2 ||
+                      (r == 0 && c == 0);
+              }
+          };
+          var setupTypeNumber = function (test) {
+            var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+            for (var i = 0; i < 18; i++) {
+              var mod = !test && ((bits >> i) & 1) == 1;
+              _modules[Math.floor(i / 3)][(i % 3) + _moduleCount - 8 - 3] = mod;
+            }
+            for (var i = 0; i < 18; i++) {
+              var mod = !test && ((bits >> i) & 1) == 1;
+              _modules[(i % 3) + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+            }
+          };
+          var setupTypeInfo = function (test, maskPattern) {
+            var data = (_errorCorrectionLevel << 3) | maskPattern,
+              bits = QRUtil.getBCHTypeInfo(data);
+            for (var i = 0; i < 15; i++) {
+              var mod = !test && ((bits >> i) & 1) == 1;
+              if (i < 6) _modules[i][8] = mod;
+              else if (i < 8) _modules[i + 1][8] = mod;
+              else _modules[_moduleCount - 15 + i][8] = mod;
+            }
+            for (var i = 0; i < 15; i++) {
+              var mod = !test && ((bits >> i) & 1) == 1;
+              if (i < 8) _modules[8][_moduleCount - i - 1] = mod;
+              else if (i < 9) _modules[8][15 - i - 1 + 1] = mod;
+              else _modules[8][15 - i - 1] = mod;
+            }
+            _modules[_moduleCount - 8][8] = !test;
+          };
+          var mapData = function (data, maskPattern) {
+            var inc = -1,
+              row = _moduleCount - 1,
+              bitIndex = 7,
+              byteIndex = 0;
+            var maskFunc = QRUtil.getMaskFunction(maskPattern);
+            for (var col = _moduleCount - 1; col > 0; col -= 2) {
+              if (col == 6) col--;
+              while (true) {
+                for (var c = 0; c < 2; c++) {
+                  if (_modules[row][col - c] == null) {
+                    var dark =
+                      byteIndex < data.length
+                        ? ((data[byteIndex] >>> bitIndex) & 1) == 1
+                        : false;
+                    if (maskFunc(row, col - c)) dark = !dark;
+                    _modules[row][col - c] = dark;
+                    if (--bitIndex == -1) {
+                      byteIndex++;
+                      bitIndex = 7;
+                    }
+                  }
+                }
+                row += inc;
+                if (row < 0 || _moduleCount <= row) {
+                  row -= inc;
+                  inc = -inc;
+                  break;
                 }
               }
             }
-            dir = -dir;
-            row += dir * (size - 1);
-          }
-          const ecLevelBits = 0;
-          let formatBits = (ecLevelBits << 3) | mask;
-          let g = 0x537,
-            b = formatBits << 10;
-          for (let i = 14; i >= 10; i--) if ((b >> i) & 1) b ^= g << (i - 10);
-          formatBits = ((formatBits << 10) | b) ^ 0x5412;
-          const fmtBits = [];
-          for (let i = 14; i >= 0; i--) fmtBits.push((formatBits >> i) & 1);
-          const fmtPos = [
-            [8, 0],
-            [8, 1],
-            [8, 2],
-            [8, 3],
-            [8, 4],
-            [8, 5],
-            [8, 7],
-            [8, 8],
-            [7, 8],
-            [5, 8],
-            [4, 8],
-            [3, 8],
-            [2, 8],
-            [1, 8],
-            [0, 8],
-          ];
-          const fmtPos2 = [
-            [size - 1, 8],
-            [size - 2, 8],
-            [size - 3, 8],
-            [size - 4, 8],
-            [size - 5, 8],
-            [size - 6, 8],
-            [size - 7, 8],
-            [size - 8, 8],
-            [8, size - 8],
-            [8, size - 7],
-            [8, size - 6],
-            [8, size - 5],
-            [8, size - 4],
-            [8, size - 3],
-            [8, size - 2],
-            [8, size - 1],
-          ];
-          for (let i = 0; i < 15; i++)
-            m[fmtPos[i][0]][fmtPos[i][1]] = fmtBits[i];
-          for (let i = 0; i < 8; i++)
-            m[fmtPos2[i][0]][fmtPos2[i][1]] = fmtBits[i];
-          for (let i = 8; i < 15; i++)
-            m[fmtPos2[i][0]][fmtPos2[i][1]] = fmtBits[i - 8];
-          return m;
-        }
-        function scoreMatrix(m) {
-          const s = m.length;
-          let score = 0;
-          for (let r = 0; r < s; r++) {
-            let run = 1;
-            for (let c = 1; c < s; c++) {
-              if (m[r][c] === m[r][c - 1]) run++;
-              else {
-                if (run >= 5) score += run - 2;
-                run = 1;
+          };
+          var createBytes = function (buffer, rsBlocks) {
+            var offset = 0,
+              maxDcCount = 0,
+              maxEcCount = 0;
+            var dcdata = new Array(rsBlocks.length),
+              ecdata = new Array(rsBlocks.length);
+            for (var r = 0; r < rsBlocks.length; r++) {
+              var dcCount = rsBlocks[r].dataCount,
+                ecCount = rsBlocks[r].totalCount - dcCount;
+              maxDcCount = Math.max(maxDcCount, dcCount);
+              maxEcCount = Math.max(maxEcCount, ecCount);
+              dcdata[r] = new Array(dcCount);
+              for (var i = 0; i < dcdata[r].length; i++)
+                dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+              offset += dcCount;
+              var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+              var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+              var modPoly = rawPoly.mod(rsPoly);
+              ecdata[r] = new Array(rsPoly.getLength() - 1);
+              for (var i = 0; i < ecdata[r].length; i++) {
+                var mi = i + modPoly.getLength() - ecdata[r].length;
+                ecdata[r][i] = mi >= 0 ? modPoly.getAt(mi) : 0;
               }
             }
-            if (run >= 5) score += run - 2;
-          }
-          for (let c = 0; c < s; c++) {
-            let run = 1;
-            for (let r = 1; r < s; r++) {
-              if (m[r][c] === m[r - 1][c]) run++;
-              else {
-                if (run >= 5) score += run - 2;
-                run = 1;
-              }
-            }
-            if (run >= 5) score += run - 2;
-          }
-          return score;
-        }
-        function encodeData(data, ver) {
-          const bytes = encode(data);
-          const totalBytes = CAPS[ver];
-          const ecw = EC_WORDS[ver];
-          const bi = BLOCK_INFO[ver];
-          let bits = "";
-          bits += "0100";
-          bits += bytes.length.toString(2).padStart(8, "0");
-          for (const b of bytes) bits += b.toString(2).padStart(8, "0");
-          const dataCapBits = (totalBytes - ecw) * 8;
-          for (let i = 0; i < 4 && bits.length < dataCapBits; i++) bits += "0";
-          while (bits.length % 8) bits += "0";
-          let pad = 0;
-          while (bits.length < dataCapBits) {
-            bits += pad % 2 === 0 ? "11101100" : "00010001";
-            pad++;
-          }
-          const dataBytes = [];
-          for (let i = 0; i < bits.length; i += 8)
-            dataBytes.push(parseInt(bits.slice(i, i + 8), 2));
-          const blocks = [];
-          let pos = 0;
-          const addBlocks = (count, k) => {
-            for (let i = 0; i < count; i++) {
-              const block = dataBytes.slice(pos, pos + k);
-              pos += k;
-              const ec = gfPolyDiv(
-                [...block, ...new Array(ecw).fill(0)],
-                genPoly(ecw),
+            var totalCodeCount = 0;
+            for (var i = 0; i < rsBlocks.length; i++)
+              totalCodeCount += rsBlocks[i].totalCount;
+            var data = new Array(totalCodeCount),
+              index = 0;
+            for (var i = 0; i < maxDcCount; i++)
+              for (var r = 0; r < rsBlocks.length; r++)
+                if (i < dcdata[r].length) data[index++] = dcdata[r][i];
+            for (var i = 0; i < maxEcCount; i++)
+              for (var r = 0; r < rsBlocks.length; r++)
+                if (i < ecdata[r].length) data[index++] = ecdata[r][i];
+            return data;
+          };
+          var createData = function (
+            typeNumber,
+            errorCorrectionLevel,
+            dataList,
+          ) {
+            var rsBlocks = QRRSBlock.getRSBlocks(
+              typeNumber,
+              errorCorrectionLevel,
+            );
+            var buffer = qrBitBuffer();
+            for (var i = 0; i < dataList.length; i++) {
+              var d = dataList[i];
+              buffer.put(d.getMode(), 4);
+              buffer.put(
+                d.getLength(),
+                QRUtil.getLengthInBits(d.getMode(), typeNumber),
               );
-              blocks.push({ data: block, ec: Array.from(ec) });
+              d.write(buffer);
+            }
+            var totalDataCount = 0;
+            for (var i = 0; i < rsBlocks.length; i++)
+              totalDataCount += rsBlocks[i].dataCount;
+            if (buffer.getLengthInBits() > totalDataCount * 8)
+              throw new Error(
+                "overflow: " +
+                  buffer.getLengthInBits() +
+                  ">" +
+                  totalDataCount * 8,
+              );
+            if (buffer.getLengthInBits() + 4 <= totalDataCount * 8)
+              buffer.put(0, 4);
+            while (buffer.getLengthInBits() % 8 != 0) buffer.putBit(false);
+            while (true) {
+              if (buffer.getLengthInBits() >= totalDataCount * 8) break;
+              buffer.put(PAD0, 8);
+              if (buffer.getLengthInBits() >= totalDataCount * 8) break;
+              buffer.put(PAD1, 8);
+            }
+            return createBytes(buffer, rsBlocks);
+          };
+          _this.addData = function (data) {
+            _dataList.push(qr8BitByte(data));
+            _dataCache = null;
+          };
+          _this.isDark = function (row, col) {
+            if (
+              row < 0 ||
+              _moduleCount <= row ||
+              col < 0 ||
+              _moduleCount <= col
+            )
+              throw new Error(row + "," + col);
+            return _modules[row][col];
+          };
+          _this.getModuleCount = function () {
+            return _moduleCount;
+          };
+          _this.make = function () {
+            makeImpl(false, getBestMaskPattern());
+          };
+          return _this;
+        };
+        qrcode.stringToBytes = function (s) {
+          var b = [];
+          for (var i = 0; i < s.length; i++) b.push(s.charCodeAt(i) & 0xff);
+          return b;
+        };
+        var QRErrorCorrectionLevel = { L: 1, M: 0, Q: 3, H: 2 };
+        var QRUtil = (function () {
+          var PPT = [
+            [],
+            [6, 18],
+            [6, 22],
+            [6, 26],
+            [6, 30],
+            [6, 34],
+            [6, 22, 38],
+            [6, 24, 42],
+            [6, 26, 46],
+            [6, 28, 50],
+            [6, 30, 54],
+            [6, 32, 58],
+            [6, 34, 62],
+            [6, 26, 46, 66],
+            [6, 26, 48, 70],
+            [6, 26, 50, 74],
+            [6, 30, 54, 78],
+            [6, 30, 56, 82],
+            [6, 30, 58, 86],
+            [6, 34, 62, 90],
+            [6, 28, 50, 72, 94],
+            [6, 26, 50, 74, 98],
+            [6, 30, 54, 78, 102],
+            [6, 28, 54, 80, 106],
+            [6, 32, 58, 84, 110],
+            [6, 30, 58, 86, 114],
+            [6, 34, 62, 90, 118],
+            [6, 26, 50, 74, 98, 122],
+            [6, 30, 54, 78, 102, 126],
+            [6, 26, 52, 78, 104, 130],
+            [6, 30, 56, 82, 108, 134],
+            [6, 34, 60, 86, 112, 138],
+            [6, 30, 58, 86, 114, 142],
+            [6, 34, 62, 90, 118, 146],
+            [6, 30, 54, 78, 102, 126, 150],
+            [6, 24, 50, 76, 102, 128, 154],
+            [6, 28, 54, 80, 106, 132, 158],
+            [6, 32, 58, 84, 110, 136, 162],
+            [6, 26, 54, 82, 110, 138, 166],
+            [6, 30, 58, 86, 114, 142, 170],
+          ];
+          var G15 =
+              (1 << 10) |
+              (1 << 8) |
+              (1 << 5) |
+              (1 << 4) |
+              (1 << 2) |
+              (1 << 1) |
+              (1 << 0),
+            G18 =
+              (1 << 12) |
+              (1 << 11) |
+              (1 << 10) |
+              (1 << 9) |
+              (1 << 8) |
+              (1 << 5) |
+              (1 << 2) |
+              (1 << 0),
+            G15M = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+          var getBCHDigit = function (d) {
+            var n = 0;
+            while (d != 0) {
+              n++;
+              d >>>= 1;
+            }
+            return n;
+          };
+          var _this = {};
+          _this.getBCHTypeInfo = function (d) {
+            var x = d << 10;
+            while (getBCHDigit(x) - getBCHDigit(G15) >= 0)
+              x ^= G15 << (getBCHDigit(x) - getBCHDigit(G15));
+            return ((d << 10) | x) ^ G15M;
+          };
+          _this.getBCHTypeNumber = function (d) {
+            var x = d << 12;
+            while (getBCHDigit(x) - getBCHDigit(G18) >= 0)
+              x ^= G18 << (getBCHDigit(x) - getBCHDigit(G18));
+            return (d << 12) | x;
+          };
+          _this.getPatternPosition = function (t) {
+            return PPT[t - 1];
+          };
+          _this.getMaskFunction = function (p) {
+            switch (p) {
+              case 0:
+                return function (i, j) {
+                  return (i + j) % 2 == 0;
+                };
+              case 1:
+                return function (i, j) {
+                  return i % 2 == 0;
+                };
+              case 2:
+                return function (i, j) {
+                  return j % 3 == 0;
+                };
+              case 3:
+                return function (i, j) {
+                  return (i + j) % 3 == 0;
+                };
+              case 4:
+                return function (i, j) {
+                  return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
+                };
+              case 5:
+                return function (i, j) {
+                  return ((i * j) % 2) + ((i * j) % 3) == 0;
+                };
+              case 6:
+                return function (i, j) {
+                  return (((i * j) % 2) + ((i * j) % 3)) % 2 == 0;
+                };
+              case 7:
+                return function (i, j) {
+                  return (((i * j) % 3) + ((i + j) % 2)) % 2 == 0;
+                };
+              default:
+                throw new Error("bad mask:" + p);
             }
           };
-          if (bi.b2) {
-            addBlocks(bi.b1[0], bi.b1[1]);
-            addBlocks(bi.b2[0], bi.b2[1]);
-          } else {
-            addBlocks(bi.b1[0], bi.b1[1]);
-          }
-          const result = [];
-          const maxDataLen = Math.max(...blocks.map((b) => b.data.length));
-          for (let i = 0; i < maxDataLen; i++)
-            for (const b of blocks)
-              if (i < b.data.length) result.push(b.data[i]);
-          for (let i = 0; i < ecw; i++)
-            for (const b of blocks) result.push(b.ec[i]);
-          while (result.length < totalBytes) result.push(0);
-          return result;
-        }
-        return {
-          generate(text, canvas, size = 200) {
-            const ver = Math.min(
-              11,
-              getVersion(new TextEncoder().encode(text).length + 3),
-            );
-            const codewords = encodeData(text, ver);
-            let bestScore = Infinity,
-              bestMask = 0,
-              bestMatrix = null;
-            for (let mask = 0; mask < 8; mask++) {
-              const matrix = buildMatrix(ver, codewords, mask);
-              const score = scoreMatrix(matrix);
-              if (score < bestScore) {
-                bestScore = score;
-                bestMask = mask;
-                bestMatrix = matrix;
+          _this.getErrorCorrectPolynomial = function (n) {
+            var a = qrPolynomial([1], 0);
+            for (var i = 0; i < n; i++)
+              a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0));
+            return a;
+          };
+          _this.getLengthInBits = function (m, t) {
+            if (1 <= t && t < 10) {
+              switch (m) {
+                case 1:
+                  return 10;
+                case 2:
+                  return 9;
+                case 4:
+                  return 8;
+                case 8:
+                  return 8;
+              }
+            } else if (t < 27) {
+              switch (m) {
+                case 1:
+                  return 12;
+                case 2:
+                  return 11;
+                case 4:
+                  return 16;
+                case 8:
+                  return 10;
+              }
+            } else {
+              switch (m) {
+                case 1:
+                  return 14;
+                case 2:
+                  return 13;
+                case 4:
+                  return 16;
+                case 8:
+                  return 12;
               }
             }
-            const qrSize = bestMatrix.length;
-            const scale = Math.floor(size / (qrSize + 8));
-            const offset = Math.floor((size - qrSize * scale) / 2);
-            canvas.width = canvas.height = size;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, size, size);
-            ctx.fillStyle = "#000000";
-            for (let r = 0; r < qrSize; r++)
-              for (let c = 0; c < qrSize; c++)
-                if (bestMatrix[r][c])
-                  ctx.fillRect(
-                    offset + c * scale,
-                    offset + r * scale,
-                    scale,
-                    scale,
-                  );
-          },
+            throw new Error("mode:" + m);
+          };
+          _this.getLostPoint = function (qr) {
+            var mc = qr.getModuleCount(),
+              lp = 0;
+            for (var r = 0; r < mc; r++)
+              for (var c = 0; c < mc; c++) {
+                var sc = 0,
+                  dk = qr.isDark(r, c);
+                for (var rr = -1; rr <= 1; rr++) {
+                  if (r + rr < 0 || mc <= r + rr) continue;
+                  for (var cc = -1; cc <= 1; cc++) {
+                    if (c + cc < 0 || mc <= c + cc) continue;
+                    if (rr == 0 && cc == 0) continue;
+                    if (dk == qr.isDark(r + rr, c + cc)) sc++;
+                  }
+                }
+                if (sc > 5) lp += 3 + sc - 5;
+              }
+            for (var r = 0; r < mc - 1; r++)
+              for (var c = 0; c < mc - 1; c++) {
+                var cnt = 0;
+                if (qr.isDark(r, c)) cnt++;
+                if (qr.isDark(r + 1, c)) cnt++;
+                if (qr.isDark(r, c + 1)) cnt++;
+                if (qr.isDark(r + 1, c + 1)) cnt++;
+                if (cnt == 0 || cnt == 4) lp += 3;
+              }
+            for (var r = 0; r < mc; r++)
+              for (var c = 0; c < mc - 6; c++) {
+                if (
+                  qr.isDark(r, c) &&
+                  !qr.isDark(r, c + 1) &&
+                  qr.isDark(r, c + 2) &&
+                  qr.isDark(r, c + 3) &&
+                  qr.isDark(r, c + 4) &&
+                  !qr.isDark(r, c + 5) &&
+                  qr.isDark(r, c + 6)
+                )
+                  lp += 40;
+              }
+            for (var c = 0; c < mc; c++)
+              for (var r = 0; r < mc - 6; r++) {
+                if (
+                  qr.isDark(r, c) &&
+                  !qr.isDark(r + 1, c) &&
+                  qr.isDark(r + 2, c) &&
+                  qr.isDark(r + 3, c) &&
+                  qr.isDark(r + 4, c) &&
+                  !qr.isDark(r + 5, c) &&
+                  qr.isDark(r + 6, c)
+                )
+                  lp += 40;
+              }
+            var dk = 0;
+            for (var c = 0; c < mc; c++)
+              for (var r = 0; r < mc; r++) if (qr.isDark(r, c)) dk++;
+            lp += (Math.abs((100 * dk) / mc / mc - 50) / 5) * 10;
+            return lp;
+          };
+          return _this;
+        })();
+        var QRMath = (function () {
+          var ET = new Array(256),
+            LT = new Array(256);
+          for (var i = 0; i < 8; i++) ET[i] = 1 << i;
+          for (var i = 8; i < 256; i++)
+            ET[i] = ET[i - 4] ^ ET[i - 5] ^ ET[i - 6] ^ ET[i - 8];
+          for (var i = 0; i < 255; i++) LT[ET[i]] = i;
+          var _t = {};
+          _t.glog = function (n) {
+            if (n < 1) throw new Error("glog(" + n + ")");
+            return LT[n];
+          };
+          _t.gexp = function (n) {
+            while (n < 0) n += 255;
+            while (n >= 256) n -= 255;
+            return ET[n];
+          };
+          return _t;
+        })();
+        function qrPolynomial(num, shift) {
+          var _n = (function () {
+            var o = 0;
+            while (o < num.length && num[o] == 0) o++;
+            var a = new Array(num.length - o + shift);
+            for (var i = 0; i < num.length - o; i++) a[i] = num[i + o];
+            return a;
+          })();
+          var _t = {};
+          _t.getAt = function (i) {
+            return _n[i];
+          };
+          _t.getLength = function () {
+            return _n.length;
+          };
+          _t.multiply = function (e) {
+            var n = new Array(_t.getLength() + e.getLength() - 1);
+            for (var i = 0; i < _t.getLength(); i++)
+              for (var j = 0; j < e.getLength(); j++)
+                n[i + j] ^= QRMath.gexp(
+                  QRMath.glog(_t.getAt(i)) + QRMath.glog(e.getAt(j)),
+                );
+            return qrPolynomial(n, 0);
+          };
+          _t.mod = function (e) {
+            if (_t.getLength() - e.getLength() < 0) return _t;
+            var ratio = QRMath.glog(_t.getAt(0)) - QRMath.glog(e.getAt(0));
+            var n = new Array(_t.getLength());
+            for (var i = 0; i < _t.getLength(); i++) n[i] = _t.getAt(i);
+            for (var i = 0; i < e.getLength(); i++)
+              n[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i)) + ratio);
+            return qrPolynomial(n, 0).mod(e);
+          };
+          return _t;
+        }
+        var QRRSBlock = (function () {
+          var T = [
+            [1, 26, 19],
+            [1, 26, 16],
+            [1, 26, 13],
+            [1, 26, 9],
+            [1, 44, 34],
+            [1, 44, 28],
+            [1, 44, 22],
+            [1, 44, 16],
+            [1, 70, 55],
+            [1, 70, 44],
+            [2, 35, 17],
+            [2, 35, 13],
+            [1, 100, 80],
+            [2, 50, 32],
+            [2, 50, 24],
+            [4, 25, 9],
+            [1, 134, 108],
+            [2, 67, 43],
+            [2, 33, 15, 2, 34, 16],
+            [2, 33, 11, 2, 34, 12],
+            [2, 86, 68],
+            [4, 43, 27],
+            [4, 43, 19],
+            [4, 43, 15],
+            [2, 98, 78],
+            [4, 49, 31],
+            [2, 32, 14, 4, 33, 15],
+            [4, 39, 13, 1, 40, 14],
+            [2, 121, 97],
+            [2, 60, 38, 2, 61, 39],
+            [4, 40, 18, 2, 41, 19],
+            [4, 40, 14, 2, 41, 15],
+            [2, 146, 116],
+            [3, 58, 36, 2, 59, 37],
+            [4, 36, 16, 4, 37, 17],
+            [4, 36, 12, 4, 37, 13],
+            [2, 86, 68, 2, 87, 69],
+            [4, 69, 43, 1, 70, 44],
+            [6, 43, 19, 2, 44, 20],
+            [6, 43, 15, 2, 44, 16],
+            [4, 101, 81],
+            [1, 80, 50, 4, 81, 51],
+            [4, 50, 22, 4, 51, 23],
+            [3, 36, 12, 8, 37, 13],
+            [2, 116, 92, 2, 117, 93],
+            [6, 58, 36, 2, 59, 37],
+            [4, 46, 20, 6, 47, 21],
+            [7, 42, 14, 4, 43, 15],
+            [4, 133, 107],
+            [8, 59, 37, 1, 60, 38],
+            [8, 44, 20, 4, 45, 21],
+            [12, 33, 11, 4, 34, 12],
+            [3, 145, 115, 1, 146, 116],
+            [4, 64, 40, 5, 65, 41],
+            [11, 36, 16, 5, 37, 17],
+            [11, 36, 12, 5, 37, 13],
+            [5, 109, 87, 1, 110, 88],
+            [5, 65, 41, 5, 66, 42],
+            [5, 54, 24, 7, 55, 25],
+            [11, 36, 12, 7, 37, 13],
+            [5, 122, 98, 1, 123, 99],
+            [7, 73, 45, 3, 74, 46],
+            [15, 43, 19, 2, 44, 20],
+            [3, 45, 15, 13, 46, 16],
+            [1, 135, 107, 5, 136, 108],
+            [10, 74, 46, 1, 75, 47],
+            [1, 50, 22, 15, 51, 23],
+            [2, 42, 14, 17, 43, 15],
+            [5, 150, 120, 1, 151, 121],
+            [9, 69, 43, 4, 70, 44],
+            [17, 50, 22, 1, 51, 23],
+            [2, 42, 14, 19, 43, 15],
+            [3, 141, 113, 4, 142, 114],
+            [3, 70, 44, 11, 71, 45],
+            [17, 47, 21, 4, 48, 22],
+            [9, 39, 13, 16, 40, 14],
+            [3, 135, 107, 5, 136, 108],
+            [3, 67, 41, 13, 68, 42],
+            [15, 54, 24, 5, 55, 25],
+            [15, 43, 15, 10, 44, 16],
+            [4, 144, 116, 4, 145, 117],
+            [17, 68, 42],
+            [17, 50, 22, 6, 51, 23],
+            [19, 46, 16, 6, 47, 17],
+            [2, 139, 111, 7, 140, 112],
+            [17, 74, 46],
+            [7, 54, 24, 16, 55, 25],
+            [34, 37, 13],
+            [4, 151, 121, 5, 152, 122],
+            [4, 75, 47, 14, 76, 48],
+            [11, 54, 24, 14, 55, 25],
+            [16, 45, 15, 14, 46, 16],
+            [6, 147, 117, 4, 148, 118],
+            [6, 73, 45, 14, 74, 46],
+            [11, 54, 24, 16, 55, 25],
+            [30, 46, 16, 2, 47, 17],
+            [8, 132, 106, 4, 133, 107],
+            [8, 75, 47, 13, 76, 48],
+            [7, 54, 24, 22, 55, 25],
+            [22, 45, 15, 13, 46, 16],
+            [10, 142, 114, 2, 143, 115],
+            [19, 74, 46, 4, 75, 47],
+            [28, 50, 22, 6, 51, 23],
+            [33, 46, 16, 4, 47, 17],
+            [8, 152, 122, 4, 153, 123],
+            [22, 73, 45, 3, 74, 46],
+            [8, 53, 23, 26, 54, 24],
+            [12, 45, 15, 28, 46, 16],
+            [3, 147, 117, 10, 148, 118],
+            [3, 73, 45, 23, 74, 46],
+            [4, 54, 24, 31, 55, 25],
+            [11, 45, 15, 31, 46, 16],
+            [7, 146, 116, 7, 147, 117],
+            [21, 73, 45, 7, 74, 46],
+            [1, 53, 23, 37, 54, 24],
+            [19, 45, 15, 26, 46, 16],
+            [5, 145, 115, 10, 146, 116],
+            [19, 75, 47, 10, 76, 48],
+            [15, 54, 24, 25, 55, 25],
+            [23, 45, 15, 25, 46, 16],
+            [13, 145, 115, 3, 146, 116],
+            [2, 74, 46, 29, 75, 47],
+            [42, 54, 24, 1, 55, 25],
+            [23, 45, 15, 28, 46, 16],
+            [17, 145, 115],
+            [10, 74, 46, 23, 75, 47],
+            [10, 54, 24, 35, 55, 25],
+            [19, 45, 15, 35, 46, 16],
+            [17, 145, 115, 1, 146, 116],
+            [14, 74, 46, 21, 75, 47],
+            [29, 54, 24, 19, 55, 25],
+            [11, 45, 15, 46, 46, 16],
+            [13, 145, 115, 6, 146, 116],
+            [14, 74, 46, 23, 75, 47],
+            [44, 54, 24, 7, 55, 25],
+            [59, 46, 16, 1, 47, 17],
+            [12, 151, 121, 7, 152, 122],
+            [12, 75, 47, 26, 76, 48],
+            [39, 54, 24, 14, 55, 25],
+            [22, 45, 15, 41, 46, 16],
+            [6, 151, 121, 14, 152, 122],
+            [6, 75, 47, 34, 76, 48],
+            [46, 54, 24, 10, 55, 25],
+            [2, 45, 15, 64, 46, 16],
+            [17, 152, 122, 4, 153, 123],
+            [29, 74, 46, 14, 75, 47],
+            [49, 54, 24, 10, 55, 25],
+            [24, 45, 15, 46, 46, 16],
+            [4, 152, 122, 18, 153, 123],
+            [13, 74, 46, 32, 75, 47],
+            [48, 54, 24, 14, 55, 25],
+            [42, 45, 15, 32, 46, 16],
+            [20, 147, 117, 4, 148, 118],
+            [40, 75, 47, 7, 76, 48],
+            [43, 54, 24, 22, 55, 25],
+            [10, 45, 15, 67, 46, 16],
+            [19, 148, 118, 6, 149, 119],
+            [18, 75, 47, 31, 76, 48],
+            [34, 54, 24, 34, 55, 25],
+            [20, 45, 15, 61, 46, 16],
+          ];
+          var qrRSBlock = function (tc, dc) {
+            return { totalCount: tc, dataCount: dc };
+          };
+          var _t = {};
+          _t.getRSBlocks = function (tn, ecl) {
+            var tbl = T[(tn - 1) * 4 + [1, 0, 3, 2][ecl]];
+            if (!tbl) throw new Error("bad RS block");
+            var len = tbl.length / 3,
+              list = [];
+            for (var i = 0; i < len; i++)
+              for (var j = 0; j < tbl[i * 3]; j++)
+                list.push(qrRSBlock(tbl[i * 3 + 1], tbl[i * 3 + 2]));
+            return list;
+          };
+          return _t;
+        })();
+        var qrBitBuffer = function () {
+          var _b = [],
+            _l = 0,
+            _t = {};
+          _t.getBuffer = function () {
+            return _b;
+          };
+          _t.getLengthInBits = function () {
+            return _l;
+          };
+          _t.put = function (n, l) {
+            for (var i = 0; i < l; i++)
+              _t.putBit(((n >>> (l - i - 1)) & 1) == 1);
+          };
+          _t.putBit = function (b) {
+            var bi = Math.floor(_l / 8);
+            if (_b.length <= bi) _b.push(0);
+            if (b) _b[bi] |= 0x80 >>> (_l % 8);
+            _l++;
+          };
+          return _t;
         };
+        var qr8BitByte = function (d) {
+          var _d = d,
+            _b = qrcode.stringToBytes(d),
+            _t = {};
+          _t.getMode = function () {
+            return 4;
+          };
+          _t.getLength = function () {
+            return _b.length;
+          };
+          _t.write = function (buf) {
+            for (var i = 0; i < _b.length; i++) buf.put(_b[i], 8);
+          };
+          return _t;
+        };
+        return qrcode;
       })();
+
+      window.QRCode = {
+        generate: function (text, canvas, size) {
+          size = size || 200;
+          var byteCaps = [
+            0, 16, 28, 44, 64, 86, 108, 124, 154, 182, 216, 254, 290, 334, 365,
+            415, 453, 507, 563, 627, 669, 714, 782, 860, 914, 1000, 1062, 1128,
+            1193, 1267, 1373, 1455, 1541, 1631, 1725, 1812, 1914, 1992, 2102,
+            2216, 2334,
+          ];
+          var byteLen = new TextEncoder().encode(text).length;
+          var ver = 1;
+          for (var v = 1; v <= 40; v++) {
+            if (byteCaps[v] >= byteLen) {
+              ver = v;
+              break;
+            }
+          }
+          var qr = qrcode(ver, "M");
+          qr.addData(text);
+          qr.make();
+          var mc = qr.getModuleCount();
+          var quietZone = 4;
+          var totalModules = mc + quietZone * 2;
+          var scale = Math.max(1, Math.floor(size / totalModules));
+          var dim = totalModules * scale;
+          canvas.width = canvas.height = dim;
+          var ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, dim, dim);
+          ctx.fillStyle = "#000000";
+          var off = quietZone * scale;
+          for (var r = 0; r < mc; r++)
+            for (var c = 0; c < mc; c++)
+              if (qr.isDark(r, c))
+                ctx.fillRect(off + c * scale, off + r * scale, scale, scale);
+        },
+      };
     </script>
 
     <script type="module">
@@ -2136,7 +2677,7 @@
           document.getElementById("string-input").style.webkitTextSecurity =
             stringVisible ? "none" : "disc";
           document.getElementById("string-visibility-toggle").textContent =
-            stringVisible ? "🙈 HIDE" : "👁 SHOW";
+            stringVisible ? "👁 HIDE" : "👁 SHOW";
         });
       document.getElementById("string-input").addEventListener("input", (e) => {
         const val = e.target.value;
@@ -2407,6 +2948,51 @@
         });
       });
 
+      function makePassphraseToggle(inputId, btnId) {
+        const btn = document.getElementById(btnId);
+        const inp = document.getElementById(inputId);
+        if (!btn || !inp) return;
+        btn.addEventListener("click", () => {
+          const showing = inp.type === "text";
+          inp.type = showing ? "password" : "text";
+          btn.textContent = showing ? "👁" : "👁";
+          btn.title = showing ? "show" : "hide";
+        });
+      }
+      makePassphraseToggle("passphrase", "passphrase-toggle");
+      makePassphraseToggle("passphrase-confirm", "passphrase-confirm-toggle");
+      makePassphraseToggle("import-passphrase", "import-passphrase-toggle");
+      makePassphraseToggle("hd-passphrase", "hd-passphrase-toggle");
+
+      const ppField = document.getElementById("passphrase");
+      const ppConfirmWrap = document.getElementById("passphrase-confirm-wrap");
+      const ppConfirm = document.getElementById("passphrase-confirm");
+      const ppMatchMsg = document.getElementById("passphrase-match-msg");
+      function checkPassphraseMatch() {
+        const a = ppField.value,
+          b = ppConfirm.value;
+        if (!b) {
+          ppMatchMsg.textContent = "";
+          return;
+        }
+        if (a === b) {
+          ppMatchMsg.style.color = "var(--green)";
+          ppMatchMsg.textContent = "passphrases match";
+        } else {
+          ppMatchMsg.style.color = "var(--red)";
+          ppMatchMsg.textContent = "passphrases do not match — typo risk!";
+        }
+      }
+      ppField.addEventListener("input", () => {
+        ppConfirmWrap.style.display = ppField.value ? "block" : "none";
+        if (!ppField.value) {
+          ppConfirm.value = "";
+          ppMatchMsg.textContent = "";
+        }
+        checkPassphraseMatch();
+      });
+      ppConfirm.addEventListener("input", checkPassphraseMatch);
+
       function toast(msg, type = "success") {
         const el = document.createElement("div");
         el.className = `toast ${type}`;
@@ -2560,8 +3146,8 @@
           if (entropyMode === "dice" && !diceValid)
             throw new Error(
               diceDeterministic
-                ? "dice entropy not ready, enter at least 20 rolls (1–6)"
-                : "dice entropy not ready, enter at least 99 rolls (1–6)",
+                ? "dice entropy not ready, enter at least 50 rolls (1-6)"
+                : "dice entropy not ready, enter at least 99 rolls (1-6)",
             );
           if (entropyMode === "string") {
             const str = document.getElementById("string-input").value;
@@ -2678,7 +3264,7 @@
           '<h2 style="font-size:18px;margin-bottom:16px;font-family:monospace">BITCOIN PAPER WALLETS - GENERATED OFFLINE</h2>';
         generatedWallets.forEach((w, i) => {
           const passphraseNote = w.passphrase
-            ? '<div class="print-label" style="margin-top:8px;color:#c8a000;">BIP39 PASSPHRASE WAS USED - back up your passphrase separately or funds will be unrecoverable</div>'
+            ? `<div class="print-label" style="margin-top:10px;padding:6px 8px;border:1.5px solid #c8a000;border-radius:3px;color:#c8a000;font-weight:bold;">⚠ BIP39 PASSPHRASE (25TH WORD) WAS USED<br><span style="font-weight:normal;font-size:11px;">This wallet CANNOT be recovered from the seed phrase alone. You must also have the correct passphrase. Back it up separately in a secure location.</span></div>`
             : "";
           const addrCanvas = document.createElement("canvas");
           const privCanvas = document.createElement("canvas");
@@ -2730,7 +3316,7 @@
             lines.push(`Path:        ${w.path}`);
             if (w.passphrase)
               lines.push(
-                `Passphrase:  (custom passphrase was set - store it separately)`,
+                `Passphrase: A BIP39 PASSPHRASE (25TH WORD) WAS USED\n             This wallet cannot be recovered from the seed alone.\n             Back up your passphrase separately - without it funds are LOST.`,
               );
             lines.push("");
             lines.push(
@@ -3211,7 +3797,7 @@
             ${matches
               .map(({ word, index }) => {
                 const bin = index.toString(2).padStart(11, "0");
-                return `<div style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:5px 10px;cursor:default;" title="index ${index} = ${bin}">
+                return `<div style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:5px 10px;cursor:default;" title="BIP39 word #${index + 1} = ${bin}">
                 <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);min-width:30px;text-align:right;">#${index + 1}</span>
                 <span style="font-family:var(--font-mono);color:var(--green);font-size:13px;font-weight:600;">${word}</span>
                 <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">${bin}</span>
@@ -3245,7 +3831,7 @@
         const idx = parseInt(val) - 1;
         if (isNaN(idx) || idx < 0 || idx > 2047) {
           document.getElementById("wl-results").innerHTML =
-            `<div class="text-dim small" style="color:var(--red)">Index must be 1–2048</div>`;
+            `<div class="text-dim small" style="color:var(--red)">Index must be 1-2048</div>`;
           return;
         }
         renderWordChips([{ word: WORDLIST[idx], index: idx }]);
@@ -3308,7 +3894,7 @@
           return;
         }
         if (!/^[0-9a-f]+$/.test(raw)) {
-          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Invalid hex - only 0–9 and a-f</div></div>`;
+          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Invalid hex - only 0-9 and a-f</div></div>`;
           return;
         }
         if (raw.length !== 32 && raw.length !== 64) {
@@ -3351,11 +3937,11 @@
         );
         html += iRow(
           `Step 5 - 11-bit chunks → index → BIP39 word`,
-          `<div style="overflow-x:auto;"><table style="border-collapse:collapse;width:100%;">
+          `<div style="overflow-x:auto;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:8px;padding:4px 8px;background:var(--bg3);border-radius:var(--radius);border-left:2px solid var(--green-dim);">binary value -> ( BIP39 word # ) &nbsp;·&nbsp; 11-bit binary is 0-based ( 0–2047 ); BIP39 list is 1-based ( word #1–#2048 )</div><table style="border-collapse:collapse;width:100%;">
              <thead><tr>
                <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">#</th>
                <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">11 bits</th>
-               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">decimal</th>
+               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">decimal (word #)</th>
                <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">word</th>
              </tr></thead>
              <tbody>
@@ -3366,7 +3952,7 @@
                    return `<tr>
                    <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">${i + 1}</td>
                    <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:${col};">${chunk}</td>
-                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);">${idx + 1}</td>
+                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);">${idx} <span style="color:var(--text-muted)"> -> (<span style="color:var(--green)">#${idx + 1}</span>)</span></td>
                    <td style="padding:3px 8px;font-family:var(--font-mono);font-size:13px;color:${col};font-weight:600;">${WORDLIST[idx]}</td>
                  </tr>`;
                  })
