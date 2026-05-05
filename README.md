@@ -23,11 +23,13 @@
 
 ---
 
+# [DEMO PLAYGROUND](https://fully-air-gapped-bitcoin-key-genera.vercel.app/)
+
 ---
 
-## Quick Start ( Latest Release ) 
+## Quick Start
 
-[![Download](https://img.shields.io/badge/download-v1.2.0-blue)](https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.0)
+[![Download](https://img.shields.io/badge/download-v1.2.1-blue)](https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.1)
 
 [![VIDEO](https://img.shields.io/badge/video-guide-red)](https://www.youtube.com/watch?v=xs8KU_F5JaQ&t=869s)
 
@@ -44,27 +46,27 @@ Never generate wallets on a machine connected to the internet.
 
 Latest Release
 
-Latest version: v1.2.0
+Latest version: v1.2.1
 
-https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.0
+https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.1
 
-SHA256 of airgap-predator-v1.2.0.html
+SHA256 of airGap_Predator_v1.2.1.html:
 
-## 0032096a1d59c61de59c998521d07e88010b426458a64a7da2bb7d23a66b2b8d
+## 1ddf1b1ff5a6736d5f6ee4f1d8832831c4e8887a51d735f281ca6ea75a81f68c
 
 Before using the generator, verify that the file was not modified
 
 Steps:
 
-Transfer airgap-predator-v1.2.0.html to your offline machine
+Transfer airGap_Predator_v1.2.1.html to your offline machine
 
 Open a terminal and run:
 
-sha256sum airgap-predator-v1.2.0.html
+sha256sum airGap_Predator_v1.2.1.html
 
 Expected output:
 
-## 0032096a1d59c61de59c998521d07e88010b426458a64a7da2bb7d23a66b2b8d
+## 1ddf1b1ff5a6736d5f6ee4f1d8832831c4e8887a51d735f281ca6ea75a81f68c
 
 Proceed only if the hash matches exactly
 
@@ -83,14 +85,11 @@ Usage:
 Boot into Tails or another air-gapped environment
 Verify the file integrity using sha256sum
 Open the file locally:
-file://airgap-predator-v1.2.0.html
+airGap_Predator_v1.2.1.html
 
 Generate wallets
 
 ```
-** screens are still valid but it's related mostly prev releases ( 1.0 and 1.1 )  <br>
-[Latest Release](https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.0)
-
 ## SCREENSHOTS
 
 ![screenshot](images/ui_1.png)
@@ -137,7 +136,7 @@ btc-paper-wallet/ for overal testing
 │ ├── wallet.js <- Cryptographic engine (BIP39/32/44/49/84)
 │ └── wordlist.js <- 2048 BIP39 English words
 ├── testing/
-│ └── test.js <- Full test suite (Node.js, 58 tests)
+│ └── test.js <- Full test suite (Node.js, 112 tests)
 └── README.md
 
 
