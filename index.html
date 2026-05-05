@@ -16,7 +16,9 @@
         <div class="logo-icon">₿</div>
         <div>
           <div class="logo-text">PAPER WALLET</div>
-          <div class="logo-sub">OFFLINE GENERATOR // BIP39 · BIP32 · BIP44</div>
+          <div class="logo-sub">
+            OFFLINE GENERATOR // BIP39 · BIP32 · BIP44 · BIP86
+          </div>
         </div>
       </div>
       <div class="status-bar">
@@ -24,29 +26,53 @@
           <span class="status-dot" id="net-dot"></span>
           <span id="net-label">CHECKING...</span>
         </div>
-        <div class="status-item text-dim">
-          <span id="entropy-status">⚡ ENTROPY: READY</span>
+        <div style="color: red; font-size: 24px">
+          <span class="status-dot"></span>DEMO ONLY | USE
+          <a
+            href="https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.1"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="offline-badge-link"
+            >OFFLINE RELEASE</a
+          >
+          FOR REAL SEEDS
         </div>
-        <div class="status-item text-dim small">v1.0.1</div>
+        <div class="status-item text-dim small">v1.2.1</div>
       </div>
     </header>
 
     <main>
       <div class="alert danger hidden" id="online-alert">
-        <span class="alert-icon">⚠</span>
         <div class="alert-text">
           <strong>SECURITY RISK: You are currently ONLINE</strong>
-          Disconnect from the internet before generating wallets. generated keys
-          could be intercepted, for maximum security, use an air-gapped machine
-          with no network adapter
+          visit my single file
+          <a
+            href="https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.1"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: red; font-size: 20px"
+            >RELEASE</a
+          >
+          ( these is only for demo and learning purposes ), do not generate real
+          keys while online Disconnect from the internet before generating
+          wallets. Generated keys could be intercepted. For maximum security,
+          use an air-gapped machine with no network adapter.
         </div>
       </div>
 
       <div class="alert warn" id="offline-ok-alert" style="display: none">
         <div class="alert-text">
           <strong>OFFLINE MODE - Safe to generate</strong>
-          No internet connection detected, keys are generated locally and never
-          transmitted
+          visit my single file
+          <a
+            href="https://github.com/Raskollnikov/Fully-Air-Gapped-Bitcoin-Key-Generator/releases/tag/v1.2.1"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: red; font-size: 20px"
+            >RELEASE</a
+          >
+          ( these is only for demo and learning purposes ). No internet
+          connection detected. Keys are generated locally and never transmitted.
         </div>
       </div>
 
@@ -117,7 +143,6 @@
                       cursor: pointer;
                       font-size: 13px;
                     "
-                    title="show/hide"
                   >
                     👁
                   </button>
@@ -150,7 +175,6 @@
                         cursor: pointer;
                         font-size: 13px;
                       "
-                      title="show/hide"
                     >
                       👁
                     </button>
@@ -221,7 +245,6 @@
                   >
                     🎲 DICE
                   </button>
-
                   <button
                     class="entropy-mode-btn"
                     id="mode-string"
@@ -256,8 +279,9 @@
                 >
                   <div class="alert-text">
                     Mouse entropy is mixed with
-                    <strong>crypto.getRandomValues()</strong> via SHA-256, the
-                    CSPRNG alone is already secure - mouse adds extra insurance
+                    <strong>crypto.getRandomValues()</strong> via SHA-256. The
+                    CSPRNG alone is already secure - mouse movement adds extra
+                    insurance.
                   </div>
                 </div>
               </div>
@@ -271,12 +295,11 @@
                     margin-bottom: 12px;
                   "
                 >
-                  <span class="alert-icon" style="font-size: 13px">⚠</span>
                   <div class="alert-text">
-                    <strong>Use physical dice only.</strong> Roll 99-150 times.
-                    Enter each result (1-6) separated by spaces or commas. Rolls
-                    are SHA-256 mixed with CSPRNG - weak dice cannot reduce
-                    security below CSPRNG level.
+                    <strong>Use physical dice only.</strong> Roll at least 99
+                    times. Enter each result (1-6) separated by spaces or
+                    commas. Rolls are SHA-256 mixed with CSPRNG - weak dice
+                    cannot reduce security below CSPRNG level.
                   </div>
                 </div>
 
@@ -372,10 +395,10 @@
                     line-height: 1.6;
                   "
                 >
-                  🔒 <strong>DETERMINISTIC MODE:</strong> same dice rolls → same
-                  wallet always. No CSPRNG involved - fully reproducible.
-                  Minimum <strong>50 rolls</strong>
-                  accepted, 99+ recommended for full 128-bit security.
+                  <strong>DETERMINISTIC MODE:</strong> same dice rolls -> same
+                  wallet always. No CSPRNG involved, fully reproducible. Minimum
+                  <strong>99 rolls</strong> required (same as mixed mode) to
+                  guarantee 128-bit security from the dice sequence alone.
                 </div>
 
                 <div class="control-group">
@@ -404,7 +427,6 @@
                         border-radius: var(--radius);
                         cursor: pointer;
                       "
-                      title="Generate simulated dice rolls using crypto.getRandomValues() - still mixed with CSPRNG"
                     >
                       🎲 ROLL FOR ME
                     </button>
@@ -423,9 +445,8 @@
                       line-height: 1.5;
                     "
                   >
-                    ⚠ <strong>Simulated rolls used,</strong> these were
-                    generated by <code>crypto.getRandomValues()</code> not
-                    physical dice
+                    <strong>Simulated rolls used.</strong> These were generated
+                    by <code>crypto.getRandomValues()</code>, not physical dice.
                   </div>
                   <textarea
                     id="dice-input"
@@ -456,7 +477,7 @@
                   <span id="dice-count">Rolls: 0</span>
                   <span id="dice-entropy-bits">Entropy: ~0 bits</span>
                   <span id="dice-status" style="color: var(--red)"
-                    >✗ Need at least 99 rolls</span
+                    >Need at least 99 rolls</span
                   >
                 </div>
                 <div
@@ -476,7 +497,7 @@
                   <div class="alert-text">
                     <strong>Unbiased base-6 conversion:</strong> naive 3-bit
                     mapping biases faces 1-2 (2× more likely). We treat the full
-                    roll sequence as a base-6 number → bytes. 100 rolls =
+                    roll sequence as a base-6 number -> bytes. 99 rolls =
                     log₂(6⁹⁹) ≈ 256 bits.
                   </div>
                 </div>
@@ -501,21 +522,20 @@
                       margin-bottom: 4px;
                     "
                   >
-                    ⚠ DETERMINISTIC MODE - same string always produces same
-                    wallet
+                    DETERMINISTIC MODE - same string always produces same wallet
                   </div>
                   <div style="color: rgba(220, 100, 100, 0.85)">
                     Short or common strings are
                     <strong>catastrophically insecure</strong>. "password",
-                    "bitcoin", "i love my dog" → attacker tries every phrase in
+                    "bitcoin", "i love my dog" -> attacker tries every phrase in
                     seconds.<br />
                     <strong
                       >Safe only if your string is 50+ random characters no one
                       could guess.</strong
                     ><br />
                     For a memorable passphrase, use the BIP39 passphrase field
-                    instead - that adds your phrase <em>on top of</em> random
-                    entropy, not instead of it.
+                    instead - that adds your phrase
+                    <em>on top of</em> random entropy, not instead of it.
                   </div>
                 </div>
 
@@ -563,7 +583,6 @@
                           cursor: pointer;
                           letter-spacing: 1px;
                         "
-                        title="Toggle visibility"
                       >
                         👁 SHOW
                       </button>
@@ -646,9 +665,10 @@
                   style="padding: 10px 14px; font-size: 12px"
                 >
                   <div class="alert-text">
-                    Pipeline: <strong>SHA-256(UTF-8(string))</strong> → 32 bytes
-                    → BIP39 entropy → checksum → 11-bit chunks → words. No
-                    CSPRNG involved - fully reproducible on any offline device.
+                    Pipeline: <strong>SHA-256(UTF-8(string))</strong> -> 32
+                    bytes -> BIP39 entropy -> checksum -> 11-bit chunks ->
+                    words. No CSPRNG involved - fully reproducible on any
+                    offline device.
                   </div>
                 </div>
               </div>
@@ -662,9 +682,9 @@
               <button
                 class="btn btn-danger hidden"
                 id="wipe-btn"
-                title="Removes keys from the DOM and clears string references. Note: JavaScript cannot guarantee immediate memory zeroing for string values - for full security, reboot after use."
+                title="Removes keys from the DOM. Note: JavaScript cannot guarantee immediate memory zeroing for string values - for full security, close the tab and reboot after use."
               >
-                ✕ Clear from screen
+                Clear from screen
               </button>
             </div>
           </div>
@@ -681,7 +701,7 @@
             letter-spacing: 1px;
           "
         >
-          entropy mode changed, output above was generated with previous mode
+          entropy mode changed - output above was generated with previous mode
         </div>
         <div id="results-area"></div>
 
@@ -703,7 +723,7 @@
               <span class="alert-icon">ℹ</span>
               <div class="alert-text">
                 Enter your BIP39 seed phrase to derive addresses and private
-                keys. Nothing leaves this page - all processing is in memory
+                keys. Nothing leaves this page - all processing is in-memory
                 only.
               </div>
             </div>
@@ -861,7 +881,6 @@
                       cursor: pointer;
                       font-size: 13px;
                     "
-                    title="show/hide"
                   >
                     👁
                   </button>
@@ -879,7 +898,6 @@
                   <option value="NATIVE_SEGWIT" selected>Native SegWit</option>
                 </select>
               </div>
-
               <div class="control-group">
                 <label>Account Index</label>
                 <select id="hd-account">
@@ -956,13 +974,12 @@
                       cursor: pointer;
                       font-size: 13px;
                     "
-                    title="show/hide"
                   >
                     👁
                   </button>
                 </div>
               </div>
-              <div class="control-group" style="grid-column: 1 / -1">
+              <div class="control-group" style="grid-column: 1/-1">
                 <label style="display: flex; align-items: center; gap: 8px">
                   Custom Path Override
                   <span
@@ -1023,50 +1040,26 @@
                   <span class="alert-icon" style="font-size: 12px">ℹ</span>
                   <div class="alert-text">
                     <strong>Common paths by wallet:</strong>
-                    Sparrow · Electrum · most modern wallets →
+                    Sparrow · Electrum · most modern wallets ->
                     <code
                       style="cursor: pointer"
                       onclick="
                         document.getElementById('hd-custom-path').value =
-                          'm/84&#39;/0&#39;/0&#39;/0/0';
+                          'm/84\'/0\'/0\'/0/0';
                         updatePathPreview();
                       "
+                      >m/84'/0'/0'/0/0</code
                     >
-                      m/84'/0'/0'/0/0
-                    </code>
-                    &nbsp;|&nbsp; Exodus / Trust Wallet →
+                    &nbsp;|&nbsp; Old Coinbase / Mycelium ->
                     <code
                       style="cursor: pointer"
                       onclick="
                         document.getElementById('hd-custom-path').value =
-                          'm/84&#39;/0&#39;/0&#39;/0/0';
+                          'm/44\'/0\'/0\'/0/0';
                         updatePathPreview();
                       "
+                      >m/44'/0'/0'/0/0</code
                     >
-                      m/84'/0'/0'/0/0
-                    </code>
-                    &nbsp;|&nbsp; Old Coinbase / Mycelium →
-                    <code
-                      style="cursor: pointer"
-                      onclick="
-                        document.getElementById('hd-custom-path').value =
-                          'm/44&#39;/0&#39;/0&#39;/0/0';
-                        updatePathPreview();
-                      "
-                    >
-                      m/44'/0'/0'/0/0
-                    </code>
-                    &nbsp;|&nbsp; BlueWallet →
-                    <code
-                      style="cursor: pointer"
-                      onclick="
-                        document.getElementById('hd-custom-path').value =
-                          'm/84&#39;/0&#39;/0&#39;/0/0';
-                        updatePathPreview();
-                      "
-                    >
-                      m/84'/0'/0'/0/0
-                    </code>
                     <br />Click any path to use it. If addresses don't match
                     your wallet, try a different path.
                   </div>
@@ -1092,7 +1085,7 @@
           <div class="section-body">
             <p class="text-dim small mb8">
               Paste your seed phrase to verify it has a valid BIP39 checksum.
-              Does NOT derive any keys
+              Does NOT derive any keys.
             </p>
             <div class="control-group mt16">
               <label>Seed Phrase to Verify</label>
@@ -1119,26 +1112,34 @@
                 <span class="chk-icon">○</span> Disconnected from internet
               </div>
               <div class="check-item" id="chk-browser">
-                using modern browser with Web Crypto API
+                <span class="chk-icon text-red">!</span>
+                Using modern browser with Web Crypto API
               </div>
               <div class="check-item" id="chk-csp">
-                content Security Policy active (no external requests possible)
+                <span class="chk-icon text-red">!</span>
+                Content Security Policy active (no external requests possible)
               </div>
               <div class="check-item">
-                <span class="chk-icon text-yellow">△</span> Printer is local
-                (not network/cloud)
+                <span class="chk-icon text-red">!</span> Printer is local (not
+                network/cloud)
               </div>
               <div class="check-item">
-                <span class="chk-icon text-yellow">△</span> Screen not visible
-                to cameras or other people
+                <span class="chk-icon text-red">!</span> Screen not visible to
+                cameras or other people
               </div>
               <div class="check-item">
-                <span class="chk-icon text-yellow">△</span> Will verify
-                receiving address before sending funds
+                <span class="chk-icon text-red">!</span> Will verify receiving
+                address before sending funds
               </div>
               <div class="check-item">
-                <span class="chk-icon text-yellow">△</span> Will store printed
+                <span class="chk-icon text-red">!</span> Will store printed
                 wallet in secure physical location
+              </div>
+              <div class="check-item">
+                <span class="chk-icon text-red">!</span>
+                RIPEMD‑160 implemented in JS, not constant-time. Acceptable for
+                air‑gapped use (no CPU timing attacker). Do not run on shared
+                machines.
               </div>
             </div>
           </div>
@@ -1153,8 +1154,7 @@
           <div class="section-body">
             <p class="text-dim small mb8">
               Search the 2048-word BIP39 wordlist by prefix or by index
-              (1–2048). Useful when you wrote down partial words or need to find
-              a word by number.
+              (1-2048).
             </p>
             <div class="controls-grid" style="grid-template-columns: 1fr 1fr">
               <div class="control-group">
@@ -1162,23 +1162,21 @@
                 <input
                   type="text"
                   id="wl-prefix"
-                  placeholder="e.g.  ab   zoo   cra..."
+                  placeholder="e.g. ab  zoo  cra..."
                   autocomplete="off"
                   autocorrect="off"
                   autocapitalize="off"
                   spellcheck="false"
-                  style="font-family: var(--font-mono)"
                 />
               </div>
               <div class="control-group">
-                <label>search by index (1 - 2048)</label>
+                <label>Search by index (1-2048)</label>
                 <input
                   type="number"
                   id="wl-index"
                   placeholder="e.g. 1  848  2048"
                   min="1"
                   max="2048"
-                  style="font-family: var(--font-mono)"
                 />
               </div>
             </div>
@@ -1193,11 +1191,9 @@
           </div>
           <div class="section-body">
             <p class="text-dim small mb8">
-              See every single step Bitcoin uses to turn raw bytes into seed
-              words - and reverse it. Entropy hex → bits → SHA-256 checksum →
-              11-bit chunks → word indices → words, fully visible.
+              See every step Bitcoin uses to turn raw bytes into seed words and
+              reverse it.
             </p>
-
             <div
               style="
                 display: flex;
@@ -1222,7 +1218,7 @@
                   letter-spacing: 1px;
                 "
               >
-                HEX → WORDS
+                HEX -> WORDS
               </button>
               <button
                 id="insp-tab-words"
@@ -1238,7 +1234,7 @@
                   border-left: 1px solid var(--border2);
                 "
               >
-                WORDS → HEX
+                WORDS -> HEX
               </button>
             </div>
 
@@ -1317,11 +1313,9 @@
           </div>
           <div class="section-body">
             <p class="text-dim small mb8">
-              Convert between raw private key formats and derive all three
-              address types. Useful for importing keys from other tools, or
-              verifying a key you have on paper.
+              Convert between raw private key formats and derive all address
+              types.
             </p>
-
             <div
               style="
                 display: flex;
@@ -1346,7 +1340,7 @@
                   letter-spacing: 1px;
                 "
               >
-                HEX → WIF + ADDR
+                HEX -> WIF + ADDR
               </button>
               <button
                 id="kc-tab-wif"
@@ -1362,7 +1356,7 @@
                   border-left: 1px solid var(--border2);
                 "
               >
-                WIF → ADDR
+                WIF -> ADDR
               </button>
               <button
                 id="kc-tab-addr"
@@ -1393,11 +1387,7 @@
                   placeholder="e.g. 0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d"
                   autocomplete="off"
                   spellcheck="false"
-                  style="
-                    font-family: var(--font-mono);
-                    font-size: 12px;
-                    letter-spacing: 0.5px;
-                  "
+                  style="font-family: var(--font-mono); font-size: 12px"
                 />
               </div>
               <div class="btn-row mt8">
@@ -1421,11 +1411,7 @@
                   placeholder="e.g. 5HueCGU8rMjxECyDialwujzZkLY5RCExk4ZS7kLP1aiR6kqkRR6"
                   autocomplete="off"
                   spellcheck="false"
-                  style="
-                    font-family: var(--font-mono);
-                    font-size: 12px;
-                    letter-spacing: 0.5px;
-                  "
+                  style="font-family: var(--font-mono); font-size: 12px"
                 />
               </div>
               <div class="btn-row mt8">
@@ -1446,14 +1432,10 @@
                 <input
                   type="text"
                   id="kc-addr-in"
-                  placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7Divf3  or  3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy  or  bc1q..."
+                  placeholder="1A1zP1...  or  3J98t1...  or  bc1q..."
                   autocomplete="off"
                   spellcheck="false"
-                  style="
-                    font-family: var(--font-mono);
-                    font-size: 12px;
-                    letter-spacing: 0.5px;
-                  "
+                  style="font-family: var(--font-mono); font-size: 12px"
                 />
               </div>
               <div id="kc-addr-out" style="margin-top: 12px"></div>
@@ -1463,17 +1445,14 @@
 
         <div class="section mt24">
           <div class="section-header">
-            <span class="dot"></span>private Key Visualizer - 256-bit number
+            <span class="dot"></span>Private Key Visualizer - 256-bit number
             explorer
           </div>
           <div class="section-body">
             <p class="text-dim small mb8">
               Bitcoin private key is just a random 256-bit number between 1 and
-              the secp256k1 curve order N, click any bit to toggle it. see the
-              same number in binary, decimal, and hex simultaneously, paste a
-              hex key to visualise it, or generate a fresh random one
+              the secp256k1 curve order N. Click any bit to toggle it.
             </p>
-
             <div class="btn-row mt8" style="gap: 8px; margin-bottom: 16px">
               <button
                 class="btn btn-primary"
@@ -1487,7 +1466,7 @@
                 id="pkv-reset"
                 style="padding: 8px 20px; font-size: 12px"
               >
-                ✕ Reset to Zero
+                Reset to Zero
               </button>
             </div>
 
@@ -1502,8 +1481,10 @@
                   margin-bottom: 6px;
                 "
               >
-                Bits - click to toggle &nbsp;
-                <span id="pkv-bit-count" style="color: var(--green)"></span>
+                Bits - click to toggle &nbsp;<span
+                  id="pkv-bit-count"
+                  style="color: var(--green)"
+                ></span>
               </div>
               <div
                 id="pkv-grid"
@@ -1553,26 +1534,23 @@
                 >
                   Binary (256 bits)
                 </div>
-                <div style="position: relative">
-                  <div
-                    id="pkv-binary"
-                    style="
-                      font-family: var(--font-mono);
-                      font-size: 11px;
-                      color: var(--green);
-                      background: var(--bg3);
-                      border: 1px solid var(--border);
-                      border-radius: var(--radius);
-                      padding: 8px 10px;
-                      word-break: break-all;
-                      line-height: 1.7;
-                      max-height: 80px;
-                      overflow-y: auto;
-                    "
-                  ></div>
-                </div>
+                <div
+                  id="pkv-binary"
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--green);
+                    background: var(--bg3);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 8px 10px;
+                    word-break: break-all;
+                    line-height: 1.7;
+                    max-height: 80px;
+                    overflow-y: auto;
+                  "
+                ></div>
               </div>
-
               <div
                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px"
               >
@@ -1599,7 +1577,6 @@
                       style="
                         font-family: var(--font-mono);
                         font-size: 12px;
-                        letter-spacing: 0.5px;
                         flex: 1;
                       "
                     />
@@ -1621,7 +1598,6 @@
                     64 hex chars = 32 bytes
                   </div>
                 </div>
-
                 <div>
                   <div
                     style="
@@ -1667,7 +1643,6 @@
                   </div>
                 </div>
               </div>
-
               <div
                 style="
                   background: var(--bg3);
@@ -1697,8 +1672,8 @@
                     line-height: 1.6;
                   "
                 >
-                  <span style="color: var(--text-dim)">0x</span>
-                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+                  <span style="color: var(--text-dim)">0x</span
+                  >FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
                 </div>
                 <div
                   style="
@@ -1708,8 +1683,7 @@
                     margin-top: 4px;
                   "
                 >
-                  Valid range: 0x0000...0001 &nbsp;≤&nbsp; key &nbsp;&lt;&nbsp;
-                  N &nbsp;(any 256-bit number in this range works)
+                  Valid range: 0x0000…0001 &nbsp;≤&nbsp; key &nbsp;&lt;&nbsp; N
                 </div>
               </div>
             </div>
@@ -1721,2719 +1695,7 @@
     <div class="print-area" id="print-area"></div>
     <div id="toast-container"></div>
 
-    <script>
-      // QR code generator by Kazuhiko Arase
-      // MIT License - https://github.com/kazuhikoarase/qrcode-generator
-      //
-      // After going down to rabbit hol of QR implementations ( my old one had issues ), this one
-      // kept coming up as the most reliable, its' the same engine behind
-      // Ian Coleman's BIP39 tool ( my biggest inspiration ) and countless other crypto utilities,
-      // No dependencies, no network calls, works 100% offline/airgap
-      //
-      // Wrapped below into window.QRCode.generate( text, canvas, size )
-      // to match the rest of this app without touching anything else
-      var qrcode = (function () {
-        var PAD0 = 0xec;
-        var PAD1 = 0x11;
-        var qrcode = function (typeNumber, errorCorrectionLevel) {
-          var _typeNumber = typeNumber;
-          var _errorCorrectionLevel =
-            QRErrorCorrectionLevel[errorCorrectionLevel];
-          var _modules = null;
-          var _moduleCount = 0;
-          var _dataCache = null;
-          var _dataList = [];
-          var _this = {};
-          var makeImpl = function (test, maskPattern) {
-            _moduleCount = _typeNumber * 4 + 17;
-            _modules = (function (mc) {
-              var m = new Array(mc);
-              for (var r = 0; r < mc; r++) {
-                m[r] = new Array(mc);
-                for (var c = 0; c < mc; c++) m[r][c] = null;
-              }
-              return m;
-            })(_moduleCount);
-            setupPositionProbePattern(0, 0);
-            setupPositionProbePattern(_moduleCount - 7, 0);
-            setupPositionProbePattern(0, _moduleCount - 7);
-            setupPositionAdjustPattern();
-            setupTimingPattern();
-            setupTypeInfo(test, maskPattern);
-            if (_typeNumber >= 7) setupTypeNumber(test);
-            if (_dataCache == null)
-              _dataCache = createData(
-                _typeNumber,
-                _errorCorrectionLevel,
-                _dataList,
-              );
-            mapData(_dataCache, maskPattern);
-          };
-          var setupPositionProbePattern = function (row, col) {
-            for (var r = -1; r <= 7; r++) {
-              if (row + r <= -1 || _moduleCount <= row + r) continue;
-              for (var c = -1; c <= 7; c++) {
-                if (col + c <= -1 || _moduleCount <= col + c) continue;
-                _modules[row + r][col + c] =
-                  (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
-                  (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
-                  (2 <= r && r <= 4 && 2 <= c && c <= 4);
-              }
-            }
-          };
-          var getBestMaskPattern = function () {
-            var minLost = 0,
-              pattern = 0;
-            for (var i = 0; i < 8; i++) {
-              makeImpl(true, i);
-              var lp = QRUtil.getLostPoint(_this);
-              if (i == 0 || minLost > lp) {
-                minLost = lp;
-                pattern = i;
-              }
-            }
-            return pattern;
-          };
-          var setupTimingPattern = function () {
-            for (var r = 8; r < _moduleCount - 8; r++) {
-              if (_modules[r][6] != null) continue;
-              _modules[r][6] = r % 2 == 0;
-            }
-            for (var c = 8; c < _moduleCount - 8; c++) {
-              if (_modules[6][c] != null) continue;
-              _modules[6][c] = c % 2 == 0;
-            }
-          };
-          var setupPositionAdjustPattern = function () {
-            var pos = QRUtil.getPatternPosition(_typeNumber);
-            for (var i = 0; i < pos.length; i++)
-              for (var j = 0; j < pos.length; j++) {
-                var row = pos[i],
-                  col = pos[j];
-                if (_modules[row][col] != null) continue;
-                for (var r = -2; r <= 2; r++)
-                  for (var c = -2; c <= 2; c++)
-                    _modules[row + r][col + c] =
-                      r == -2 ||
-                      r == 2 ||
-                      c == -2 ||
-                      c == 2 ||
-                      (r == 0 && c == 0);
-              }
-          };
-          var setupTypeNumber = function (test) {
-            var bits = QRUtil.getBCHTypeNumber(_typeNumber);
-            for (var i = 0; i < 18; i++) {
-              var mod = !test && ((bits >> i) & 1) == 1;
-              _modules[Math.floor(i / 3)][(i % 3) + _moduleCount - 8 - 3] = mod;
-            }
-            for (var i = 0; i < 18; i++) {
-              var mod = !test && ((bits >> i) & 1) == 1;
-              _modules[(i % 3) + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
-            }
-          };
-          var setupTypeInfo = function (test, maskPattern) {
-            var data = (_errorCorrectionLevel << 3) | maskPattern,
-              bits = QRUtil.getBCHTypeInfo(data);
-            for (var i = 0; i < 15; i++) {
-              var mod = !test && ((bits >> i) & 1) == 1;
-              if (i < 6) _modules[i][8] = mod;
-              else if (i < 8) _modules[i + 1][8] = mod;
-              else _modules[_moduleCount - 15 + i][8] = mod;
-            }
-            for (var i = 0; i < 15; i++) {
-              var mod = !test && ((bits >> i) & 1) == 1;
-              if (i < 8) _modules[8][_moduleCount - i - 1] = mod;
-              else if (i < 9) _modules[8][15 - i - 1 + 1] = mod;
-              else _modules[8][15 - i - 1] = mod;
-            }
-            _modules[_moduleCount - 8][8] = !test;
-          };
-          var mapData = function (data, maskPattern) {
-            var inc = -1,
-              row = _moduleCount - 1,
-              bitIndex = 7,
-              byteIndex = 0;
-            var maskFunc = QRUtil.getMaskFunction(maskPattern);
-            for (var col = _moduleCount - 1; col > 0; col -= 2) {
-              if (col == 6) col--;
-              while (true) {
-                for (var c = 0; c < 2; c++) {
-                  if (_modules[row][col - c] == null) {
-                    var dark =
-                      byteIndex < data.length
-                        ? ((data[byteIndex] >>> bitIndex) & 1) == 1
-                        : false;
-                    if (maskFunc(row, col - c)) dark = !dark;
-                    _modules[row][col - c] = dark;
-                    if (--bitIndex == -1) {
-                      byteIndex++;
-                      bitIndex = 7;
-                    }
-                  }
-                }
-                row += inc;
-                if (row < 0 || _moduleCount <= row) {
-                  row -= inc;
-                  inc = -inc;
-                  break;
-                }
-              }
-            }
-          };
-          var createBytes = function (buffer, rsBlocks) {
-            var offset = 0,
-              maxDcCount = 0,
-              maxEcCount = 0;
-            var dcdata = new Array(rsBlocks.length),
-              ecdata = new Array(rsBlocks.length);
-            for (var r = 0; r < rsBlocks.length; r++) {
-              var dcCount = rsBlocks[r].dataCount,
-                ecCount = rsBlocks[r].totalCount - dcCount;
-              maxDcCount = Math.max(maxDcCount, dcCount);
-              maxEcCount = Math.max(maxEcCount, ecCount);
-              dcdata[r] = new Array(dcCount);
-              for (var i = 0; i < dcdata[r].length; i++)
-                dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
-              offset += dcCount;
-              var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
-              var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
-              var modPoly = rawPoly.mod(rsPoly);
-              ecdata[r] = new Array(rsPoly.getLength() - 1);
-              for (var i = 0; i < ecdata[r].length; i++) {
-                var mi = i + modPoly.getLength() - ecdata[r].length;
-                ecdata[r][i] = mi >= 0 ? modPoly.getAt(mi) : 0;
-              }
-            }
-            var totalCodeCount = 0;
-            for (var i = 0; i < rsBlocks.length; i++)
-              totalCodeCount += rsBlocks[i].totalCount;
-            var data = new Array(totalCodeCount),
-              index = 0;
-            for (var i = 0; i < maxDcCount; i++)
-              for (var r = 0; r < rsBlocks.length; r++)
-                if (i < dcdata[r].length) data[index++] = dcdata[r][i];
-            for (var i = 0; i < maxEcCount; i++)
-              for (var r = 0; r < rsBlocks.length; r++)
-                if (i < ecdata[r].length) data[index++] = ecdata[r][i];
-            return data;
-          };
-          var createData = function (
-            typeNumber,
-            errorCorrectionLevel,
-            dataList,
-          ) {
-            var rsBlocks = QRRSBlock.getRSBlocks(
-              typeNumber,
-              errorCorrectionLevel,
-            );
-            var buffer = qrBitBuffer();
-            for (var i = 0; i < dataList.length; i++) {
-              var d = dataList[i];
-              buffer.put(d.getMode(), 4);
-              buffer.put(
-                d.getLength(),
-                QRUtil.getLengthInBits(d.getMode(), typeNumber),
-              );
-              d.write(buffer);
-            }
-            var totalDataCount = 0;
-            for (var i = 0; i < rsBlocks.length; i++)
-              totalDataCount += rsBlocks[i].dataCount;
-            if (buffer.getLengthInBits() > totalDataCount * 8)
-              throw new Error(
-                "overflow: " +
-                  buffer.getLengthInBits() +
-                  ">" +
-                  totalDataCount * 8,
-              );
-            if (buffer.getLengthInBits() + 4 <= totalDataCount * 8)
-              buffer.put(0, 4);
-            while (buffer.getLengthInBits() % 8 != 0) buffer.putBit(false);
-            while (true) {
-              if (buffer.getLengthInBits() >= totalDataCount * 8) break;
-              buffer.put(PAD0, 8);
-              if (buffer.getLengthInBits() >= totalDataCount * 8) break;
-              buffer.put(PAD1, 8);
-            }
-            return createBytes(buffer, rsBlocks);
-          };
-          _this.addData = function (data) {
-            _dataList.push(qr8BitByte(data));
-            _dataCache = null;
-          };
-          _this.isDark = function (row, col) {
-            if (
-              row < 0 ||
-              _moduleCount <= row ||
-              col < 0 ||
-              _moduleCount <= col
-            )
-              throw new Error(row + "," + col);
-            return _modules[row][col];
-          };
-          _this.getModuleCount = function () {
-            return _moduleCount;
-          };
-          _this.make = function () {
-            makeImpl(false, getBestMaskPattern());
-          };
-          return _this;
-        };
-        qrcode.stringToBytes = function (s) {
-          var b = [];
-          for (var i = 0; i < s.length; i++) b.push(s.charCodeAt(i) & 0xff);
-          return b;
-        };
-        var QRErrorCorrectionLevel = { L: 1, M: 0, Q: 3, H: 2 };
-        var QRUtil = (function () {
-          var PPT = [
-            [],
-            [6, 18],
-            [6, 22],
-            [6, 26],
-            [6, 30],
-            [6, 34],
-            [6, 22, 38],
-            [6, 24, 42],
-            [6, 26, 46],
-            [6, 28, 50],
-            [6, 30, 54],
-            [6, 32, 58],
-            [6, 34, 62],
-            [6, 26, 46, 66],
-            [6, 26, 48, 70],
-            [6, 26, 50, 74],
-            [6, 30, 54, 78],
-            [6, 30, 56, 82],
-            [6, 30, 58, 86],
-            [6, 34, 62, 90],
-            [6, 28, 50, 72, 94],
-            [6, 26, 50, 74, 98],
-            [6, 30, 54, 78, 102],
-            [6, 28, 54, 80, 106],
-            [6, 32, 58, 84, 110],
-            [6, 30, 58, 86, 114],
-            [6, 34, 62, 90, 118],
-            [6, 26, 50, 74, 98, 122],
-            [6, 30, 54, 78, 102, 126],
-            [6, 26, 52, 78, 104, 130],
-            [6, 30, 56, 82, 108, 134],
-            [6, 34, 60, 86, 112, 138],
-            [6, 30, 58, 86, 114, 142],
-            [6, 34, 62, 90, 118, 146],
-            [6, 30, 54, 78, 102, 126, 150],
-            [6, 24, 50, 76, 102, 128, 154],
-            [6, 28, 54, 80, 106, 132, 158],
-            [6, 32, 58, 84, 110, 136, 162],
-            [6, 26, 54, 82, 110, 138, 166],
-            [6, 30, 58, 86, 114, 142, 170],
-          ];
-          var G15 =
-              (1 << 10) |
-              (1 << 8) |
-              (1 << 5) |
-              (1 << 4) |
-              (1 << 2) |
-              (1 << 1) |
-              (1 << 0),
-            G18 =
-              (1 << 12) |
-              (1 << 11) |
-              (1 << 10) |
-              (1 << 9) |
-              (1 << 8) |
-              (1 << 5) |
-              (1 << 2) |
-              (1 << 0),
-            G15M = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
-          var getBCHDigit = function (d) {
-            var n = 0;
-            while (d != 0) {
-              n++;
-              d >>>= 1;
-            }
-            return n;
-          };
-          var _this = {};
-          _this.getBCHTypeInfo = function (d) {
-            var x = d << 10;
-            while (getBCHDigit(x) - getBCHDigit(G15) >= 0)
-              x ^= G15 << (getBCHDigit(x) - getBCHDigit(G15));
-            return ((d << 10) | x) ^ G15M;
-          };
-          _this.getBCHTypeNumber = function (d) {
-            var x = d << 12;
-            while (getBCHDigit(x) - getBCHDigit(G18) >= 0)
-              x ^= G18 << (getBCHDigit(x) - getBCHDigit(G18));
-            return (d << 12) | x;
-          };
-          _this.getPatternPosition = function (t) {
-            return PPT[t - 1];
-          };
-          _this.getMaskFunction = function (p) {
-            switch (p) {
-              case 0:
-                return function (i, j) {
-                  return (i + j) % 2 == 0;
-                };
-              case 1:
-                return function (i, j) {
-                  return i % 2 == 0;
-                };
-              case 2:
-                return function (i, j) {
-                  return j % 3 == 0;
-                };
-              case 3:
-                return function (i, j) {
-                  return (i + j) % 3 == 0;
-                };
-              case 4:
-                return function (i, j) {
-                  return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
-                };
-              case 5:
-                return function (i, j) {
-                  return ((i * j) % 2) + ((i * j) % 3) == 0;
-                };
-              case 6:
-                return function (i, j) {
-                  return (((i * j) % 2) + ((i * j) % 3)) % 2 == 0;
-                };
-              case 7:
-                return function (i, j) {
-                  return (((i * j) % 3) + ((i + j) % 2)) % 2 == 0;
-                };
-              default:
-                throw new Error("bad mask:" + p);
-            }
-          };
-          _this.getErrorCorrectPolynomial = function (n) {
-            var a = qrPolynomial([1], 0);
-            for (var i = 0; i < n; i++)
-              a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0));
-            return a;
-          };
-          _this.getLengthInBits = function (m, t) {
-            if (1 <= t && t < 10) {
-              switch (m) {
-                case 1:
-                  return 10;
-                case 2:
-                  return 9;
-                case 4:
-                  return 8;
-                case 8:
-                  return 8;
-              }
-            } else if (t < 27) {
-              switch (m) {
-                case 1:
-                  return 12;
-                case 2:
-                  return 11;
-                case 4:
-                  return 16;
-                case 8:
-                  return 10;
-              }
-            } else {
-              switch (m) {
-                case 1:
-                  return 14;
-                case 2:
-                  return 13;
-                case 4:
-                  return 16;
-                case 8:
-                  return 12;
-              }
-            }
-            throw new Error("mode:" + m);
-          };
-          _this.getLostPoint = function (qr) {
-            var mc = qr.getModuleCount(),
-              lp = 0;
-            for (var r = 0; r < mc; r++)
-              for (var c = 0; c < mc; c++) {
-                var sc = 0,
-                  dk = qr.isDark(r, c);
-                for (var rr = -1; rr <= 1; rr++) {
-                  if (r + rr < 0 || mc <= r + rr) continue;
-                  for (var cc = -1; cc <= 1; cc++) {
-                    if (c + cc < 0 || mc <= c + cc) continue;
-                    if (rr == 0 && cc == 0) continue;
-                    if (dk == qr.isDark(r + rr, c + cc)) sc++;
-                  }
-                }
-                if (sc > 5) lp += 3 + sc - 5;
-              }
-            for (var r = 0; r < mc - 1; r++)
-              for (var c = 0; c < mc - 1; c++) {
-                var cnt = 0;
-                if (qr.isDark(r, c)) cnt++;
-                if (qr.isDark(r + 1, c)) cnt++;
-                if (qr.isDark(r, c + 1)) cnt++;
-                if (qr.isDark(r + 1, c + 1)) cnt++;
-                if (cnt == 0 || cnt == 4) lp += 3;
-              }
-            for (var r = 0; r < mc; r++)
-              for (var c = 0; c < mc - 6; c++) {
-                if (
-                  qr.isDark(r, c) &&
-                  !qr.isDark(r, c + 1) &&
-                  qr.isDark(r, c + 2) &&
-                  qr.isDark(r, c + 3) &&
-                  qr.isDark(r, c + 4) &&
-                  !qr.isDark(r, c + 5) &&
-                  qr.isDark(r, c + 6)
-                )
-                  lp += 40;
-              }
-            for (var c = 0; c < mc; c++)
-              for (var r = 0; r < mc - 6; r++) {
-                if (
-                  qr.isDark(r, c) &&
-                  !qr.isDark(r + 1, c) &&
-                  qr.isDark(r + 2, c) &&
-                  qr.isDark(r + 3, c) &&
-                  qr.isDark(r + 4, c) &&
-                  !qr.isDark(r + 5, c) &&
-                  qr.isDark(r + 6, c)
-                )
-                  lp += 40;
-              }
-            var dk = 0;
-            for (var c = 0; c < mc; c++)
-              for (var r = 0; r < mc; r++) if (qr.isDark(r, c)) dk++;
-            lp += (Math.abs((100 * dk) / mc / mc - 50) / 5) * 10;
-            return lp;
-          };
-          return _this;
-        })();
-        var QRMath = (function () {
-          var ET = new Array(256),
-            LT = new Array(256);
-          for (var i = 0; i < 8; i++) ET[i] = 1 << i;
-          for (var i = 8; i < 256; i++)
-            ET[i] = ET[i - 4] ^ ET[i - 5] ^ ET[i - 6] ^ ET[i - 8];
-          for (var i = 0; i < 255; i++) LT[ET[i]] = i;
-          var _t = {};
-          _t.glog = function (n) {
-            if (n < 1) throw new Error("glog(" + n + ")");
-            return LT[n];
-          };
-          _t.gexp = function (n) {
-            while (n < 0) n += 255;
-            while (n >= 256) n -= 255;
-            return ET[n];
-          };
-          return _t;
-        })();
-        function qrPolynomial(num, shift) {
-          var _n = (function () {
-            var o = 0;
-            while (o < num.length && num[o] == 0) o++;
-            var a = new Array(num.length - o + shift);
-            for (var i = 0; i < num.length - o; i++) a[i] = num[i + o];
-            return a;
-          })();
-          var _t = {};
-          _t.getAt = function (i) {
-            return _n[i];
-          };
-          _t.getLength = function () {
-            return _n.length;
-          };
-          _t.multiply = function (e) {
-            var n = new Array(_t.getLength() + e.getLength() - 1);
-            for (var i = 0; i < _t.getLength(); i++)
-              for (var j = 0; j < e.getLength(); j++)
-                n[i + j] ^= QRMath.gexp(
-                  QRMath.glog(_t.getAt(i)) + QRMath.glog(e.getAt(j)),
-                );
-            return qrPolynomial(n, 0);
-          };
-          _t.mod = function (e) {
-            if (_t.getLength() - e.getLength() < 0) return _t;
-            var ratio = QRMath.glog(_t.getAt(0)) - QRMath.glog(e.getAt(0));
-            var n = new Array(_t.getLength());
-            for (var i = 0; i < _t.getLength(); i++) n[i] = _t.getAt(i);
-            for (var i = 0; i < e.getLength(); i++)
-              n[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i)) + ratio);
-            return qrPolynomial(n, 0).mod(e);
-          };
-          return _t;
-        }
-        var QRRSBlock = (function () {
-          var T = [
-            [1, 26, 19],
-            [1, 26, 16],
-            [1, 26, 13],
-            [1, 26, 9],
-            [1, 44, 34],
-            [1, 44, 28],
-            [1, 44, 22],
-            [1, 44, 16],
-            [1, 70, 55],
-            [1, 70, 44],
-            [2, 35, 17],
-            [2, 35, 13],
-            [1, 100, 80],
-            [2, 50, 32],
-            [2, 50, 24],
-            [4, 25, 9],
-            [1, 134, 108],
-            [2, 67, 43],
-            [2, 33, 15, 2, 34, 16],
-            [2, 33, 11, 2, 34, 12],
-            [2, 86, 68],
-            [4, 43, 27],
-            [4, 43, 19],
-            [4, 43, 15],
-            [2, 98, 78],
-            [4, 49, 31],
-            [2, 32, 14, 4, 33, 15],
-            [4, 39, 13, 1, 40, 14],
-            [2, 121, 97],
-            [2, 60, 38, 2, 61, 39],
-            [4, 40, 18, 2, 41, 19],
-            [4, 40, 14, 2, 41, 15],
-            [2, 146, 116],
-            [3, 58, 36, 2, 59, 37],
-            [4, 36, 16, 4, 37, 17],
-            [4, 36, 12, 4, 37, 13],
-            [2, 86, 68, 2, 87, 69],
-            [4, 69, 43, 1, 70, 44],
-            [6, 43, 19, 2, 44, 20],
-            [6, 43, 15, 2, 44, 16],
-            [4, 101, 81],
-            [1, 80, 50, 4, 81, 51],
-            [4, 50, 22, 4, 51, 23],
-            [3, 36, 12, 8, 37, 13],
-            [2, 116, 92, 2, 117, 93],
-            [6, 58, 36, 2, 59, 37],
-            [4, 46, 20, 6, 47, 21],
-            [7, 42, 14, 4, 43, 15],
-            [4, 133, 107],
-            [8, 59, 37, 1, 60, 38],
-            [8, 44, 20, 4, 45, 21],
-            [12, 33, 11, 4, 34, 12],
-            [3, 145, 115, 1, 146, 116],
-            [4, 64, 40, 5, 65, 41],
-            [11, 36, 16, 5, 37, 17],
-            [11, 36, 12, 5, 37, 13],
-            [5, 109, 87, 1, 110, 88],
-            [5, 65, 41, 5, 66, 42],
-            [5, 54, 24, 7, 55, 25],
-            [11, 36, 12, 7, 37, 13],
-            [5, 122, 98, 1, 123, 99],
-            [7, 73, 45, 3, 74, 46],
-            [15, 43, 19, 2, 44, 20],
-            [3, 45, 15, 13, 46, 16],
-            [1, 135, 107, 5, 136, 108],
-            [10, 74, 46, 1, 75, 47],
-            [1, 50, 22, 15, 51, 23],
-            [2, 42, 14, 17, 43, 15],
-            [5, 150, 120, 1, 151, 121],
-            [9, 69, 43, 4, 70, 44],
-            [17, 50, 22, 1, 51, 23],
-            [2, 42, 14, 19, 43, 15],
-            [3, 141, 113, 4, 142, 114],
-            [3, 70, 44, 11, 71, 45],
-            [17, 47, 21, 4, 48, 22],
-            [9, 39, 13, 16, 40, 14],
-            [3, 135, 107, 5, 136, 108],
-            [3, 67, 41, 13, 68, 42],
-            [15, 54, 24, 5, 55, 25],
-            [15, 43, 15, 10, 44, 16],
-            [4, 144, 116, 4, 145, 117],
-            [17, 68, 42],
-            [17, 50, 22, 6, 51, 23],
-            [19, 46, 16, 6, 47, 17],
-            [2, 139, 111, 7, 140, 112],
-            [17, 74, 46],
-            [7, 54, 24, 16, 55, 25],
-            [34, 37, 13],
-            [4, 151, 121, 5, 152, 122],
-            [4, 75, 47, 14, 76, 48],
-            [11, 54, 24, 14, 55, 25],
-            [16, 45, 15, 14, 46, 16],
-            [6, 147, 117, 4, 148, 118],
-            [6, 73, 45, 14, 74, 46],
-            [11, 54, 24, 16, 55, 25],
-            [30, 46, 16, 2, 47, 17],
-            [8, 132, 106, 4, 133, 107],
-            [8, 75, 47, 13, 76, 48],
-            [7, 54, 24, 22, 55, 25],
-            [22, 45, 15, 13, 46, 16],
-            [10, 142, 114, 2, 143, 115],
-            [19, 74, 46, 4, 75, 47],
-            [28, 50, 22, 6, 51, 23],
-            [33, 46, 16, 4, 47, 17],
-            [8, 152, 122, 4, 153, 123],
-            [22, 73, 45, 3, 74, 46],
-            [8, 53, 23, 26, 54, 24],
-            [12, 45, 15, 28, 46, 16],
-            [3, 147, 117, 10, 148, 118],
-            [3, 73, 45, 23, 74, 46],
-            [4, 54, 24, 31, 55, 25],
-            [11, 45, 15, 31, 46, 16],
-            [7, 146, 116, 7, 147, 117],
-            [21, 73, 45, 7, 74, 46],
-            [1, 53, 23, 37, 54, 24],
-            [19, 45, 15, 26, 46, 16],
-            [5, 145, 115, 10, 146, 116],
-            [19, 75, 47, 10, 76, 48],
-            [15, 54, 24, 25, 55, 25],
-            [23, 45, 15, 25, 46, 16],
-            [13, 145, 115, 3, 146, 116],
-            [2, 74, 46, 29, 75, 47],
-            [42, 54, 24, 1, 55, 25],
-            [23, 45, 15, 28, 46, 16],
-            [17, 145, 115],
-            [10, 74, 46, 23, 75, 47],
-            [10, 54, 24, 35, 55, 25],
-            [19, 45, 15, 35, 46, 16],
-            [17, 145, 115, 1, 146, 116],
-            [14, 74, 46, 21, 75, 47],
-            [29, 54, 24, 19, 55, 25],
-            [11, 45, 15, 46, 46, 16],
-            [13, 145, 115, 6, 146, 116],
-            [14, 74, 46, 23, 75, 47],
-            [44, 54, 24, 7, 55, 25],
-            [59, 46, 16, 1, 47, 17],
-            [12, 151, 121, 7, 152, 122],
-            [12, 75, 47, 26, 76, 48],
-            [39, 54, 24, 14, 55, 25],
-            [22, 45, 15, 41, 46, 16],
-            [6, 151, 121, 14, 152, 122],
-            [6, 75, 47, 34, 76, 48],
-            [46, 54, 24, 10, 55, 25],
-            [2, 45, 15, 64, 46, 16],
-            [17, 152, 122, 4, 153, 123],
-            [29, 74, 46, 14, 75, 47],
-            [49, 54, 24, 10, 55, 25],
-            [24, 45, 15, 46, 46, 16],
-            [4, 152, 122, 18, 153, 123],
-            [13, 74, 46, 32, 75, 47],
-            [48, 54, 24, 14, 55, 25],
-            [42, 45, 15, 32, 46, 16],
-            [20, 147, 117, 4, 148, 118],
-            [40, 75, 47, 7, 76, 48],
-            [43, 54, 24, 22, 55, 25],
-            [10, 45, 15, 67, 46, 16],
-            [19, 148, 118, 6, 149, 119],
-            [18, 75, 47, 31, 76, 48],
-            [34, 54, 24, 34, 55, 25],
-            [20, 45, 15, 61, 46, 16],
-          ];
-          var qrRSBlock = function (tc, dc) {
-            return { totalCount: tc, dataCount: dc };
-          };
-          var _t = {};
-          _t.getRSBlocks = function (tn, ecl) {
-            var tbl = T[(tn - 1) * 4 + [1, 0, 3, 2][ecl]];
-            if (!tbl) throw new Error("bad RS block");
-            var len = tbl.length / 3,
-              list = [];
-            for (var i = 0; i < len; i++)
-              for (var j = 0; j < tbl[i * 3]; j++)
-                list.push(qrRSBlock(tbl[i * 3 + 1], tbl[i * 3 + 2]));
-            return list;
-          };
-          return _t;
-        })();
-        var qrBitBuffer = function () {
-          var _b = [],
-            _l = 0,
-            _t = {};
-          _t.getBuffer = function () {
-            return _b;
-          };
-          _t.getLengthInBits = function () {
-            return _l;
-          };
-          _t.put = function (n, l) {
-            for (var i = 0; i < l; i++)
-              _t.putBit(((n >>> (l - i - 1)) & 1) == 1);
-          };
-          _t.putBit = function (b) {
-            var bi = Math.floor(_l / 8);
-            if (_b.length <= bi) _b.push(0);
-            if (b) _b[bi] |= 0x80 >>> (_l % 8);
-            _l++;
-          };
-          return _t;
-        };
-        var qr8BitByte = function (d) {
-          var _d = d,
-            _b = qrcode.stringToBytes(d),
-            _t = {};
-          _t.getMode = function () {
-            return 4;
-          };
-          _t.getLength = function () {
-            return _b.length;
-          };
-          _t.write = function (buf) {
-            for (var i = 0; i < _b.length; i++) buf.put(_b[i], 8);
-          };
-          return _t;
-        };
-        return qrcode;
-      })();
-
-      window.QRCode = {
-        generate: function (text, canvas, size) {
-          size = size || 200;
-          var byteCaps = [
-            0, 16, 28, 44, 64, 86, 108, 124, 154, 182, 216, 254, 290, 334, 365,
-            415, 453, 507, 563, 627, 669, 714, 782, 860, 914, 1000, 1062, 1128,
-            1193, 1267, 1373, 1455, 1541, 1631, 1725, 1812, 1914, 1992, 2102,
-            2216, 2334,
-          ];
-          var byteLen = new TextEncoder().encode(text).length;
-          var ver = 1;
-          for (var v = 1; v <= 40; v++) {
-            if (byteCaps[v] >= byteLen) {
-              ver = v;
-              break;
-            }
-          }
-          var qr = qrcode(ver, "M");
-          qr.addData(text);
-          qr.make();
-          var mc = qr.getModuleCount();
-          var quietZone = 4;
-          var totalModules = mc + quietZone * 2;
-          var scale = Math.max(1, Math.floor(size / totalModules));
-          var dim = totalModules * scale;
-          canvas.width = canvas.height = dim;
-          var ctx = canvas.getContext("2d");
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, dim, dim);
-          ctx.fillStyle = "#000000";
-          var off = quietZone * scale;
-          for (var r = 0; r < mc; r++)
-            for (var c = 0; c < mc; c++)
-              if (qr.isDark(r, c))
-                ctx.fillRect(off + c * scale, off + r * scale, scale, scale);
-        },
-      };
-    </script>
-
-    <script type="module">
-      import {
-        generateRandomWallet,
-        generateMnemonic,
-        generateMnemonicWithDice,
-        generateWalletFromMnemonic,
-        deriveMultipleAddresses,
-        validateMnemonic,
-        validateRoundTrip,
-        mnemonicToSeed,
-        WALLET_TYPES,
-        isOnline,
-        secureWipe,
-        secureWipeAll,
-        diceToEntropy,
-        validateDiceInput,
-        mixEntropy,
-        entropyToMnemonic,
-        WORDLIST,
-        sha256,
-        hexToBytes,
-        bytesToHex,
-        bytesToBigInt,
-        bigIntToBytes32,
-        privateKeyToPublicKey,
-        privateKeyToWIF,
-        pubKeyToLegacy,
-        pubKeyToSegwit,
-        pubKeyToNativeSegwit,
-        base58Encode,
-        sha256d,
-        generateMnemonicFromString,
-        pubKeyToTaproot,
-      } from "./js/wallet.js";
-
-      let generatedWallets = [];
-      let entropyReady = false;
-
-      function updateNetworkStatus() {
-        const dot = document.getElementById("net-dot");
-        const label = document.getElementById("net-label");
-        const onlineAlert = document.getElementById("online-alert");
-        const offlineAlert = document.getElementById("offline-ok-alert");
-        if (navigator.onLine) {
-          dot.className = "status-dot online";
-          label.textContent = "ONLINE - UNSAFE";
-          label.style.color = "var(--red)";
-          onlineAlert.classList.remove("hidden");
-          offlineAlert.style.display = "none";
-        } else {
-          dot.className = "status-dot offline";
-          label.textContent = "OFFLINE - SAFE";
-          label.style.color = "var(--green)";
-          onlineAlert.classList.add("hidden");
-          offlineAlert.style.display = "flex";
-        }
-        const chkOffline = document.getElementById("chk-offline");
-        if (chkOffline) {
-          const ok = !navigator.onLine;
-          chkOffline.innerHTML = `<span class="chk-icon ${ok ? "text-green" : "text-red"}">${ok ? "✓" : "✗"}</span> Disconnected from internet`;
-        }
-      }
-      window.addEventListener("online", updateNetworkStatus);
-      window.addEventListener("offline", updateNetworkStatus);
-      updateNetworkStatus();
-
-      let entropyMode = "mouse";
-      let diceValid = false;
-
-      function setEntropyMode(mode) {
-        entropyMode = mode;
-
-        document.getElementById("panel-mouse").classList.add("hidden");
-        document.getElementById("panel-dice").classList.add("hidden");
-        document.getElementById("panel-string").classList.add("hidden");
-
-        ["mode-mouse", "mode-dice", "mode-string"].forEach((id) => {
-          document.getElementById(id).style.background = "transparent";
-          document.getElementById(id).style.color = "var(--text-dim)";
-        });
-
-        document.getElementById("panel-" + mode).classList.remove("hidden");
-        document.getElementById("mode-" + mode).style.background =
-          "rgba(0,255,65,0.1)";
-        document.getElementById("mode-" + mode).style.color = "var(--green)";
-      }
-
-      document.getElementById("mode-mouse").addEventListener("click", () => {
-        setEntropyMode("mouse");
-        if (generatedWallets.length > 0) {
-          const note = document.getElementById("entropy-mode-change-note");
-          if (note) note.style.display = "block";
-        }
-      });
-      document.getElementById("mode-dice").addEventListener("click", () => {
-        setEntropyMode("dice");
-        if (generatedWallets.length > 0) {
-          const note = document.getElementById("entropy-mode-change-note");
-          if (note) note.style.display = "block";
-        }
-      });
-      document.getElementById("mode-string").addEventListener("click", () => {
-        setEntropyMode("string");
-        if (generatedWallets.length > 0) {
-          const note = document.getElementById("entropy-mode-change-note");
-          if (note) note.style.display = "block";
-        }
-      });
-      let diceDeterministic = false;
-
-      document
-        .getElementById("dice-mode-mixed")
-        .addEventListener("click", () => {
-          diceDeterministic = false;
-          document.getElementById("dice-mode-mixed").style.background =
-            "rgba(0,255,65,0.1)";
-          document.getElementById("dice-mode-mixed").style.color =
-            "var(--green)";
-          document.getElementById("dice-mode-det").style.background =
-            "transparent";
-          document.getElementById("dice-mode-det").style.color =
-            "var(--text-dim)";
-          document.getElementById("dice-det-warning").classList.add("hidden");
-          document.getElementById("dice-mode-desc").textContent =
-            "Mixed: dice + CSPRNG - different wallet every run";
-          updateDiceStats();
-        });
-
-      document.getElementById("dice-mode-det").addEventListener("click", () => {
-        diceDeterministic = true;
-        document.getElementById("dice-mode-det").style.background =
-          "rgba(0,255,65,0.1)";
-        document.getElementById("dice-mode-det").style.color = "var(--green)";
-        document.getElementById("dice-mode-mixed").style.background =
-          "transparent";
-        document.getElementById("dice-mode-mixed").style.color =
-          "var(--text-dim)";
-        document.getElementById("dice-det-warning").classList.remove("hidden");
-        document.getElementById("dice-mode-desc").textContent =
-          "Deterministic: dice only - same rolls = same wallet always";
-        document.getElementById("entropy-status").textContent =
-          "🔒 DICE: DETERMINISTIC";
-        updateDiceStats();
-      });
-
-      let stringVisible = false;
-      document
-        .getElementById("string-visibility-toggle")
-        .addEventListener("click", () => {
-          stringVisible = !stringVisible;
-          document.getElementById("string-input").style.webkitTextSecurity =
-            stringVisible ? "none" : "disc";
-          document.getElementById("string-visibility-toggle").textContent =
-            stringVisible ? "👁 HIDE" : "👁 SHOW";
-        });
-      document.getElementById("string-input").addEventListener("input", (e) => {
-        const val = e.target.value;
-        const len = val.length;
-        const byteLen = new TextEncoder().encode(val).length;
-        const countEl = document.getElementById("string-char-count");
-        if (countEl)
-          countEl.textContent =
-            byteLen === len
-              ? `${len} chars`
-              : `${len} chars · ${byteLen} bytes`;
-        const byteCountEl = document.getElementById("string-byte-count");
-        if (byteCountEl)
-          byteCountEl.textContent =
-            byteLen !== len
-              ? `⚠ multi-byte chars (${byteLen} UTF-8 bytes hashed)`
-              : "";
-        const bar = document.getElementById("string-strength-bar");
-        const lbl = document.getElementById("string-strength-label");
-        const est = document.getElementById("string-entropy-estimate");
-
-        const uniqueChars = new Set(val).size;
-        const charsetSize = /[A-Z]/.test(val)
-          ? /[0-9]/.test(val)
-            ? /[^a-zA-Z0-9]/.test(val)
-              ? 95
-              : 62
-            : 52
-          : /[0-9]/.test(val)
-            ? 36
-            : 26;
-        const estimatedBits = Math.floor(len * Math.log2(charsetSize));
-        est.textContent = `~${estimatedBits} bits`;
-
-        if (len === 0) {
-          bar.style.width = "0%";
-          bar.style.background = "var(--red)";
-          lbl.textContent = "type your string above";
-          lbl.style.color = "var(--text-muted)";
-        } else if (len < 20) {
-          bar.style.width = `${(len / 50) * 30}%`;
-          bar.style.background = "var(--red)";
-          lbl.textContent = `✗ too short - dangerously weak (${len} chars)`;
-          lbl.style.color = "var(--red)";
-        } else if (len < 40) {
-          bar.style.width = `${(len / 50) * 60}%`;
-          bar.style.background = "var(--yellow)";
-          lbl.textContent = `△ marginal - longer is safer (${len} chars)`;
-          lbl.style.color = "var(--yellow)";
-        } else if (len < 50) {
-          bar.style.width = "80%";
-          bar.style.background = "var(--yellow)";
-          lbl.textContent = `△ getting better - aim for 50+ chars (${len} chars)`;
-          lbl.style.color = "var(--yellow)";
-        } else {
-          bar.style.width = "100%";
-          bar.style.background = "var(--green)";
-          lbl.textContent = `✓ length acceptable - security depends entirely on unpredictability (${len} chars)`;
-          lbl.style.color = "var(--green)";
-        }
-      });
-
-      const bar = document.getElementById("entropy-bar");
-      const entropyLabel = document.getElementById("entropy-label");
-      let entropyCount = 0;
-      const ENTROPY_TARGET = 100;
-      let mouseEntropySamples = [];
-
-      function onMouseMove(e) {
-        if (entropyCount >= ENTROPY_TARGET) return;
-        entropyCount++;
-
-        mouseEntropySamples.push(
-          ((e.clientX & 0xffff) << 16) | (e.clientY & 0xffff),
-          Date.now() ^ Math.round(performance.now() * 1000),
-        );
-
-        const pct = Math.min(100, (entropyCount / ENTROPY_TARGET) * 100);
-        bar.style.width = pct + "%";
-        if (entropyCount >= ENTROPY_TARGET) {
-          entropyLabel.textContent = " Entropy collected - ready to generate";
-          entropyLabel.style.color = "var(--green)";
-          document.getElementById("entropy-status").textContent =
-            "⚡ ENTROPY: COLLECTED";
-          document.removeEventListener("mousemove", onMouseMove);
-          entropyReady = true;
-        } else {
-          entropyLabel.textContent = `Collecting... ${Math.round(pct)}% (move your mouse)`;
-        }
-      }
-      document.addEventListener("mousemove", onMouseMove, { passive: true });
-
-      setTimeout(() => {
-        if (!entropyReady) {
-          entropyReady = true;
-          bar.style.width = "100%";
-          if (entropyCount === 0) {
-            entropyLabel.textContent =
-              "No mouse movement detected - using CSPRNG only (still secure)";
-            entropyLabel.style.color = "var(--yellow)";
-          } else {
-            entropyLabel.textContent = "Entropy ready";
-            entropyLabel.style.color = "var(--green)";
-          }
-        }
-      }, 3000);
-
-      const diceInput = document.getElementById("dice-input");
-
-      function updateDiceStats() {
-        const val = diceInput.value;
-        const info = validateDiceInput(val);
-        const minRolls =
-          typeof diceDeterministic !== "undefined" && diceDeterministic
-            ? 50
-            : 99;
-        document.getElementById("dice-count").textContent =
-          `Rolls: ${info.count}`;
-        document.getElementById("dice-entropy-bits").textContent =
-          `Entropy: ~${info.entropyBits} bits`;
-        const statusEl = document.getElementById("dice-status");
-        if (info.count >= minRolls) {
-          statusEl.textContent =
-            typeof diceDeterministic !== "undefined" && diceDeterministic
-              ? `✓ ${info.count} rolls - deterministic entropy ready`
-              : "✓ Sufficient entropy";
-          statusEl.style.color = "var(--green)";
-          diceValid = true;
-          document.getElementById("entropy-status").textContent =
-            typeof diceDeterministic !== "undefined" && diceDeterministic
-              ? "🔒 DICE: DETERMINISTIC"
-              : "🎲 DICE: READY";
-        } else {
-          statusEl.textContent = `✗ Need ${minRolls - info.count} more rolls`;
-          statusEl.style.color = "var(--red)";
-          diceValid = false;
-        }
-        const rolls = val
-          .trim()
-          .split(/[\s,;.|\-]+/)
-          .map(Number)
-          .filter((n) => n >= 1 && n <= 6);
-        const dist = document.getElementById("dice-distribution");
-        const counts = [0, 0, 0, 0, 0, 0];
-        rolls.forEach((r) => counts[r - 1]++);
-        const maxCount = Math.max(...counts, 1);
-        dist.innerHTML = [1, 2, 3, 4, 5, 6]
-          .map((face, i) => {
-            const pct = Math.round((counts[i] / maxCount) * 100);
-            const expected =
-              rolls.length > 0 ? Math.round(rolls.length / 6) : 0;
-            const bias =
-              expected > 0 ? Math.abs(counts[i] - expected) / expected : 0;
-            const barColor = bias > 0.3 ? "var(--yellow)" : "var(--green-dim)";
-            return `<div style="text-align:center;">
-            <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">&#x2685;${face}</div>
-            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:2px;height:40px;position:relative;overflow:hidden;">
-              <div style="position:absolute;bottom:0;width:100%;height:${pct}%;background:${barColor};transition:height 0.2s;"></div>
-            </div>
-            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${counts[i]}</div>
-          </div>`;
-          })
-          .join("");
-      }
-
-      diceInput.addEventListener("keydown", (e) => {
-        if (
-          e.ctrlKey ||
-          e.metaKey ||
-          [
-            "Backspace",
-            "Delete",
-            "ArrowLeft",
-            "ArrowRight",
-            "Tab",
-            "Enter",
-            "Home",
-            "End",
-          ].includes(e.key)
-        )
-          return;
-        if (!/^[1-6]$/.test(e.key)) {
-          e.preventDefault();
-          return;
-        }
-        e.preventDefault();
-        const start = diceInput.selectionStart,
-          end = diceInput.selectionEnd;
-        const val = diceInput.value,
-          insert = e.key + " ";
-        diceInput.value = val.slice(0, start) + insert + val.slice(end);
-        diceInput.selectionStart = diceInput.selectionEnd =
-          start + insert.length;
-        document.getElementById("roll-for-me-warn").classList.add("hidden");
-        updateDiceStats();
-      });
-      diceInput.addEventListener("paste", (e) => {
-        e.preventDefault();
-        const text = (e.clipboardData || window.clipboardData).getData("text");
-        const digits = text.split("").filter((c) => /[1-6]/.test(c));
-        const lines = [];
-        for (let i = 0; i < digits.length; i += 10)
-          lines.push(digits.slice(i, i + 10).join(" "));
-        const start = diceInput.selectionStart;
-        diceInput.value =
-          diceInput.value.slice(0, start) +
-          lines.join("\n") +
-          diceInput.value.slice(diceInput.selectionEnd);
-        document.getElementById("roll-for-me-warn").classList.add("hidden");
-        updateDiceStats();
-      });
-      diceInput.addEventListener("input", () => {
-        const raw = diceInput.value;
-        if (/[^1-6 \n]/.test(raw)) {
-          const digits = raw.split("").filter((c) => /[1-6]/.test(c));
-          const lines = [];
-          for (let i = 0; i < digits.length; i += 10)
-            lines.push(digits.slice(i, i + 10).join(" "));
-          diceInput.value = lines.join("\n");
-        }
-        document.getElementById("roll-for-me-warn").classList.add("hidden");
-        updateDiceStats();
-      });
-      updateDiceStats();
-
-      document
-        .getElementById("btn-roll-for-me")
-        .addEventListener("click", () => {
-          const count =
-            100 +
-            Math.floor(
-              (crypto.getRandomValues(new Uint8Array(1))[0] / 255) * 200,
-            );
-          const rolls = [];
-          while (rolls.length < count) {
-            const buf = crypto.getRandomValues(
-              new Uint8Array(Math.ceil((count - rolls.length) * 1.5)),
-            );
-            for (const b of buf) {
-              if (b < 252) {
-                rolls.push((b % 6) + 1);
-                if (rolls.length >= count) break;
-              }
-            }
-          }
-          const lines = [];
-          for (let i = 0; i < rolls.length; i += 10)
-            lines.push(rolls.slice(i, i + 10).join(" "));
-          diceInput.value = lines.join("\n");
-          document
-            .getElementById("roll-for-me-warn")
-            .classList.remove("hidden");
-          updateDiceStats();
-        });
-
-      document.querySelectorAll(".tab").forEach((tab) => {
-        tab.addEventListener("click", () => {
-          document
-            .querySelectorAll(".tab")
-            .forEach((t) => t.classList.remove("active"));
-          document
-            .querySelectorAll(".tab-content")
-            .forEach((c) => c.classList.add("hidden"));
-          tab.classList.add("active");
-          document
-            .getElementById("tab-" + tab.dataset.tab)
-            .classList.remove("hidden");
-        });
-      });
-
-      function makePassphraseToggle(inputId, btnId) {
-        const btn = document.getElementById(btnId);
-        const inp = document.getElementById(inputId);
-        if (!btn || !inp) return;
-        btn.addEventListener("click", () => {
-          const showing = inp.type === "text";
-          inp.type = showing ? "password" : "text";
-          btn.textContent = showing ? "👁" : "👁";
-          btn.title = showing ? "show" : "hide";
-        });
-      }
-      makePassphraseToggle("passphrase", "passphrase-toggle");
-      makePassphraseToggle("passphrase-confirm", "passphrase-confirm-toggle");
-      makePassphraseToggle("import-passphrase", "import-passphrase-toggle");
-      makePassphraseToggle("hd-passphrase", "hd-passphrase-toggle");
-
-      const ppField = document.getElementById("passphrase");
-      const ppConfirmWrap = document.getElementById("passphrase-confirm-wrap");
-      const ppConfirm = document.getElementById("passphrase-confirm");
-      const ppMatchMsg = document.getElementById("passphrase-match-msg");
-      function checkPassphraseMatch() {
-        const a = ppField.value,
-          b = ppConfirm.value;
-        if (!b) {
-          ppMatchMsg.textContent = "";
-          return;
-        }
-        if (a === b) {
-          ppMatchMsg.style.color = "var(--green)";
-          ppMatchMsg.textContent = "passphrases match";
-        } else {
-          ppMatchMsg.style.color = "var(--red)";
-          ppMatchMsg.textContent = "passphrases do not match — typo risk!";
-        }
-      }
-      ppField.addEventListener("input", () => {
-        ppConfirmWrap.style.display = ppField.value ? "block" : "none";
-        if (!ppField.value) {
-          ppConfirm.value = "";
-          ppMatchMsg.textContent = "";
-        }
-        checkPassphraseMatch();
-      });
-      ppConfirm.addEventListener("input", checkPassphraseMatch);
-
-      function toast(msg, type = "success") {
-        const el = document.createElement("div");
-        el.className = `toast ${type}`;
-        const icon = type === "success" ? "✓" : type === "error" ? "✗" : "⚠";
-        el.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
-        document.getElementById("toast-container").appendChild(el);
-        setTimeout(() => el.remove(), 3000);
-      }
-
-      async function copyText(text, btn) {
-        try {
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(text);
-          } else {
-            const ta = document.createElement("textarea");
-            ta.value = text;
-            ta.style.cssText =
-              "position:fixed;top:0;left:0;opacity:0;pointer-events:none;";
-            document.body.appendChild(ta);
-            ta.focus();
-            ta.select();
-            document.execCommand("copy");
-            document.body.removeChild(ta);
-          }
-          btn.textContent = "copied";
-          btn.classList.add("copied");
-          setTimeout(() => {
-            btn.textContent = "copy";
-            btn.classList.remove("copied");
-          }, 1500);
-        } catch {
-          toast("copy failed - select text manually", "error");
-        }
-      }
-
-      function renderQR(text, canvas, size = 160) {
-        try {
-          window.QRCode.generate(text, canvas, size);
-        } catch (e) {
-          console.warn("QR error:", e);
-        }
-      }
-
-      function walletTypeClass(type) {
-        return type === "LEGACY"
-          ? "legacy"
-          : type === "SEGWIT"
-            ? "segwit"
-            : type === "TAPROOT"
-              ? "taproot"
-              : "native";
-      }
-
-      function renderWalletCard(w, index) {
-        const cls = walletTypeClass(w.walletType);
-        const addrCanvas = document.createElement("canvas");
-        addrCanvas.className = "qr";
-        const privCanvas = document.createElement("canvas");
-        privCanvas.className = "qr";
-        const div = document.createElement("div");
-        div.className = "wallet-card";
-        div.innerHTML = `
-          <div class="wallet-type-badge badge-${cls}">${w.typeName} - #${index + 1}</div>
-          <div class="wallet-grid">
-            <div class="wallet-fields">
-              <div class="field-group">
-                <div class="field-label">Receiving Address (PUBLIC - safe to share)</div>
-                <div class="field-value address">
-                  <span>${w.address}</span>
-                  <button class="copy-btn" data-copy="${w.address}">copy</button>
-                </div>
-              </div>
-              <div class="field-group">
-                <div class="field-label">⚠ Private Key WIF (KEEP SECRET - never share)</div>
-                <div class="field-value wif">
-                  <span>${w.privateKeyWIF}</span>
-                  <button class="copy-btn" data-copy="${w.privateKeyWIF}">copy</button>
-                </div>
-              </div>
-              <div class="field-group">
-                <div class="field-label" style="display:flex;align-items:center;justify-content:space-between;">
-                  <span>Seed Phrase - BIP39 Mnemonic (${w.mnemonic.split(" ").length} words)</span>
-                  <button class="copy-btn copy-mnemonic-btn" data-mnemonic="${w.mnemonic}" style="font-size:10px;padding:3px 10px;">⎘ copy words</button>
-                </div>
-                <div class="field-value mnemonic${w.mnemonic.split(" ").length === 24 ? " words-24" : ""}">
-                  ${w.mnemonic
-                    .split(" ")
-                    .map(
-                      (word, i) =>
-                        `<span class="word-chip"><span class="word-num">${i + 1}</span><span class="word-text">${word}</span></span>`,
-                    )
-                    .join("")}
-                </div>
-              </div>
-              <div class="field-group">
-                <div class="field-label">Derivation Path</div>
-                <div class="field-value text-dim small" style="font-size:11px;color:var(--text-dim)">${w.path}</div>
-              </div>
-            </div>
-            <div class="qr-pair">
-              <div class="qr-box">
-                <div class="qr-label">Address (Public)</div>
-                <div class="qr-canvas-wrap" data-qr="addr"></div>
-              </div>
-              <div class="qr-box">
-                <div class="qr-label">WIF Key (Private)</div>
-                <div class="qr-canvas-wrap" data-qr="priv"></div>
-              </div>
-            </div>
-          </div>`;
-        div.querySelector('[data-qr="addr"]').appendChild(addrCanvas);
-        div.querySelector('[data-qr="priv"]').appendChild(privCanvas);
-        renderQR(w.address, addrCanvas, 160);
-        renderQR(w.privateKeyWIF, privCanvas, 160);
-        div
-          .querySelectorAll(".copy-btn[data-copy]")
-          .forEach((btn) =>
-            btn.addEventListener("click", () =>
-              copyText(btn.dataset.copy, btn),
-            ),
-          );
-        div
-          .querySelectorAll(".copy-mnemonic-btn")
-          .forEach((btn) =>
-            btn.addEventListener("click", () =>
-              copyText(btn.dataset.mnemonic, btn),
-            ),
-          );
-        return div;
-      }
-
-      async function generate() {
-        const btn = document.getElementById("generate-btn");
-        const spinner = document.getElementById("gen-spinner");
-        const btnText = document.getElementById("gen-btn-text");
-        const area = document.getElementById("results-area");
-        const actionRow = document.getElementById("action-row");
-        const wipeBtn = document.getElementById("wipe-btn");
-
-        const walletType = document.getElementById("wallet-type").value;
-        const wordCount = parseInt(document.getElementById("word-count").value);
-        const quantity = parseInt(document.getElementById("quantity").value);
-        const passphrase = document.getElementById("passphrase").value;
-
-        btn.disabled = true;
-        spinner.classList.remove("hidden");
-        btnText.textContent = "Generating";
-        area.innerHTML = `<div class="loading-state"><div class="spinner"></div><div class="text-dim">Generating wallet<span class="loading-dots"></span></div></div>`;
-
-        try {
-          if (entropyMode === "dice" && !diceValid)
-            throw new Error(
-              diceDeterministic
-                ? "dice entropy not ready, enter at least 50 rolls (1-6)"
-                : "dice entropy not ready, enter at least 99 rolls (1-6)",
-            );
-          if (entropyMode === "string") {
-            const str = document.getElementById("string-input").value;
-            if (!str || str.length < 1)
-              throw new Error("enter a string to derive wallet from");
-            if (str.length < 20)
-              throw new Error(
-                "string too short - minimum 20 characters, 50+ strongly recommended",
-              );
-          }
-          generatedWallets = [];
-          const note = document.getElementById("entropy-mode-change-note");
-          if (note) note.style.display = "none";
-          for (let i = 0; i < quantity; i++) {
-            let mnemonic;
-            if (entropyMode === "dice") {
-              mnemonic = await generateMnemonicWithDice(
-                diceInput.value,
-                wordCount,
-                i,
-                diceDeterministic,
-              );
-            } else if (entropyMode === "string") {
-              const idxBuf = new Uint8Array(4);
-              new DataView(idxBuf.buffer).setUint32(0, i, false);
-              const idxStr = String.fromCharCode(...idxBuf);
-              mnemonic = await generateMnemonicFromString(
-                document.getElementById("string-input").value + "\x00" + idxStr,
-                wordCount,
-              );
-            } else {
-              const extraBytes = new Uint8Array(mouseEntropySamples.length * 4);
-              mouseEntropySamples.forEach((s, i) => {
-                new DataView(extraBytes.buffer).setUint32(
-                  i * 4,
-                  s >>> 0,
-                  false,
-                );
-              });
-              mnemonic = await generateMnemonic(
-                wordCount === 24 ? 256 : 128,
-                extraBytes,
-              );
-            }
-            const w = await generateWalletFromMnemonic(
-              mnemonic,
-              passphrase,
-              walletType,
-            );
-            generatedWallets.push(w);
-          }
-          area.innerHTML = "";
-          for (let i = 0; i < generatedWallets.length; i++)
-            area.appendChild(renderWalletCard(generatedWallets[i], i));
-
-          const validationResults = await Promise.all(
-            generatedWallets.map((w) => validateRoundTrip(w)),
-          );
-          const failed = validationResults.filter((r) => !r.valid);
-          if (failed.length > 0) {
-            secureWipeAll(generatedWallets);
-            generatedWallets = [];
-            area.innerHTML = "";
-            throw new Error(
-              "CRITICAL: Round-trip validation failed!\n" +
-                failed.flatMap((r) => r.errors).join("\n"),
-            );
-          }
-          validationResults.forEach((r, i) => {
-            const card = area.children[i];
-            if (!card) return;
-            const badge = document.createElement("div");
-            badge.style.cssText =
-              "font-size:11px;color:var(--green);font-family:var(--font-mono);margin-bottom:8px;letter-spacing:1px;";
-            badge.textContent =
-              "ROUND-TRIP VALIDATED - address re-derived from WIF key matches";
-            card.insertBefore(badge, card.firstChild);
-          });
-          actionRow.classList.remove("hidden");
-          wipeBtn.classList.remove("hidden");
-          toast(
-            `${quantity} wallet${quantity > 1 ? "s" : ""} generated & validated`,
-            "success",
-          );
-          buildPrintArea();
-        } catch (e) {
-          console.error(e);
-          area.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>Generation failed</strong> ${e.message}</div></div>`;
-          toast("generation failed: " + e.message, "error");
-        }
-        btn.disabled = false;
-        spinner.classList.add("hidden");
-        btnText.textContent = "⊕ Generate Wallet";
-      }
-
-      document
-        .getElementById("generate-btn")
-        .addEventListener("click", generate);
-
-      document.getElementById("wipe-btn").addEventListener("click", () => {
-        secureWipeAll(generatedWallets);
-        generatedWallets = [];
-        document.getElementById("action-row").classList.add("hidden");
-        document.getElementById("wipe-btn").classList.add("hidden");
-        document.getElementById("results-area").innerHTML = "";
-        toast("cleared from screen", "success");
-        const note = document.getElementById("entropy-mode-change-note");
-        if (note) note.style.display = "none";
-      });
-
-      function buildPrintArea() {
-        const area = document.getElementById("print-area");
-        area.innerHTML =
-          '<h2 style="font-size:18px;margin-bottom:16px;font-family:monospace">BITCOIN PAPER WALLETS - GENERATED OFFLINE</h2>';
-        generatedWallets.forEach((w, i) => {
-          const passphraseNote = w.passphrase
-            ? `<div class="print-label" style="margin-top:10px;padding:6px 8px;border:1.5px solid #c8a000;border-radius:3px;color:#c8a000;font-weight:bold;">⚠ BIP39 PASSPHRASE (25TH WORD) WAS USED<br><span style="font-weight:normal;font-size:11px;">This wallet CANNOT be recovered from the seed phrase alone. You must also have the correct passphrase. Back it up separately in a secure location.</span></div>`
-            : "";
-          const addrCanvas = document.createElement("canvas");
-          const privCanvas = document.createElement("canvas");
-          const div = document.createElement("div");
-          div.className = "print-wallet";
-          div.innerHTML = `
-            <div style="font-size:14px;font-weight:bold;margin-bottom:8px;font-family:monospace">WALLET #${i + 1} - ${w.typeName}</div>
-            <div class="print-section">
-              <div class="print-label">⬤ PUBLIC - Receiving Address (safe to share)</div>
-              <div class="print-value">${w.address}</div>
-              <div class="print-qr" data-pqr="addr"></div>
-            </div>
-            <div class="print-fold-line">▼ FOLD HERE - KEEP PRIVATE ▼</div>
-            <div class="print-section">
-              <div class="print-label">⚠ PRIVATE KEY WIF - NEVER SHARE</div>
-              <div class="print-value">${w.privateKeyWIF}</div>
-              <div class="print-qr" data-pqr="priv"></div>
-              <div class="print-label" style="margin-top:12px">BIP39 SEED PHRASE (${w.mnemonic.split(" ").length} words)</div>
-              <div class="print-value">${w.mnemonic}</div>
-              <div class="print-label" style="margin-top:8px">DERIVATION PATH: ${w.path}</div>
-              ${passphraseNote}
-            </div>
-            <div class="print-warning">⚠ NEVER enter your private key or seed phrase on any website or device connected to the internet.</div>`;
-          div.querySelector('[data-pqr="addr"]').appendChild(addrCanvas);
-          div.querySelector('[data-pqr="priv"]').appendChild(privCanvas);
-          area.appendChild(div);
-          renderQR(w.address, addrCanvas, 120);
-          renderQR(w.privateKeyWIF, privCanvas, 120);
-        });
-      }
-
-      document
-        .getElementById("print-btn")
-        .addEventListener("click", () => window.print());
-      document
-        .getElementById("export-txt-btn")
-        .addEventListener("click", () => {
-          if (!generatedWallets.length) return;
-          const lines = [
-            "BITCOIN PAPER WALLETS - GENERATED OFFLINE",
-            "=".repeat(60),
-            "",
-          ];
-          generatedWallets.forEach((w, i) => {
-            lines.push(`WALLET #${i + 1} - ${w.typeName}`);
-            lines.push(`Address:     ${w.address}`);
-            lines.push(`WIF Key:     ${w.privateKeyWIF}`);
-            lines.push(`Mnemonic:    ${w.mnemonic}`);
-            lines.push(`Path:        ${w.path}`);
-            if (w.passphrase)
-              lines.push(
-                `Passphrase: A BIP39 PASSPHRASE (25TH WORD) WAS USED\n             This wallet cannot be recovered from the seed alone.\n             Back up your passphrase separately - without it funds are LOST.`,
-              );
-            lines.push("");
-            lines.push(
-              "! SECURITY: Store private key in a secure physical location.",
-            );
-            lines.push("! Never enter your seed phrase on any online device.");
-            lines.push("-".repeat(60));
-            lines.push("");
-          });
-          const blob = new Blob([lines.join("\n")], { type: "text/plain" });
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = `btc-wallets-${Date.now()}.txt`;
-          a.click();
-          URL.revokeObjectURL(a.href);
-          toast("TXT exported - store securely!", "warn");
-        });
-
-      const importBtn = document.getElementById("import-btn");
-      const mnemonicValidMsg = document.getElementById("mnemonic-valid-msg");
-      let importWordCount = 12;
-
-      function buildWordGrid(gridId, count) {
-        const grid = document.getElementById(gridId);
-        grid.innerHTML = "";
-        for (let i = 1; i <= count; i++) {
-          const wrap = document.createElement("div");
-          wrap.className = "word-input-wrap";
-          wrap.innerHTML = `<span class="word-input-num">${i}</span>
-            <input class="word-input-field" type="text" id="word-${gridId}-${i}"
-              placeholder="word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-index="${i}">`;
-          grid.appendChild(wrap);
-        }
-        grid.querySelectorAll(".word-input-field").forEach((inp, idx, all) => {
-          inp.addEventListener("input", () => {
-            inp.value = inp.value.toLowerCase().replace(/[^a-z]/g, "");
-            validateImportWords();
-          });
-          inp.addEventListener("keydown", (e) => {
-            if (e.key === " " || e.key === "Tab" || e.key === "Enter") {
-              e.preventDefault();
-              if (idx + 1 < all.length) all[idx + 1].focus();
-            }
-          });
-          inp.addEventListener("paste", (e) => {
-            e.preventDefault();
-            const text = (e.clipboardData || window.clipboardData).getData(
-              "text",
-            );
-            const words = text
-              .trim()
-              .toLowerCase()
-              .split(/\s+/)
-              .filter((w) => w.length > 0);
-            if (words.length > 1) {
-              words.forEach((word, wi) => {
-                if (idx + wi < all.length)
-                  all[idx + wi].value = word.replace(/[^a-z]/g, "");
-              });
-              all[Math.min(idx + words.length, all.length - 1)].focus();
-            } else {
-              inp.value = (words[0] || "").replace(/[^a-z]/g, "");
-            }
-            validateImportWords();
-          });
-        });
-      }
-
-      function getImportMnemonic() {
-        const gridId = importWordCount === 12 ? "word-grid-12" : "word-grid-24";
-        return Array.from(
-          document.getElementById(gridId).querySelectorAll(".word-input-field"),
-        )
-          .map((inp) => inp.value.trim())
-          .filter((w) => w.length > 0)
-          .join(" ");
-      }
-
-      let importValidTimeout;
-      async function validateImportWords() {
-        clearTimeout(importValidTimeout);
-        importValidTimeout = setTimeout(async () => {
-          const mnemonic = getImportMnemonic();
-          const words = mnemonic.split(" ").filter((w) => w);
-          const gridId =
-            importWordCount === 12 ? "word-grid-12" : "word-grid-24";
-          const allInputs = document
-            .getElementById(gridId)
-            .querySelectorAll(".word-input-field");
-          if (words.length < importWordCount) {
-            mnemonicValidMsg.classList.add("hidden");
-            importBtn.disabled = true;
-            allInputs.forEach(
-              (inp) =>
-                (inp.closest(".word-input-wrap").className = "word-input-wrap"),
-            );
-            return;
-          }
-          const valid = await validateMnemonic(mnemonic);
-          mnemonicValidMsg.classList.remove("hidden");
-          if (valid) {
-            mnemonicValidMsg.className = "validation-msg valid";
-            mnemonicValidMsg.innerHTML =
-              "Valid BIP39 mnemonic - checksum correct";
-            importBtn.disabled = false;
-            allInputs.forEach((inp) => {
-              inp.closest(".word-input-wrap").className =
-                "word-input-wrap valid";
-            });
-          } else {
-            mnemonicValidMsg.className = "validation-msg invalid";
-            mnemonicValidMsg.innerHTML =
-              "✗ Invalid mnemonic - check spelling or word order";
-            importBtn.disabled = true;
-            allInputs.forEach((inp) => {
-              inp.closest(".word-input-wrap").className =
-                "word-input-wrap invalid";
-            });
-          }
-        }, 400);
-      }
-
-      document
-        .getElementById("import-word-count-toggle")
-        .addEventListener("click", () => {
-          importWordCount = importWordCount === 12 ? 24 : 12;
-          document.getElementById("import-word-count-toggle").textContent =
-            importWordCount === 12 ? "12 WORDS" : "24 WORDS";
-          document
-            .getElementById("word-grid-12")
-            .classList.toggle("hidden", importWordCount !== 12);
-          document
-            .getElementById("word-grid-24")
-            .classList.toggle("hidden", importWordCount !== 24);
-          mnemonicValidMsg.classList.add("hidden");
-          importBtn.disabled = true;
-        });
-
-      document
-        .getElementById("import-paste-btn")
-        .addEventListener("click", async () => {
-          try {
-            let text;
-            if (navigator.clipboard && navigator.clipboard.readText) {
-              text = await navigator.clipboard.readText();
-            } else {
-              toast("clipboard access denied, type words manually", "warn");
-              return;
-            }
-            const words = text
-              .trim()
-              .toLowerCase()
-              .split(/\s+/)
-              .filter((w) => w.length > 0);
-            const count = words.length === 24 ? 24 : 12;
-            if (count !== importWordCount) {
-              importWordCount = count;
-              document.getElementById("import-word-count-toggle").textContent =
-                count + " WORDS";
-              document
-                .getElementById("word-grid-12")
-                .classList.toggle("hidden", count !== 12);
-              document
-                .getElementById("word-grid-24")
-                .classList.toggle("hidden", count !== 24);
-            }
-            const inputs = document
-              .getElementById(count === 12 ? "word-grid-12" : "word-grid-24")
-              .querySelectorAll(".word-input-field");
-            inputs.forEach((inp, i) => {
-              inp.value = (words[i] || "").replace(/[^a-z]/g, "");
-            });
-            validateImportWords();
-            toast("mnemonic pasted", "success");
-          } catch (e) {
-            toast("clipboard access denied - type words manually", "warn");
-          }
-        });
-
-      buildWordGrid("word-grid-12", 12);
-      buildWordGrid("word-grid-24", 24);
-
-      let deriveMode = "single";
-      document
-        .getElementById("derive-mode-single")
-        .addEventListener("click", () => {
-          deriveMode = "single";
-          document.getElementById("derive-mode-single").style.background =
-            "rgba(0,255,65,0.1)";
-          document.getElementById("derive-mode-single").style.color =
-            "var(--green)";
-          document.getElementById("derive-mode-range").style.background =
-            "transparent";
-          document.getElementById("derive-mode-range").style.color =
-            "var(--text-dim)";
-          document
-            .getElementById("derive-single-opts")
-            .classList.remove("hidden");
-          document.getElementById("derive-range-opts").classList.add("hidden");
-          document.getElementById("import-btn").textContent = "↓ Derive Wallet";
-        });
-      document
-        .getElementById("derive-mode-range")
-        .addEventListener("click", () => {
-          deriveMode = "range";
-          document.getElementById("derive-mode-range").style.background =
-            "rgba(0,255,65,0.1)";
-          document.getElementById("derive-mode-range").style.color =
-            "var(--green)";
-          document.getElementById("derive-mode-single").style.background =
-            "transparent";
-          document.getElementById("derive-mode-single").style.color =
-            "var(--text-dim)";
-          document
-            .getElementById("derive-range-opts")
-            .classList.remove("hidden");
-          document.getElementById("derive-single-opts").classList.add("hidden");
-          document.getElementById("import-btn").textContent =
-            "⋮ Derive Addresses";
-        });
-
-      importBtn.addEventListener("click", async () => {
-        const mnemonic = getImportMnemonic();
-        const resultsDiv = document.getElementById("import-results");
-        importBtn.disabled = true;
-
-        if (deriveMode === "single") {
-          const walletType =
-            document.getElementById("import-wallet-type").value;
-          const passphrase = document.getElementById("import-passphrase").value;
-          const addrIndex =
-            parseInt(document.getElementById("import-addr-index").value) || 0;
-          resultsDiv.innerHTML = `<div class="loading-state"><div class="spinner"></div><div class="text-dim">Deriving wallet<span class="loading-dots"></span></div></div>`;
-          try {
-            const w = await generateWalletFromMnemonic(
-              mnemonic,
-              passphrase,
-              walletType,
-              0,
-              addrIndex,
-            );
-            const vr = await validateRoundTrip(w);
-            if (!vr.valid)
-              throw new Error(
-                "round-trip validation failed: " + vr.errors.join(", "),
-              );
-            resultsDiv.innerHTML = "";
-            resultsDiv.appendChild(renderWalletCard(w, 0));
-            toast("wallet derived", "success");
-          } catch (e) {
-            resultsDiv.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>error</strong> ${e.message}</div></div>`;
-          }
-        } else {
-          const walletType = document.getElementById("hd-wallet-type").value;
-          const passphrase = document.getElementById("hd-passphrase").value;
-          const count = parseInt(document.getElementById("hd-count").value);
-          const branch = parseInt(document.getElementById("hd-branch").value);
-          const accountIndex = parseInt(
-            document.getElementById("hd-account").value,
-          );
-          const customPath = document
-            .getElementById("hd-custom-path")
-            .value.trim();
-          try {
-            const startIndexRaw = document
-              .getElementById("hd-start-index")
-              .value.trim();
-            const startIndex =
-              startIndexRaw === "" ? 0 : parseInt(startIndexRaw, 10);
-
-            if (
-              isNaN(startIndex) ||
-              !Number.isInteger(startIndex) ||
-              startIndex < 0 ||
-              startIndex > 2147483647
-            ) {
-              resultsDiv.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>Invalid start index</strong> - must be a whole number between 0 and 2,147,483,647</div></div>`;
-              importBtn.disabled = false;
-              return;
-            }
-
-            resultsDiv.innerHTML = `<div class="loading-state"><div class="spinner"></div><div class="text-dim">Deriving ${count} addresses<span class="loading-dots"></span></div></div>`;
-
-            const addresses = await deriveMultipleAddresses(
-              mnemonic,
-              passphrase,
-              walletType,
-              count,
-              branch,
-              accountIndex,
-              customPath || null,
-              startIndex,
-            );
-            resultsDiv.innerHTML = `
-              <div class="section">
-                <div class="section-header"><span class="dot"></span>Derived Addresses - ${walletType.replace("_", " ")} · ${count} addresses</div>
-                <div class="section-body" style="padding:0;overflow-x:auto">
-                  <table class="addr-table">
-                    <thead><tr><th>#</th><th>Path</th><th>Address</th><th>WIF Private Key</th></tr></thead>
-                    <tbody>
-                      ${addresses
-                        .map(
-                          (a) => `
-                        <tr>
-                          <td class="td-index">${a.index}</td>
-                          <td class="td-path">${a.path}</td>
-                          <td class="td-addr">
-                            <span style="word-break:break-all">${a.address}</span>
-                            <button class="copy-btn" data-copy="${a.address}" style="margin-top:4px;display:block">copy addr</button>
-                          </td>
-                          <td class="td-wif">
-                            <span style="word-break:break-all;color:var(--red-dim)">${a.privateKeyWIF}</span>
-                            <button class="copy-btn" data-copy="${a.privateKeyWIF}" style="margin-top:4px;display:block">copy WIF</button>
-                          </td>
-                        </tr>`,
-                        )
-                        .join("")}
-                    </tbody>
-                  </table>
-                </div>
-              </div>`;
-            resultsDiv
-              .querySelectorAll(".copy-btn")
-              .forEach((btn) =>
-                btn.addEventListener("click", () =>
-                  copyText(btn.dataset.copy, btn),
-                ),
-              );
-            toast(`${count} addresses derived`, "success");
-          } catch (e) {
-            resultsDiv.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>error</strong> ${e.message}</div></div>`;
-          }
-        }
-        importBtn.disabled = false;
-      });
-
-      document
-        .getElementById("verify-mnemonic")
-        .addEventListener("input", async (e) => {
-          const val = e.target.value.trim();
-          const result = document.getElementById("verify-result");
-          if (!val) {
-            result.innerHTML = "";
-            return;
-          }
-          const words = val.split(/\s+/);
-          if (words.length < 12) {
-            result.innerHTML = `<div class="text-dim small">Enter at least 12 words (${words.length}/12+)</div>`;
-            return;
-          }
-          const valid = await validateMnemonic(val);
-          if (valid) {
-            result.innerHTML = `<div class="alert success"><div class="alert-text"><strong>Valid BIP39 mnemonic</strong> ${words.length} words - checksum is correct.</div></div>`;
-          } else {
-            result.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text"><strong>Invalid mnemonic</strong> Checksum failed. Possible causes: typo in a word, wrong word order, or not a valid BIP39 phrase.</div></div>`;
-          }
-        });
-
-      function updatePathPreview() {
-        const walletType = document.getElementById("hd-wallet-type").value;
-        const branch = document.getElementById("hd-branch").value;
-        const account = document.getElementById("hd-account").value;
-        const custom = document.getElementById("hd-custom-path").value.trim();
-        const preview = document.getElementById("hd-custom-path-preview");
-        const mismatchEl = document.getElementById("hd-path-mismatch-warn");
-        const purpose =
-          walletType === "LEGACY"
-            ? "44'"
-            : walletType === "SEGWIT"
-              ? "49'"
-              : walletType === "TAPROOT"
-                ? "86'"
-                : "84'";
-
-        if (custom) {
-          const base = custom.replace(/\/\d+$/, "");
-          preview.textContent = `-> Will derive: ${base}/0, ${base}/1, ${base}/2...`;
-          preview.style.color = "var(--yellow)";
-
-          const PURPOSE_MAP = {
-            44: { type: "LEGACY", label: "Legacy (P2PKH)", btn: "LEGACY" },
-            49: { type: "SEGWIT", label: "SegWit P2SH", btn: "SEGWIT" },
-            84: {
-              type: "NATIVE_SEGWIT",
-              label: "Native SegWit",
-              btn: "NATIVE_SEGWIT",
-            },
-            86: { type: "TAPROOT", label: "Taproot (P2TR)", btn: "TAPROOT" },
-          };
-          const TYPE_NAMES = {
-            LEGACY: "Legacy (P2PKH)",
-            SEGWIT: "SegWit P2SH",
-            NATIVE_SEGWIT: "Native SegWit",
-            TAPROOT: "Taproot (P2TR)",
-          };
-
-          const purposeMatch = custom.match(/^m\/(\d+)'?\//);
-          const knownPurpose = purposeMatch
-            ? PURPOSE_MAP[purposeMatch[1]]
-            : null;
-
-          if (knownPurpose && knownPurpose.type !== walletType) {
-            let msg = `⚠ Path <strong>m/${purposeMatch[1]}'…</strong> is conventionally <strong>${knownPurpose.label}</strong> - you have <strong>${TYPE_NAMES[walletType]}</strong> selected. Addresses derive correctly but won't match any standard wallet at this path.`;
-            if (knownPurpose.btn) {
-              msg += ` <span id="mismatch-fix-btn" style="cursor:pointer;text-decoration:underline;color:var(--green);">[Switch to ${knownPurpose.label}]</span>`;
-            }
-            mismatchEl.innerHTML = msg;
-            mismatchEl.style.display = "block";
-            requestAnimationFrame(() => {
-              const fixBtn = document.getElementById("mismatch-fix-btn");
-              if (fixBtn) {
-                fixBtn.addEventListener("click", () => {
-                  document.getElementById("hd-wallet-type").value =
-                    knownPurpose.btn;
-                  updatePathPreview();
-                });
-              }
-            });
-          } else if (!purposeMatch || !knownPurpose) {
-            mismatchEl.innerHTML = `ℹ Non-standard path - valid BIP32, but no wallet software will recognise these addresses automatically. Use only if you know what you're doing.`;
-            mismatchEl.style.display = "block";
-            mismatchEl.style.borderColor = "var(--border2)";
-            mismatchEl.style.color = "var(--text-muted)";
-            mismatchEl.style.background = "transparent";
-          } else {
-            mismatchEl.style.display = "none";
-            mismatchEl.innerHTML = "";
-            mismatchEl.style.borderColor = "var(--yellow)";
-            mismatchEl.style.color = "var(--yellow)";
-            mismatchEl.style.background = "rgba(255,180,0,0.07)";
-          }
-        } else {
-          preview.textContent = `-> Will derive: m/${purpose}/0'/${account}'/${branch}/0, .../1, .../2...`;
-          preview.style.color = "var(--text-muted)";
-          mismatchEl.style.display = "none";
-          mismatchEl.innerHTML = "";
-          mismatchEl.style.borderColor = "var(--yellow)";
-          mismatchEl.style.color = "var(--yellow)";
-          mismatchEl.style.background = "rgba(255,180,0,0.07)";
-        }
-      }
-      ["hd-wallet-type", "hd-branch", "hd-account"].forEach((id) =>
-        document
-          .getElementById(id)
-          .addEventListener("change", updatePathPreview),
-      );
-      document
-        .getElementById("hd-custom-path")
-        .addEventListener("input", updatePathPreview);
-      updatePathPreview();
-
-      const PALETTE = [
-        "#00ff41",
-        "#00d4aa",
-        "#f7931a",
-        "#7c3aed",
-        "#e8d44d",
-        "#ff6b6b",
-        "#4ecdc4",
-        "#45b7d1",
-        "#96ceb4",
-        "#ffeaa7",
-        "#dda0dd",
-        "#98d8c8",
-      ];
-
-      function renderWordChips(matches) {
-        const div = document.getElementById("wl-results");
-        if (!matches.length) {
-          div.innerHTML = `<div class="text-dim small">No matches.</div>`;
-          return;
-        }
-        div.innerHTML = `
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-family:var(--font-mono);">
-            ${matches.length} result${matches.length !== 1 ? "s" : ""}
-          </div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            ${matches
-              .map(({ word, index }) => {
-                const bin = index.toString(2).padStart(11, "0");
-                return `<div style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:5px 10px;cursor:default;" title="BIP39 word #${index + 1} = ${bin}">
-                <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);min-width:30px;text-align:right;">#${index + 1}</span>
-                <span style="font-family:var(--font-mono);color:var(--green);font-size:13px;font-weight:600;">${word}</span>
-                <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">${bin}</span>
-              </div>`;
-              })
-              .join("")}
-          </div>`;
-      }
-
-      document.getElementById("wl-prefix").addEventListener("input", (e) => {
-        document.getElementById("wl-index").value = "";
-        const q = e.target.value.trim().toLowerCase();
-        if (!q) {
-          document.getElementById("wl-results").innerHTML = "";
-          return;
-        }
-        renderWordChips(
-          WORDLIST.map((word, index) => ({ word, index })).filter(({ word }) =>
-            word.startsWith(q),
-          ),
-        );
-      });
-
-      document.getElementById("wl-index").addEventListener("input", (e) => {
-        document.getElementById("wl-prefix").value = "";
-        const val = e.target.value.trim();
-        if (val === "") {
-          document.getElementById("wl-results").innerHTML = "";
-          return;
-        }
-        const idx = parseInt(val) - 1;
-        if (isNaN(idx) || idx < 0 || idx > 2047) {
-          document.getElementById("wl-results").innerHTML =
-            `<div class="text-dim small" style="color:var(--red)">Index must be 1-2048</div>`;
-          return;
-        }
-        renderWordChips([{ word: WORDLIST[idx], index: idx }]);
-      });
-
-      function setInspTab(mode) {
-        const isHex = mode === "hex";
-        document.getElementById("insp-tab-hex").style.background = isHex
-          ? "rgba(0,255,65,0.1)"
-          : "transparent";
-        document.getElementById("insp-tab-hex").style.color = isHex
-          ? "var(--green)"
-          : "var(--text-dim)";
-        document.getElementById("insp-tab-words").style.background = !isHex
-          ? "rgba(0,255,65,0.1)"
-          : "transparent";
-        document.getElementById("insp-tab-words").style.color = !isHex
-          ? "var(--green)"
-          : "var(--text-dim)";
-        document
-          .getElementById("insp-panel-hex")
-          .classList.toggle("hidden", !isHex);
-        document
-          .getElementById("insp-panel-words")
-          .classList.toggle("hidden", isHex);
-      }
-      document
-        .getElementById("insp-tab-hex")
-        .addEventListener("click", () => setInspTab("hex"));
-      document
-        .getElementById("insp-tab-words")
-        .addEventListener("click", () => setInspTab("words"));
-
-      function colouredBits(bits) {
-        let html = `<div style="font-family:var(--font-mono);font-size:11px;line-height:2;word-break:break-all;">`;
-        for (let i = 0; i < bits.length; i += 11) {
-          const chunk = bits.slice(i, i + 11);
-          const col = PALETTE[Math.floor(i / 11) % PALETTE.length];
-          html += `<span style="color:${col};">${chunk}</span>`;
-        }
-        return html + `</div>`;
-      }
-
-      function iRow(label, content) {
-        return `<div style="margin-bottom:14px;">
-          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">${label}</div>
-          ${content}
-        </div>`;
-      }
-
-      async function runHexInspect() {
-        const raw = document
-          .getElementById("insp-hex")
-          .value.trim()
-          .replace(/\s/g, "")
-          .toLowerCase();
-        const out = document.getElementById("insp-hex-out");
-        if (!raw) {
-          out.innerHTML = "";
-          return;
-        }
-        if (!/^[0-9a-f]+$/.test(raw)) {
-          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Invalid hex - only 0-9 and a-f</div></div>`;
-          return;
-        }
-        if (raw.length !== 32 && raw.length !== 64) {
-          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Need 32 hex chars (128-bit / 12 words) or 64 hex chars (256-bit / 24 words). Got ${raw.length}.</div></div>`;
-          return;
-        }
-        const entBytes = hexToBytes(raw);
-        const csFull = await sha256(entBytes);
-        const entBits = Array.from(entBytes)
-          .map((b) => b.toString(2).padStart(8, "0"))
-          .join("");
-        const csLen = entBytes.length / 4;
-        const csBits = csFull[0].toString(2).padStart(8, "0").slice(0, csLen);
-        const allBits = entBits + csBits;
-        const wordCount = allBits.length / 11;
-        const indices = [];
-        for (let i = 0; i < allBits.length; i += 11)
-          indices.push(parseInt(allBits.slice(i, i + 11), 2));
-        const words = indices.map((i) => WORDLIST[i]);
-
-        let html = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;">`;
-        html += iRow(
-          `Step 1 - Entropy (${entBytes.length} bytes = ${entBytes.length * 8} bits)`,
-          `<div style="font-family:var(--font-mono);font-size:12px;color:var(--green);word-break:break-all;">${raw.toUpperCase()}</div>`,
-        );
-        html += iRow(
-          `Step 2 - Entropy bits (${entBits.length} bits) coloured in 11-bit groups`,
-          colouredBits(entBits),
-        );
-        html += iRow(
-          `Step 3 - SHA-256(entropy) - first ${csLen} bits used as checksum`,
-          `<div style="font-family:var(--font-mono);font-size:11px;line-height:1.8;">
-             <span style="color:var(--text-muted)">Full hash:  </span><span style="color:var(--text-dim)">${bytesToHex(csFull).toUpperCase()}</span><br>
-             <span style="color:var(--text-muted)">Used bits:  </span><span style="color:var(--yellow)">${csBits}</span>
-           </div>`,
-        );
-        html += iRow(
-          `Step 4 - All bits = entropy ‖ checksum (${allBits.length} bits = ${wordCount} × 11)`,
-          colouredBits(allBits),
-        );
-        html += iRow(
-          `Step 5 - 11-bit chunks → index → BIP39 word`,
-          `<div style="overflow-x:auto;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:8px;padding:4px 8px;background:var(--bg3);border-radius:var(--radius);border-left:2px solid var(--green-dim);">binary value -> ( BIP39 word # ) &nbsp;·&nbsp; 11-bit binary is 0-based ( 0–2047 ); BIP39 list is 1-based ( word #1–#2048 )</div><table style="border-collapse:collapse;width:100%;">
-             <thead><tr>
-               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">#</th>
-               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">11 bits</th>
-               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">decimal (word #)</th>
-               <th style="padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);">word</th>
-             </tr></thead>
-             <tbody>
-               ${indices
-                 .map((idx, i) => {
-                   const chunk = allBits.slice(i * 11, (i + 1) * 11);
-                   const col = PALETTE[i % PALETTE.length];
-                   return `<tr>
-                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">${i + 1}</td>
-                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:${col};">${chunk}</td>
-                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);">${idx} <span style="color:var(--text-muted)"> -> (<span style="color:var(--green)">#${idx + 1}</span>)</span></td>
-                   <td style="padding:3px 8px;font-family:var(--font-mono);font-size:13px;color:${col};font-weight:600;">${WORDLIST[idx]}</td>
-                 </tr>`;
-                 })
-                 .join("")}
-             </tbody>
-           </table></div>`,
-        );
-        html += iRow(
-          `Result - ${wordCount}-word BIP39 mnemonic`,
-          `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-     <button class="copy-btn insp-copy-all" data-copy="${words.join(" ")}" style="font-size:11px;padding:4px 12px;">⎘ copy all ${wordCount} words</button>
-   </div>
-   <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
-     ${words
-       .map(
-         (
-           w,
-           i,
-         ) => `<span style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:4px 10px;font-family:var(--font-mono);font-size:13px;color:${PALETTE[i % PALETTE.length]};font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;" class="insp-word-chip" data-copy="${w}" title="click to copy '${w}'">
-           <span style="color:var(--text-muted);font-size:10px;">${i + 1}</span>${w}
-         </span>`,
-       )
-       .join("")}
-   </div>`,
-        );
-        html += `</div>`;
-        out.innerHTML = html;
-
-        out
-          .querySelectorAll(".insp-copy-all, .insp-word-chip")
-          .forEach((el) => {
-            el.addEventListener("click", () => copyText(el.dataset.copy, el));
-          });
-        return;
-      }
-
-      document
-        .getElementById("insp-hex-run")
-        .addEventListener("click", runHexInspect);
-      document.getElementById("insp-hex").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") runHexInspect();
-      });
-      document.getElementById("insp-hex-rand").addEventListener("click", () => {
-        const b = crypto.getRandomValues(new Uint8Array(16));
-        document.getElementById("insp-hex").value = bytesToHex(b);
-        runHexInspect();
-      });
-
-      async function runWordsInspect() {
-        const raw = document
-          .getElementById("insp-words")
-          .value.trim()
-          .toLowerCase();
-        const out = document.getElementById("insp-words-out");
-        if (!raw) {
-          out.innerHTML = "";
-          return;
-        }
-        const words = raw.split(/\s+/).filter((w) => w);
-        if (words.length !== 12 && words.length !== 24) {
-          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Need exactly 12 or 24 words. Got ${words.length}.</div></div>`;
-          return;
-        }
-        const unknown = words.filter((w) => !WORDLIST.includes(w));
-        if (unknown.length) {
-          out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">Unknown words: <strong>${unknown.join(", ")}</strong> - check spelling.</div></div>`;
-          return;
-        }
-        const allBits = words
-          .map((w) => WORDLIST.indexOf(w).toString(2).padStart(11, "0"))
-          .join("");
-        const entBitLen = Math.floor(allBits.length / 33) * 32;
-        const entBits = allBits.slice(0, entBitLen);
-        const storedCS = allBits.slice(entBitLen);
-        const entBytes = new Uint8Array(
-          entBits.match(/.{8}/g).map((b) => parseInt(b, 2)),
-        );
-        const entHex = bytesToHex(entBytes);
-        const csFull = await sha256(entBytes);
-        const csLen = entBytes.length / 4;
-        const computedCS = csFull[0]
-          .toString(2)
-          .padStart(8, "0")
-          .slice(0, csLen);
-        const valid = computedCS === storedCS;
-
-        let html = `<div style="background:var(--bg2);border:1px solid var(--border${valid ? "2" : ""});${valid ? "" : "border-color:var(--red)"};border-radius:var(--radius);padding:16px;">`;
-        html += iRow(
-          "Step 1 - Word indices",
-          `<div style="display:flex;flex-wrap:wrap;gap:4px;">
-             ${words
-               .map((w, i) => {
-                 const idx = WORDLIST.indexOf(w);
-                 const col = PALETTE[i % PALETTE.length];
-                 return `<span style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:3px 8px;font-family:var(--font-mono);font-size:11px;">
-                 <span style="color:var(--text-muted);">${i + 1} </span>
-                 <span style="color:${col};font-weight:600;">${w}</span>
-                 <span style="color:var(--text-muted);"> #${idx + 1}</span>
-               </span>`;
-               })
-               .join("")}
-           </div>`,
-        );
-        html += iRow(
-          "Step 2 - All bits (11 bits per word, coloured by word)",
-          colouredBits(allBits),
-        );
-        html += iRow(
-          `Step 3 - Split: ${entBitLen} entropy bits + ${storedCS.length} checksum bits`,
-          `<div style="font-family:var(--font-mono);font-size:11px;line-height:2;word-break:break-all;">
-             <span style="color:var(--green);">${entBits}</span><span style="color:var(--yellow);border:1px solid var(--yellow);border-radius:2px;padding:0 3px;margin-left:4px;">${storedCS}</span>
-           </div>`,
-        );
-        html += iRow(
-          "Step 4 - Entropy as hex",
-          `<div style="font-family:var(--font-mono);font-size:12px;color:var(--green);word-break:break-all;">${entHex.toUpperCase()}</div>`,
-        );
-        html += iRow(
-          "Step 5 - Checksum verification",
-          `<div style="font-family:var(--font-mono);font-size:11px;line-height:2;">
-             <div>Stored checksum:   <span style="color:var(--yellow);">${storedCS}</span></div>
-             <div>SHA-256 computed:  <span style="color:var(--yellow);">${computedCS}</span></div>
-             <div style="margin-top:4px;font-size:13px;color:${valid ? "var(--green)" : "var(--red)"};">
-               ${valid ? "✓ VALID - checksums match" : "✗ INVALID - checksums differ (word typo or wrong order)"}
-             </div>
-           </div>`,
-        );
-        html += `</div>`;
-        out.innerHTML = html;
-      }
-      document
-        .getElementById("insp-words-run")
-        .addEventListener("click", runWordsInspect);
-
-      function setKcTab(mode) {
-        ["hex", "wif", "addr"].forEach((m) => {
-          const on = m === mode;
-          document.getElementById(`kc-tab-${m}`).style.background = on
-            ? "rgba(0,255,65,0.1)"
-            : "transparent";
-          document.getElementById(`kc-tab-${m}`).style.color = on
-            ? "var(--green)"
-            : "var(--text-dim)";
-          document
-            .getElementById(`kc-panel-${m}`)
-            .classList.toggle("hidden", !on);
-        });
-      }
-      document
-        .getElementById("kc-tab-hex")
-        .addEventListener("click", () => setKcTab("hex"));
-      document
-        .getElementById("kc-tab-wif")
-        .addEventListener("click", () => setKcTab("wif"));
-      document
-        .getElementById("kc-tab-addr")
-        .addEventListener("click", () => setKcTab("addr"));
-
-      function kcRow(label, value, col = "var(--green)") {
-        const safe = value.replace(/</g, "&lt;");
-        return `<div style="margin-bottom:10px;">
-          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">${label}</div>
-          <div style="display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;">
-            <span style="font-family:var(--font-mono);font-size:12px;color:${col};word-break:break-all;flex:1;">${safe}</span>
-            <button class="copy-btn" data-copy="${value}" style="flex-shrink:0;">copy</button>
-          </div>
-        </div>`;
-      }
-
-      document
-        .getElementById("kc-hex-run")
-        .addEventListener("click", async () => {
-          const raw = document
-            .getElementById("kc-hex-in")
-            .value.trim()
-            .replace(/\s/g, "");
-          const out = document.getElementById("kc-hex-out");
-          if (!raw) {
-            out.innerHTML = "";
-            return;
-          }
-          if (!/^[0-9a-fA-F]{64}$/.test(raw)) {
-            out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">need exactly 64 hex characters (32 bytes), Got ${raw.length}</div></div>`;
-            return;
-          }
-          try {
-            const N_MAX =
-              0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
-            const privBI = bytesToBigInt(hexToBytes(raw));
-            if (privBI === 0n || privBI >= N_MAX) {
-              out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">key is outside valid secp256k1 range (1 to N-1)</div></div>`;
-              return;
-            }
-            const wifC = await privateKeyToWIF(privBI, true);
-            const wifU = await privateKeyToWIF(privBI, false);
-            const pubC = privateKeyToPublicKey(privBI, true);
-            const pubU = privateKeyToPublicKey(privBI, false);
-            const addrNsw = await pubKeyToNativeSegwit(pubC);
-            const addrSw = await pubKeyToSegwit(pubC);
-            const addrLgC = await pubKeyToLegacy(pubC);
-            const addrLgU = await pubKeyToLegacy(pubU);
-
-            out.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;">
-            ${kcRow("WIF - compressed (most wallets use this)", wifC, "var(--green)")}
-            ${kcRow("WIF - uncompressed (legacy only)", wifU, "var(--text-dim)")}
-            ${kcRow("Public key - compressed 33 bytes", bytesToHex(pubC).toUpperCase(), "var(--green-dim)")}
-            ${kcRow("Public key - uncompressed 65 bytes", bytesToHex(pubU).toUpperCase(), "var(--text-muted)")}
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
-              <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Derived addresses (from compressed pubkey)</div>
-              ${kcRow("Native SegWit  bc1q...  (lowest fees, modern)", addrNsw, "var(--green)")}
-              ${kcRow("SegWit P2SH    3...     (compatible)", addrSw, "var(--green-dim)")}
-              ${kcRow("Legacy         1...     (compressed pubkey)", addrLgC, "var(--text-dim)")}
-              ${kcRow("Legacy         1...     (uncompressed pubkey)", addrLgU, "var(--text-muted)")}
-            </div>
-          </div>`;
-            out
-              .querySelectorAll(".copy-btn")
-              .forEach((btn) =>
-                btn.addEventListener("click", () =>
-                  copyText(btn.dataset.copy, btn),
-                ),
-              );
-          } catch (e) {
-            out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">${e.message}</div></div>`;
-          }
-        });
-
-      document
-        .getElementById("kc-wif-run")
-        .addEventListener("click", async () => {
-          const wif = document.getElementById("kc-wif-in").value.trim();
-          const out = document.getElementById("kc-wif-out");
-          if (!wif) {
-            out.innerHTML = "";
-            return;
-          }
-          try {
-            const B58 =
-              "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-            let num = 0n;
-            for (const ch of wif) {
-              const i = B58.indexOf(ch);
-              if (i < 0) throw new Error(`invalid WIF character: '${ch}'`);
-              num = num * 58n + BigInt(i);
-            }
-            const hexStr = num.toString(16).padStart(76, "0");
-            const decoded = hexToBytes(
-              hexStr.length % 2 ? "0" + hexStr : hexStr,
-            );
-            const buf38 = new Uint8Array(38);
-            buf38.set(decoded.slice(Math.max(0, decoded.length - 38)));
-            if (buf38[0] !== 0x80)
-              throw new Error(
-                "not a Bitcoin mainnet WIF key (expected version byte 0x80)",
-              );
-            const isCompressed = decoded.length === 38;
-            const payloadLen = isCompressed ? 34 : 33;
-            const payload = decoded.slice(0, decoded.length - 4);
-            const storedCS = decoded.slice(-4);
-            const computedCS = (await sha256d(payload)).slice(0, 4);
-            for (let i = 0; i < 4; i++)
-              if (storedCS[i] !== computedCS[i])
-                throw new Error(
-                  "WIF checksum invalid - key may be corrupted or mistyped",
-                );
-            const keyBytes = decoded.slice(1, 33);
-            const privBI = bytesToBigInt(keyBytes);
-            const pubC = privateKeyToPublicKey(privBI, true);
-            const hexKey = bytesToHex(keyBytes).toUpperCase();
-            const addrNsw = await pubKeyToNativeSegwit(pubC);
-            const addrSw = await pubKeyToSegwit(pubC);
-            const addrLg = await pubKeyToLegacy(pubC);
-
-            out.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;">
-            ${kcRow("Private key hex", hexKey, "var(--green)")}
-            ${kcRow("Public key (compressed)", bytesToHex(pubC).toUpperCase(), "var(--green-dim)")}
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
-              <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Addresses</div>
-              ${kcRow("Native SegWit  bc1q...", addrNsw, "var(--green)")}
-              ${kcRow("SegWit P2SH    3...", addrSw, "var(--green-dim)")}
-              ${kcRow("Legacy         1...", addrLg, "var(--text-dim)")}
-            </div>
-          </div>`;
-            out
-              .querySelectorAll(".copy-btn")
-              .forEach((btn) =>
-                btn.addEventListener("click", () =>
-                  copyText(btn.dataset.copy, btn),
-                ),
-              );
-          } catch (e) {
-            out.innerHTML = `<div class="alert danger"><span class="alert-icon">✗</span><div class="alert-text">${e.message}</div></div>`;
-          }
-        });
-
-      document.getElementById("kc-addr-in").addEventListener("input", (e) => {
-        const addr = e.target.value.trim();
-        const out = document.getElementById("kc-addr-out");
-        if (!addr) {
-          out.innerHTML = "";
-          return;
-        }
-
-        let type = null,
-          valid = false,
-          note = "";
-
-        if (/^1[1-9A-HJ-NP-Za-km-z]{24,33}$/.test(addr)) {
-          type = "Legacy P2PKH";
-          valid = true;
-          note = "Starts with 1 - original Bitcoin address format";
-        } else if (/^3[1-9A-HJ-NP-Za-km-z]{24,33}$/.test(addr)) {
-          type = "SegWit P2SH";
-          valid = true;
-          note = "Starts with 3 - SegWit wrapped in P2SH, backward-compatible";
-        } else if (/^bc1q[0-9a-z]{38,59}$/.test(addr)) {
-          type = "Native SegWit P2WPKH";
-          valid = true;
-          note = "Starts with bc1q - Bech32, lowest fees, modern standard";
-        } else if (/^bc1p[0-9a-z]{58}$/.test(addr)) {
-          type = "Taproot P2TR";
-          valid = true;
-          note = "Starts with bc1p - Bech32m Taproot address";
-        } else if (/^[13bc1]/.test(addr)) {
-          note = "Format not recognised or length invalid.";
-        } else {
-          note = "Does not look like a Bitcoin mainnet address";
-        }
-
-        if (valid) {
-          out.innerHTML = `<div class="alert success">
-            
-            <div class="alert-text">
-              <strong>Valid Bitcoin address format - ${type}</strong><br>
-              <span style="font-family:var(--font-mono);font-size:11px;word-break:break-all;">${addr}</span><br>
-              <span style="font-size:11px;color:var(--text-dim);">${note}</span>
-            </div>
-          </div>`;
-        } else {
-          out.innerHTML = `<div class="alert danger">
-            <span class="alert-icon">✗</span>
-            <div class="alert-text">
-              <strong>Invalid or unrecognised address</strong><br>
-              <span style="font-size:11px;">${note}</span>
-            </div>
-          </div>`;
-        }
-      });
-
-      const SECP256K1_N =
-        0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
-
-      let pkvBits = new Array(256).fill(false);
-
-      function pkvBitsToHex() {
-        const bytes = new Uint8Array(32);
-        for (let i = 0; i < 256; i++) {
-          if (pkvBits[i]) bytes[Math.floor(i / 8)] |= 1 << (7 - (i % 8));
-        }
-        return bytesToHex(bytes);
-      }
-
-      function pkvHexToBits(hex) {
-        const bytes = hexToBytes(hex.padStart(64, "0").slice(0, 64));
-        for (let i = 0; i < 256; i++) {
-          pkvBits[i] = !!((bytes[Math.floor(i / 8)] >> (7 - (i % 8))) & 1);
-        }
-      }
-
-      function pkvRender() {
-        const hex = pkvBitsToHex();
-        const bigint = bytesToBigInt(hexToBytes(hex));
-        const binaryStr = pkvBits.map((b) => (b ? "1" : "0")).join("");
-
-        const cells = document.getElementById("pkv-grid").children;
-        for (let i = 0; i < 256; i++) {
-          const cell = cells[i];
-          const isOne = pkvBits[i];
-          cell.textContent = isOne ? "1" : "0";
-          cell.style.background = isOne ? "rgba(0,255,65,0.25)" : "var(--bg3)";
-          cell.style.color = isOne ? "var(--green)" : "var(--text-muted)";
-          cell.style.borderColor = isOne
-            ? "rgba(0,255,65,0.4)"
-            : "var(--border)";
-        }
-
-        const oneCount = pkvBits.filter(Boolean).length;
-        document.getElementById("pkv-bit-count").textContent =
-          `${oneCount} of 256 bits set`;
-
-        const binEl = document.getElementById("pkv-binary");
-        binEl.innerHTML = Array.from({ length: 32 }, (_, byteIdx) => {
-          const chunk = binaryStr.slice(byteIdx * 8, byteIdx * 8 + 8);
-          const col = byteIdx % 2 === 0 ? "var(--green)" : "rgba(0,255,65,0.5)";
-          return `<span style="color:${col};margin-right:3px;">${chunk}</span>`;
-        }).join("");
-
-        const hexEl = document.getElementById("pkv-hex");
-        if (document.activeElement !== hexEl) {
-          hexEl.value = hex;
-        }
-
-        const decEl = document.getElementById("pkv-decimal");
-
-        if (document.activeElement !== decEl) {
-          decEl.value = bigint.toString();
-        }
-        const statusEl = document.getElementById("pkv-range-status");
-        if (bigint === 0n) {
-          statusEl.innerHTML = `<span style="color:var(--red);">✗ ZERO - not a valid private key (must be ≥ 1)</span>`;
-        } else if (bigint >= SECP256K1_N) {
-          statusEl.innerHTML = `<span style="color:var(--red);">✗ TOO LARGE - exceeds curve order N, not a valid private key</span>`;
-        } else {
-          const pct = Number((bigint * 10000n) / SECP256K1_N) / 100;
-          statusEl.innerHTML = `<span style="color:var(--green);">✓ VALID private key &nbsp;-&nbsp; at ${pct.toFixed(4)}% of the valid range</span>`;
-        }
-      }
-
-      function pkvBuildGrid() {
-        const grid = document.getElementById("pkv-grid");
-        grid.innerHTML = "";
-        for (let i = 0; i < 256; i++) {
-          const cell = document.createElement("div");
-          cell.style.cssText = `
-      aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-      border:1px solid var(--border);border-radius:2px;cursor:pointer;
-      font-family:var(--font-mono);font-size:9px;font-weight:600;
-      transition:background 0.08s,color 0.08s;
-    `;
-          cell.dataset.bit = i;
-          cell.addEventListener("click", () => {
-            pkvBits[i] = !pkvBits[i];
-            pkvRender();
-          });
-          grid.appendChild(cell);
-        }
-      }
-
-      document.getElementById("pkv-random").addEventListener("click", () => {
-        const bytes = crypto.getRandomValues(new Uint8Array(32));
-        pkvHexToBits(bytesToHex(bytes));
-        pkvRender();
-      });
-
-      document.getElementById("pkv-reset").addEventListener("click", () => {
-        pkvBits.fill(false);
-        pkvRender();
-      });
-
-      document.getElementById("pkv-hex").addEventListener("input", (e) => {
-        const raw = e.target.value.trim().replace(/\s/g, "").toLowerCase();
-        if (/^[0-9a-f]{1,64}$/.test(raw)) {
-          pkvHexToBits(raw);
-          pkvRender();
-        }
-      });
-
-      document.getElementById("pkv-hex-copy").addEventListener("click", () => {
-        copyText(pkvBitsToHex(), document.getElementById("pkv-hex-copy"));
-      });
-
-      document.getElementById("pkv-dec-copy").addEventListener("click", () => {
-        const bigint = bytesToBigInt(hexToBytes(pkvBitsToHex()));
-        copyText(bigint.toString(), document.getElementById("pkv-dec-copy"));
-      });
-
-      document.getElementById("pkv-decimal").addEventListener("input", (e) => {
-        const raw = e.target.value.trim();
-        if (!raw) return;
-        if (!/^\d+$/.test(raw)) return;
-        try {
-          const n = BigInt(raw);
-          if (n < 0n) return;
-          const hex = n.toString(16).padStart(64, "0").slice(-64);
-          pkvHexToBits(hex);
-          pkvRender();
-        } catch (_) {}
-      });
-
-      pkvBuildGrid();
-      pkvRender();
-    </script>
+    <script src="js/qrcode.js"></script>
+    <script type="module" src="./js/wallet.js"></script>
   </body>
 </html>

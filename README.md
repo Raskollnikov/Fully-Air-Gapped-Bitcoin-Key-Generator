@@ -122,7 +122,6 @@ Generate wallets
 ![screenshot](images/verify_18.png)
 ![screenshot](images/verify_19.png)
 
-
 ![screenshot](images/hash.png)
 
 ---
@@ -180,12 +179,12 @@ The CSPRNG alone provides the full 128 or 256 bits required. Mouse entropy is de
 
 ```
 
-Physical dice rolls → base-6 bigint → 32 bytes +
+Physical dice rolls -> base-6 bigint -> 32 bytes +
 Fresh crypto.getRandomValues() +
 Per-wallet nonce (walletIndex as 4-byte uint)
 │
 ▼
-SHA-256(csrng ‖ diceBytes ‖ index) → entropy
+SHA-256(csrng ‖ diceBytes ‖ index) -> entropy
 
 ```
 
@@ -202,11 +201,11 @@ User-supplied string (UTF-8 encoded)
 SHA-256(UTF-8(string))              <- 32-byte hash, all bytes used
          │
          ▼
-First 16 bytes → 12-word mnemonic  (128-bit entropy)
-First 32 bytes → 24-word mnemonic  (256-bit entropy)
+First 16 bytes -> 12-word mnemonic  (128-bit entropy)
+First 32 bytes -> 24-word mnemonic  (256-bit entropy)
          │
          ▼
-entropyToMnemonic() → BIP39 mnemonic
+entropyToMnemonic() -> BIP39 mnemonic
 
 For batch generation (quantity > 1):
 SHA-256(UTF-8(string ‖ \x00 ‖ uint32(walletIndex)))
@@ -229,8 +228,8 @@ n = (r₀-1)·6⁹⁸ + (r₁-1)·6⁹⁷ + …    one large base-6 number, not 
 32-byte big-endian representation
          │
          ▼
-First 16 bytes → 12-word mnemonic
-First 32 bytes → 24-word mnemonic
+First 16 bytes -> 12-word mnemonic
+First 32 bytes -> 24-word mnemonic
          +
 Per-wallet nonce (walletIndex as 4-byte uint32)
          │
@@ -238,7 +237,7 @@ Per-wallet nonce (walletIndex as 4-byte uint32)
 SHA-256(diceBytes[:strength] ‖ \x00 ‖ uint32(walletIndex))
          │
          ▼
-entropyToMnemonic() → BIP39 mnemonic
+entropyToMnemonic() -> BIP39 mnemonic
 
 50 rolls  = log₂(6⁵⁰) ≈ 129 bits  (minimum accepted)
 99 rolls  = log₂(6⁹⁹) ≈ 256 bits  (recommended for 12-word)
@@ -269,10 +268,10 @@ Entropy
 ▼ BIP39
 12/24-word mnemonic
 │
-▼ PBKDF2(mnemonic, "mnemonic" + passphrase, 2048 iter, SHA-512) → 64 bytes
+▼ PBKDF2(mnemonic, "mnemonic" + passphrase, 2048 iter, SHA-512) -> 64 bytes
 BIP32 root seed
 │
-▼ HMAC-SHA512("Bitcoin seed", seed) → master key + chain code
+▼ HMAC-SHA512("Bitcoin seed", seed) -> master key + chain code
 │
 ▼ BIP44/49/84 path derivation m/purpose'/0'/account'/branch/index
 Child private key
@@ -282,9 +281,9 @@ Compressed public key (33 bytes)
 │
 ▼ RIPEMD160(SHA256(pubkey)) = hash160
 │
-├─▶ Base58Check(0x00 ‖ hash160) → Legacy 1...
-├─▶ Base58Check(0x05 ‖ hash160(script)) → SegWit 3...
-└─▶ Bech32("bc", 0, hash160) → Native bc1q...
+├─▶ Base58Check(0x00 ‖ hash160) -> Legacy 1...
+├─▶ Base58Check(0x05 ‖ hash160(script)) -> SegWit 3...
+└─▶ Bech32("bc", 0, hash160) -> Native bc1q...
 │
 ▼
 QR codes rendered to <canvas> via inline JavaScript (no library)
@@ -338,10 +337,10 @@ BIP32 specifies that if `IL ≥ n` or `childKey = 0`, that index is invalid and 
 Every generated wallet is validated before display:
 
 ```javascript
-WIF → base58 decode → private key bytes
-                    → secp256k1 pubkey
-                    → address re-derivation
-                    → assert matches stored address
+WIF -> base58 decode -> private key bytes
+                    -> secp256k1 pubkey
+                    -> address re-derivation
+                    -> assert matches stored address
 ```
 
 If the round-trip fails, the wallet is wiped and an error is shown. This catches any derivation inconsistency before the user prints anything.
@@ -385,21 +384,21 @@ If the round-trip fails, the wallet is wiped and an error is shown. This catches
 
 **BIP39 Word Lookup** - search by prefix or by index (1–2048). Shows word, index, and 11-bit representation.
 
-**BIP39 Inspector (HEX → WORDS)** - step-by-step breakdown:
+**BIP39 Inspector (HEX -> WORDS)** - step-by-step breakdown:
 
 1. Raw entropy hex
 2. Entropy bits coloured in 11-bit groups
 3. SHA-256 checksum - which bits are used
 4. Full bit string (entropy ‖ checksum)
-5. Each 11-bit chunk → decimal index → BIP39 word
+5. Each 11-bit chunk -> decimal index -> BIP39 word
 6. Resulting mnemonic with one-click copy per word or copy-all
 
-**BIP39 Inspector (WORDS → HEX)** - reverse: shows indices, bits, entropy hex, and checksum verification.
+**BIP39 Inspector (WORDS -> HEX)** - reverse: shows indices, bits, entropy hex, and checksum verification.
 
 **Key Converter** - three modes:
 
-- `HEX → WIF + ADDR` - convert a raw 32-byte private key to compressed/uncompressed WIF, public key, and all three address types
-- `WIF → ADDR` - decode WIF (with full checksum validation) and derive all addresses
+- `HEX -> WIF + ADDR` - convert a raw 32-byte private key to compressed/uncompressed WIF, public key, and all three address types
+- `WIF -> ADDR` - decode WIF (with full checksum validation) and derive all addresses
 - `VALIDATE ADDR` - format check for Legacy, P2SH-SegWit, Native SegWit, and Taproot addresses
 
 **Private Key Visualizer** - 256-bit interactive explorer: click any bit to toggle, input hex or decimal, see real-time validity check against secp256k1 curve order N.
@@ -435,12 +434,12 @@ node index.js
  $paper-wallet-generator/testing/node index.js
 
 ═══ generateMnemonicFromString — determinism ═══
-  ✓ same string → same 24-word mnemonic (run 1 = run 2)
-  ✓ different string → different mnemonic
+  ✓ same string -> same 24-word mnemonic (run 1 = run 2)
+  ✓ different string -> different mnemonic
   ✓ case-sensitive: uppercase ≠ lowercase
   ✓ 24-word mnemonic word count
   ✓ 12-word mnemonic word count
-  ✓ same string → same 12-word mnemonic
+  ✓ same string -> same 12-word mnemonic
   ✓ 12-word ≠ 24-word from same string
   ✓ 24-word passes BIP39 checksum
   ✓ 12-word passes BIP39 checksum
@@ -466,44 +465,44 @@ node index.js
   ✓ nonce 2 BIP39 valid
   ✓ null byte separator prevents prefix collision
 
-═══ generateMnemonicFromString → full wallet derivation ═══
+═══ generateMnemonicFromString -> full wallet derivation ═══
   ✓ string-derived wallet round-trip valid
   ✓ address starts with bc1q
-  ✓ same string → same address deterministically
-  ✓ same string → same WIF deterministically
+  ✓ same string -> same address deterministically
+  ✓ same string -> same WIF deterministically
   ✓ legacy round-trip valid
   ✓ segwit round-trip valid
   ✓ legacy address starts with 1
   ✓ segwit address starts with 3
 
 ═══ generateMnemonicWithDice — deterministic mode ═══
-  ✓ deterministic: same dice → same mnemonic
+  ✓ deterministic: same dice -> same mnemonic
   ✓ deterministic: BIP39 checksum valid
   ✓ deterministic: 12-word count
-  ✓ deterministic 24-word: same dice → same
+  ✓ deterministic 24-word: same dice -> same
   ✓ deterministic 24-word: BIP39 valid
   ✓ deterministic: 24-word count
-  ✓ deterministic: different dice → different mnemonic
+  ✓ deterministic: different dice -> different mnemonic
   ✓ deterministic: walletIndex produces unique wallets in batch
 
 ═══ generateMnemonicWithDice — mixed mode (existing behaviour) ═══
   ✓ mixed: index 0 ≠ index 1
   ✓ mixed: index 1 ≠ index 2
-  ✓ mixed: same dice+index → different mnemonic each run (CSPRNG)
+  ✓ mixed: same dice+index -> different mnemonic each run (CSPRNG)
   ✓ mixed 0 BIP39 valid
   ✓ mixed 1 BIP39 valid
 
-═══ generateMnemonicWithDice — deterministic → full wallet ═══
-  ✓ deterministic dice → wallet round-trip valid
-  ✓ deterministic dice → same address on repeat
+═══ generateMnemonicWithDice — deterministic -> full wallet ═══
+  ✓ deterministic dice -> wallet round-trip valid
+  ✓ deterministic dice -> same address on repeat
 
 ═══ secureWipeAll — string-input coverage ═══
   ✓ wallet array emptied after secureWipeAll
   ✓ wallet object nulled after wipe
 
-═══ Pipeline integrity — SHA256(string) → BIP39 ═══
-  ✓ SHA256('hello') → known 12-word mnemonic matches
-  ✓ SHA256('hello') → known 24-word mnemonic matches
+═══ Pipeline integrity — SHA256(string) -> BIP39 ═══
+  ✓ SHA256('hello') -> known 12-word mnemonic matches
+  ✓ SHA256('hello') -> known 24-word mnemonic matches
   ✓ 'hello' 12-word BIP39 valid
   ✓ 'hello' 24-word BIP39 valid
 
@@ -536,8 +535,8 @@ node index.js
   ✓ Taproot address ≠ Taproot+passphrase address
 
 ═══ Taproot - determinism ═══
-  ✓ Taproot: same seed → same address
-  ✓ Taproot: same seed → same WIF
+  ✓ Taproot: same seed -> same address
+  ✓ Taproot: same seed -> same WIF
   ✓ Taproot: index 0 ≠ index 1
   ✓ Taproot: account 0 ≠ account 1
 
@@ -620,7 +619,7 @@ A detailed record of every issue found, audited, and resolved during development
 
 ### [FIX] secp256k1 parameter name shadowing (`Cannot mix BigInt and other types`)
 
-**Symptom:** The Tools → Key Converter and wallet generation both failed with `TypeError: Cannot mix BigInt and other types, use explicit conversions`.
+**Symptom:** The Tools -> Key Converter and wallet generation both failed with `TypeError: Cannot mix BigInt and other types, use explicit conversions`.
 
 **Root cause:** The curve prime constant was renamed from `SECP256K1_P` to the shorter `P` for readability. However, `pointAdd(P, Q)` used `P` as the parameter name for the first point argument. Inside the function, references to the curve prime `P` in `modInverse(2n * py, P)` and `modInverse(qx - px, P)` were actually resolving to the point array `[x, y]`, not the BigInt prime. Passing an array to `modInverse` caused JavaScript to attempt BigInt arithmetic on a non-BigInt, throwing the type error.
 
@@ -642,7 +641,7 @@ function pointAdd(pt1, pt2) {
 
 ---
 
-### [FIX] `validateRoundTrip` WIF decode padding (`padStart(74)` → `padStart(76)`)
+### [FIX] `validateRoundTrip` WIF decode padding (`padStart(74)` -> `padStart(76)`)
 
 **Root cause:** A compressed WIF encodes 38 bytes: `0x80 + 32-byte-key + 0x01 + 4-byte-checksum`. That is 76 hex characters. The original code used `padStart(74)` which would produce 37 bytes instead of 38. In practice the bug was dormant because the `0x80` version byte means the decoded BigInt is always large enough that its hex representation is already 76 chars - `padStart(74)` was a no-op. Nonetheless the logic was wrong.
 

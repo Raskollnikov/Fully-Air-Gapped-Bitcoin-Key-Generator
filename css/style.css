@@ -154,7 +154,7 @@ header {
 }
 
 main {
-  max-width: 1100px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 40px 24px;
 }
@@ -308,7 +308,6 @@ select option {
 .btn-primary:active {
   transform: translateY(1px);
 }
-
 .btn-secondary {
   background: transparent;
   border-color: var(--border2);
@@ -318,7 +317,6 @@ select option {
   border-color: var(--green-dim);
   color: var(--text);
 }
-
 .btn-danger {
   background: transparent;
   border-color: var(--red);
@@ -327,7 +325,6 @@ select option {
 .btn-danger:hover {
   background: rgba(255, 51, 51, 0.1);
 }
-
 .btn-orange {
   background: transparent;
   border-color: var(--orange);
@@ -336,7 +333,6 @@ select option {
 .btn-orange:hover {
   background: rgba(247, 147, 26, 0.1);
 }
-
 .btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -447,18 +443,10 @@ select option {
   border-color: #3a2a5e;
   background: rgba(187, 134, 252, 0.06);
 }
-
 .badge-taproot {
   color: #f97316;
   border-color: #7c3a00;
   background: rgba(249, 115, 22, 0.08);
-}
-
-.wallet-grid {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
-  align-items: start;
 }
 
 .wallet-fields {
@@ -505,14 +493,11 @@ select option {
   color: var(--yellow);
 }
 .field-value.mnemonic {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   color: var(--text);
-}
-
-.field-value.mnemonic.words-24 {
-  grid-template-columns: repeat(6, 1fr);
+  align-items: stretch;
 }
 
 .word-chip {
@@ -562,33 +547,26 @@ select option {
   border-color: var(--green);
 }
 
-.qr-pair {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-}
-
-.qr-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.qr-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.qr-inline-btn {
+  background: none;
+  border: 1px solid var(--border2);
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.qr-canvas-wrap {
-  padding: 12px;
-  background: #fff;
-  border-radius: var(--radius);
-  border: 2px solid var(--border);
+.qr-inline-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
 }
-canvas.qr {
-  display: block;
+.qr-inline-btn.active {
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
 .addr-table {
@@ -610,6 +588,7 @@ canvas.qr {
   border-bottom: 1px solid var(--border);
   font-family: var(--font-mono);
   word-break: break-all;
+  position: relative;
 }
 .addr-table tr:hover td {
   background: rgba(255, 255, 255, 0.02);
@@ -857,14 +836,6 @@ textarea.invalid {
   main {
     padding: 24px 12px;
   }
-  .wallet-grid {
-    grid-template-columns: 1fr;
-  }
-  .qr-pair {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
   .controls-grid {
     grid-template-columns: 1fr;
   }
@@ -884,7 +855,6 @@ textarea.invalid {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
-
 ::selection {
   background: rgba(0, 255, 65, 0.2);
   color: var(--text);
@@ -987,29 +957,4 @@ textarea.invalid {
 }
 .word-input-field::-webkit-calendar-picker-indicator {
   display: none;
-}
-
-.wallet-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.btn-print-single {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 5px 14px;
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  border-radius: var(--radius);
-  cursor: pointer;
-  letter-spacing: 1px;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
-}
-.btn-print-single:hover {
-  border-color: var(--green);
-  color: var(--green);
 }

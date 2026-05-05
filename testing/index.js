@@ -40,15 +40,15 @@ console.log("\n═══ generateMnemonicFromString — determinism ═══");
   const m3 = await wallet.generateMnemonicFromString("test-string-abc-124", 24);
   const m4 = await wallet.generateMnemonicFromString("TEST-STRING-ABC-123", 24);
 
-  assertBool("same string → same 24-word mnemonic (run 1 = run 2)", m1 === m2);
-  assertBool("different string → different mnemonic", m1 !== m3);
+  assertBool("same string -> same 24-word mnemonic (run 1 = run 2)", m1 === m2);
+  assertBool("different string -> different mnemonic", m1 !== m3);
   assertBool("case-sensitive: uppercase ≠ lowercase", m1 !== m4);
   assert("24-word mnemonic word count", m1.split(" ").length, 24);
 
   const m5 = await wallet.generateMnemonicFromString("test-string-abc-123", 12);
   const m6 = await wallet.generateMnemonicFromString("test-string-abc-123", 12);
   assert("12-word mnemonic word count", m5.split(" ").length, 12);
-  assertBool("same string → same 12-word mnemonic", m5 === m6);
+  assertBool("same string -> same 12-word mnemonic", m5 === m6);
   assertBool("12-word ≠ 24-word from same string", m1 !== m5);
 
   assertBool(
@@ -132,7 +132,7 @@ console.log(
   );
 }
 
-console.log("\n═══ generateMnemonicFromString → full wallet derivation ═══");
+console.log("\n═══ generateMnemonicFromString -> full wallet derivation ═══");
 
 {
   const str =
@@ -155,11 +155,11 @@ console.log("\n═══ generateMnemonicFromString → full wallet derivation �
     "NATIVE_SEGWIT",
   );
   assertBool(
-    "same string → same address deterministically",
+    "same string -> same address deterministically",
     w.address === w2.address,
   );
   assertBool(
-    "same string → same WIF deterministically",
+    "same string -> same WIF deterministically",
     w.privateKeyWIF === w2.privateKeyWIF,
   );
 
@@ -185,7 +185,7 @@ console.log("\n═══ generateMnemonicWithDice — deterministic mode ══�
 
   const d1a = await wallet.generateMnemonicWithDice(dice99, 12, 0, true);
   const d1b = await wallet.generateMnemonicWithDice(dice99, 12, 0, true);
-  assertBool("deterministic: same dice → same mnemonic", d1a === d1b);
+  assertBool("deterministic: same dice -> same mnemonic", d1a === d1b);
   assertBool(
     "deterministic: BIP39 checksum valid",
     await wallet.validateMnemonic(d1a),
@@ -194,7 +194,7 @@ console.log("\n═══ generateMnemonicWithDice — deterministic mode ══�
 
   const d2a = await wallet.generateMnemonicWithDice(dice99, 24, 0, true);
   const d2b = await wallet.generateMnemonicWithDice(dice99, 24, 0, true);
-  assertBool("deterministic 24-word: same dice → same", d2a === d2b);
+  assertBool("deterministic 24-word: same dice -> same", d2a === d2b);
   assertBool(
     "deterministic 24-word: BIP39 valid",
     await wallet.validateMnemonic(d2a),
@@ -202,7 +202,7 @@ console.log("\n═══ generateMnemonicWithDice — deterministic mode ══�
   assert("deterministic: 24-word count", d2a.split(" ").length, 24);
 
   const d3 = await wallet.generateMnemonicWithDice(dice150, 12, 0, true);
-  assertBool("deterministic: different dice → different mnemonic", d1a !== d3);
+  assertBool("deterministic: different dice -> different mnemonic", d1a !== d3);
 
   const dIdx0 = await wallet.generateMnemonicWithDice(dice99, 12, 0, true);
   const dIdx5 = await wallet.generateMnemonicWithDice(dice99, 12, 5, true);
@@ -228,7 +228,7 @@ console.log(
   const mA = await wallet.generateMnemonicWithDice(dice99, 12, 0, true);
   const mB = await wallet.generateMnemonicWithDice(dice99, 12, 1, true);
   assertBool(
-    "mixed: same dice+index → different mnemonic each run (CSPRNG)",
+    "mixed: same dice+index -> different mnemonic each run (CSPRNG)",
     mA !== mB,
   );
 
@@ -236,7 +236,9 @@ console.log(
   assertBool("mixed 1 BIP39 valid", await wallet.validateMnemonic(m1));
 }
 
-console.log("\n═══ generateMnemonicWithDice — deterministic → full wallet ═══");
+console.log(
+  "\n═══ generateMnemonicWithDice — deterministic -> full wallet ═══",
+);
 
 {
   const dice = Array(99).fill("4").join(" ");
@@ -248,7 +250,7 @@ console.log("\n═══ generateMnemonicWithDice — deterministic → full wal
   );
   const vr = await wallet.validateRoundTrip(w);
 
-  assertBool("deterministic dice → wallet round-trip valid", vr.valid);
+  assertBool("deterministic dice -> wallet round-trip valid", vr.valid);
 
   const mnemonic2 = await wallet.generateMnemonicWithDice(dice, 12, 0, true);
   const w2 = await wallet.generateWalletFromMnemonic(
@@ -257,7 +259,7 @@ console.log("\n═══ generateMnemonicWithDice — deterministic → full wal
     "NATIVE_SEGWIT",
   );
   assertBool(
-    "deterministic dice → same address on repeat",
+    "deterministic dice -> same address on repeat",
     w.address === w2.address,
   );
 }
@@ -280,7 +282,7 @@ console.log("\n═══ secureWipeAll — string-input coverage ═══");
   assertBool("wallet object nulled after wipe", fakeWallet.mnemonic === null);
 }
 
-console.log("\n═══ Pipeline integrity — SHA256(string) → BIP39 ═══");
+console.log("\n═══ Pipeline integrity — SHA256(string) -> BIP39 ═══");
 
 {
   const knownHash =
@@ -289,7 +291,7 @@ console.log("\n═══ Pipeline integrity — SHA256(string) → BIP39 ══�
   const expectedMnemonic = await wallet.entropyToMnemonic(entropy16);
   const actualMnemonic = await wallet.generateMnemonicFromString("hello", 12);
   assertBool(
-    "SHA256('hello') → known 12-word mnemonic matches",
+    "SHA256('hello') -> known 12-word mnemonic matches",
     expectedMnemonic === actualMnemonic,
   );
 
@@ -297,7 +299,7 @@ console.log("\n═══ Pipeline integrity — SHA256(string) → BIP39 ══�
   const expected24 = await wallet.entropyToMnemonic(entropy32);
   const actual24 = await wallet.generateMnemonicFromString("hello", 24);
   assertBool(
-    "SHA256('hello') → known 24-word mnemonic matches",
+    "SHA256('hello') -> known 24-word mnemonic matches",
     expected24 === actual24,
   );
 
@@ -384,7 +386,7 @@ console.log("\n═══ Taproot - BIP86 known test vector ═══");
 
 {
   const knownAddress =
-    "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr";
+    "bc1pvhzh08gqauq66acu3s8a2zwyxlhexsmwqj2gey9965du0u6snwms5x4qv0";
 
   const w = await wallet.generateWalletFromMnemonic(
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
@@ -459,9 +461,9 @@ console.log("\n═══ Taproot - determinism ═══");
     0,
     0,
   );
-  assertBool("Taproot: same seed → same address", w1.address === w2.address);
+  assertBool("Taproot: same seed -> same address", w1.address === w2.address);
   assertBool(
-    "Taproot: same seed → same WIF",
+    "Taproot: same seed -> same WIF",
     w1.privateKeyWIF === w2.privateKeyWIF,
   );
 
@@ -597,7 +599,7 @@ console.log("\n═══ Taproot - deriveMultipleAddresses ═══");
   assert(
     "deriveMultipleAddresses[0] matches BIP86 vector",
     addresses[0].address,
-    "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr",
+    "bc1pvhzh08gqauq66acu3s8a2zwyxlhexsmwqj2gey9965du0u6snwms5x4qv0",
   );
 
   const addressesFrom3 = await wallet.deriveMultipleAddresses(
